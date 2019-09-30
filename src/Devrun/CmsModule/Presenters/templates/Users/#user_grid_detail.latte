@@ -1,0 +1,90 @@
+<div n:block="detail" class="well well-sm">
+
+	{*<h4 class="text-primary">Uživatel vytvořen {$item->inserted|date:"j. n. Y h:m:s"}</h4>*}
+
+
+	<div class="box box-primary">
+		<div class="box-header with-border">
+			<h3 class="box-title">Detail uživatele <small>(vytvořen {$item->inserted|date:"j. n. Y h:m:s"})</small></h3>
+			{*
+			<div class="btn-group">
+				<a n:href="Users:" class="btn btn-sm btn-info">Účty</a>
+				<a n:href="Users:role" class="btn btn-sm btn-info">Role</a>
+			</div>
+			*}
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+			</div>
+		</div>
+		<div class="box-body" style="background-color: #d9e0e7">
+
+			<div class="gallery">
+				{var $packages = $presenter->getUserPackages($item)}
+				<div n:foreach="$packages as $package" class="image">
+					<div class="image-inner">
+						<a href="{plink Page:edit $presenter->getEditLink($package)}">
+							{img $presenter->getImage($package)->identifier, '387x200', exact}
+						</a>
+						<p class="image-caption">
+							#{$iterator->counter} - {$package->inserted|date:"j. n. Y"}
+						</p>
+					</div>
+					<div class="image-info">
+						<h5 class="title">{$package->module|upper} - {$package->name}</h5>
+						<div class="pull-right">
+							<small>by</small> <a href="javascript:;">{$item->firstName}{if $item->nickname} ({$item->nickname}){/if}</a>
+						</div>
+						<a class="btn btn-xs btn-info m-b-10" data-confirm="modal" data-confirm-title="Odstranit obrázek z galerie" data-confirm-text="Opravdu si přejete odstranit obrázek z galerie?" data-confirm-ok-class="btn-success" data-confirm-ok-text="Ano" data-confirm-cancel-class="btn-default" data-confirm-cancel-text="Ne" data-ajax="on" href="{plink Page:edit $presenter->getEditLink($package)}">Edit</a>
+						{*<a class="btn btn-xs btn-danger m-b-10" data-title="Odstranit obrázek z galerie" data-container="body" data-toggle="tooltip" data-original-title="" data-confirm="modal" data-confirm-title="Odstranit obrázek z galerie" data-confirm-text="Opravdu si přejete odstranit obrázek z galerie?" data-confirm-ok-class="btn-success" data-confirm-ok-text="Ano" data-confirm-cancel-class="btn-default" data-confirm-cancel-text="Ne" data-ajax="on" href="/admin/news/gallery/2?do=deleteGallery">odstranit</a>*}
+						<span class="m-b-10"> </span>
+						<div class="desc">
+						</div>
+					</div>
+				</div>
+
+				<div n:if="!$packages" class="alert alert-warning m-10">
+					Nejsou instalovány žádné balíčky
+				</div>
+
+			</div>
+
+
+		</div>
+	</div>
+
+
+
+
+	<div class="row hidden">
+		<div class="col-md-12">
+			<table class="table">
+				<thead>
+				<tr>
+					<th>Id</th>
+					<th>Odpověď 1</th>
+					<th>Odpověď 2</th>
+				</tr>
+				</thead>
+
+				<tbody>
+				<tr>
+					<td>{$item->id}</td>
+					<td>
+
+
+					</td>
+				{*</tr>*}
+				</tbody>
+				{*
+						<tfoot>
+						<tr>
+							<td colspan="2"></td>
+						</tr>
+						</tfoot>
+				*}
+			</table>
+
+		</div>
+	</div>
+
+</div>

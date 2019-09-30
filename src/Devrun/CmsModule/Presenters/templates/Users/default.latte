@@ -1,0 +1,25 @@
+{block headerTitle}{_admin.users_edit}{/block}
+{block headerSmallTitle}({_admin.users_account}){/block}
+{block title}{_admin.userPage.title}{/block}
+{block content}
+<div class="box box-info">
+	<div class="box-header with-border">
+		<h3 class="box-title">Uživatelé </h3>
+{*
+		<div class="btn-group">
+			<a n:href="Users:" class="btn btn-sm btn-info">Účty</a>
+			<a n:href="Users:role" class="btn btn-sm btn-info">Role</a>
+		</div>
+*}
+
+		<div class="box-tools pull-right">
+			<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+		</div>
+	</div>
+	<div class="box-body">
+		<div class="grido">
+			{control usersGridControl}
+		</div>
+
+	</div>
+</div>

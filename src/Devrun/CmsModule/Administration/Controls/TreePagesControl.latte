@@ -1,0 +1,47 @@
+<li n:snippet="toggle" class="header">
+	<span class="pull-left">Správa stránek</span>
+	<a n:if="$user->isAllowed('Cms:NavigationTreePage', 'default')" class="pull-right btn-primary" href="{plink :Cms:NavigationTreePage:}"> nastavení </a>
+</li>
+<li class="{if $presenter->isLinkCurrent(':Cms:Page:*')}active menu-open treeview{else}treeview{if $firstLevelVisible} menu-open active{/if}{/if}">
+	<a href="#">
+		<i class="fa fa-pagelines"></i> <span>Stránky</span>
+		<span class="pull-right-container">
+		  <i class="fa fa-angle-left pull-right"></i>
+		</span>
+	</a>
+	<ul n:inner-foreach="$nodes as $node" class="treeview-menu">
+		{include li node=>$node, includeNode=>true}
+	</ul>
+</li>
+
+{define li}
+	<li n:class="$control->isChildrenLinkCurrent($node) ? 'treeview menu-open' : 'treeview'">
+		<a href="#"><i n:class="$node['__children'] ? 'fa fa-circle-o-notch text-aqua' : 'fa fa-circle-o'"></i> {$control->getPage($node['id'])->categoryName}
+			<span class="pull-right-container">
+			  <i class="fa fa-angle-left pull-right"></i>
+			</span>
+		</a>
+		<ul n:if="$node['__children']" n:inner-foreach="$node['__children'] as $children" class="treeview-menu"{if $control->isChildrenLinkCurrent($node)} style="display: block"{/if}>
+			{* root položka *}
+			{first}
+				<li n:if="$includeNode" n:class="$presenter->isLinkCurrent(':Cms:Page:edit', ['id' => $node['id']]) ? active">
+					<a href="{plink ':Cms:Page:edit', id => $node['id']}"><i class="fa fa-circle-o"></i> {$control->getPage($node['id'])->title}</a>
+				</li>
+			{/first}
+			<li n:class="$presenter->isLinkCurrent(':Cms:Page:edit', ['id' => $children['id']]) ? active">
+				<a href="{plink ':Cms:Page:edit', id => $children['id']}"><i class="fa fa-circle-o"></i> {$control->getPage($children['id'])->title}</a>
+			</li>
+
+			{if $children['__children']}
+				{include li node => $children, includeNode => false}
+			{/if}
+
+		</ul>
+		<ul n:if="!$node['__children']" class="treeview-menu"{if $control->isChildrenLinkCurrent($node)} style="display: block"{/if}>
+			{* root nemá žádné subPages, modul = jenom hlavní stránka *}
+			<li n:class="$presenter->isLinkCurrent(':Cms:Page:edit', ['id' => $node['id']]) ? active">
+				<a href="{plink ':Cms:Page:edit', id => $node['id']}"><i class="fa fa-circle-o"></i> {$control->getPage($node['id'])->title}</a>
+			</li>
+		</ul>
+	</li>
+{/define}

@@ -1,0 +1,98 @@
+services:
+	cms.presenters.dashboard:
+		class: Devrun\CmsModule\Presenters\DashboardPresenter
+		tags: [devrun.presenter]
+
+	cms.presenters.login:
+		class: Devrun\CmsModule\Presenters\LoginPresenter
+		tags: [devrun.presenter]
+
+#	cms.presenters.default:
+#		class: Devrun\CmsModule\Presenters\DefaultPresenter
+#		tags: [devrun.presenter, administration: [
+#			link: ':Cms:Translate:'
+#			category: system.cache
+#			icon: fa-file-word-o
+#			name: 'Cache'
+#			description: 'Clear system cache...'
+#			priority: 0
+#		]]
+
+#	cms.presenters.documents:
+#		class: Devrun\CmsModule\Presenters\DefaultPresenter
+#		tags: [devrun.presenter, administration: [
+#			link: ':Cms:Translate:'
+#			category: System
+#			icon: fa-file-word-o
+#			name: 'Cache'
+#			description: 'Clear system cache...'
+#			priority: 0
+#		]]
+
+#	cms.presenters.pagecontent:
+#		class: Devrun\CmsModule\Presenters\PageContentPresenter
+#		tags: [devrun.presenter, administration: [
+#			link: ':Cms:PageContent:'
+#			icon: fa-cubes
+#			category: Content
+#			name: Content
+#			description: 'Manage page contents...'
+#			priority: 5
+#		]]
+
+	cms.presenters.log:
+		class: Devrun\CmsModule\Presenters\LogPresenter
+		tags: [devrun.presenter, administration: [
+			link: ':Cms:Log:default'
+			icon: fa-html5
+			category: Content
+			name: Log
+			description: 'Manage logs...'
+			priority: 5
+		]]
+
+	cms.presenters.translate:
+		class: Devrun\CmsModule\Presenters\TranslatePresenter
+		tags: [devrun.presenter, administration: [
+			link: ':Cms:Translate:default'
+			icon: fa-language
+			category: Content
+			name: Translate
+			description: 'Manage texts, edit content...'
+			priority: 10
+		]]
+
+	cms.presenters.images:
+		class: Devrun\CmsModule\Presenters\ImagesPresenter
+		tags: [devrun.presenter, administration: [
+			link: ':Cms:Images:default'
+			icon: fa-file-image-o
+			category: Content
+			name: Photo
+			description: 'Manage images, edit description...'
+			priority: 15
+		]]
+
+
+	cms.presenters.modules:
+		class: Devrun\CmsModule\Presenters\ModulePresenter
+		tags: [devrun.presenter, administration: [
+			link: ':Cms:Module:default'
+			icon: fa-sitemap
+			category: Content
+			name: Modules
+			description: 'Manage modules...'
+			priority: 25
+		]]
+
+	cms.presenters.domains:
+		class: Devrun\CmsModule\Presenters\DomainPresenter
+		tags: [devrun.presenter, administration: [
+			link: ':Cms:Domain:default'
+			icon: fa-firefox
+			category: Content
+			name: Domains
+			description: 'Manage domains...'
+			priority: 35
+		]]
+

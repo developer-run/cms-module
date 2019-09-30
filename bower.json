@@ -1,0 +1,7 @@
+{
+  "name": "devrun-cms-module",
+  "version": "0.1.0",
+  "dependencies": {
+    "AdminLTE": "adminlte#^2.3.8"
+  }
+}

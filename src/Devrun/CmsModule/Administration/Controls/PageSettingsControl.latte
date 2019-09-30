@@ -1,0 +1,102 @@
+<div class="box box-info">
+	<div class="box-header with-border">
+		<i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+		<h3 class="box-title">Základní nastavení stránky</h3>
+
+		<div class="box-tools pull-right">
+			<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+		</div>
+	</div>
+
+	<div class="box-body">
+
+		{*{control pageSettingsForm}*}
+
+		{form pageSettingsForm}
+
+			<div class="row">
+				<div class="col-sm-6">
+					<fieldset>
+						<legend class="small">Page settings</legend>
+						<div class="form-group">
+							<div class="col-sm-2 control-label">{label title /}</div>
+							<div class="col-sm-10">{input title}</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-2 control-label">{label description /}</div>
+							<div class="col-sm-10">{input description}</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-2 control-label">{label notation /}</div>
+							<div class="col-sm-10">{input notation}</div>
+						</div>
+						<div n:if="$user->isAllowed('Cms:Page', 'published')" class="form-group">
+							<div class="col-sm-2 control-label">{label published /}</div>
+							<div class="col-sm-10">{input published}</div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="col-sm-6">
+
+					{formContainer route}
+						<fieldset>
+							<legend class="small">Route settings</legend>
+							<div class="form-group">
+								<div class="col-sm-2 control-label">{label title /}</div>
+								<div class="col-sm-10">{input title}</div>
+							</div>
+							<div n:if="!$package->domain || !$package->domain->valid" class="form-group">
+								<div class="col-sm-2 control-label">{label url /}</div>
+								<div class="col-sm-10 form-add-group">
+									<div class="input-group">
+										<div class="input-group-addon link-muted">
+											<i class="fa fa-external-link"></i>
+											{$validDomain}/
+										</div>
+										{input url}
+									</div>
+								</div>
+							</div>
+							<div n:if="$package->domain && $package->domain->valid" class="form-group">
+								<div class="col-sm-2 control-label">{label domainUrl /}</div>
+								<div class="col-sm-10 form-add-group">
+									<div class="input-group">
+										<div class="input-group-addon link-muted">
+											<i class="fa fa-external-link"></i>
+											{$validDomain}/
+										</div>
+										{input domainUrl}
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-2 control-label">{label keywords /}</div>
+								<div class="col-sm-10">{input keywords}</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-2 control-label">{label description /}</div>
+								<div class="col-sm-10">{input description}</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-2 control-label">{label notation /}</div>
+								<div class="col-sm-10">{input notation}</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-2 control-label">{label published /}</div>
+								<div class="col-sm-10">{input published}</div>
+							</div>
+						</fieldset>
+
+					{/formContainer}
+
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10 text-center">
+							{input send}
+						</div>
+					</div>
+				</div>
+			</div>
+		{/form}
+	</div>
+</div>
+

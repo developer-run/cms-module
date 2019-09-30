@@ -1,0 +1,22 @@
+<li n:snippet="toggle" class="header">
+	<span class="pull-left">{if $toggle}Správa stránek{else}Sort pages{/if}</span>
+{*
+	<a class="ajax pull-right" n:href="pageNestable!">
+	  <span class="label label-info">
+		  <i class="fa fa-pencil"></i>
+	  </span>
+	</a>
+*}
+</li>
+<li class="active treeview" n:snippet="toggled">
+	<a href="#">
+		<i class="fa fa-pagelines"></i> <span>Pages</span>
+		<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+	</a>
+
+	{if $toggle}
+		{control navigationPageControl}
+	{else}
+		<ul class="treeview-menu">{control pagesNestableControl}</ul>
+	{/if}
+</li>

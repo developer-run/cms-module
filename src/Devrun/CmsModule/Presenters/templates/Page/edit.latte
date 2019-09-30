@@ -1,0 +1,217 @@
+{block headerTitle}Správa stánky{/block}
+{block headerSmallTitle}{snippet link}<a href="{$presenter->link($route->uri, $route->params)}" class="btn btn-xs btn-info">{$route->url}</a>{/snippet}{/block}
+
+{block content}
+
+
+{*
+	<nav n:snippet="navbar" class="navbar navbar-inverse _navbar-fixed-bottom" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Devrun Page navigation</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				{control bootstrapNavigationPageControl}
+			</div>
+		</div>
+	</nav>
+*}
+
+
+	{*{control questionsGridControl}*}
+	{*{control settings}*}
+
+
+
+{*
+	<div n:foreach="$adminPageContentControls as $service => $adminPageContentControl">
+		{control administrationItemControls-$service}
+	</div>
+*}
+
+	<div class="row">
+		{*
+		<div class="_col-md-0 _hidden">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#settings" data-toggle="tab" aria-expanded="true">Settings</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="settings">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="inputName" class="col-sm-2 control-label">Name</label>
+
+								<div class="col-sm-10">
+									<input class="form-control" id="inputName" placeholder="Name" type="email">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+								<div class="col-sm-10">
+									<input class="form-control" id="inputEmail" placeholder="Email" type="email">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputName" class="col-sm-2 control-label">Name</label>
+
+								<div class="col-sm-10">
+									<input class="form-control" id="inputName" placeholder="Name" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputExperience" class="col-sm-2 control-label">Experience</label>
+
+								<div class="col-sm-10">
+									<textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputSkills" class="col-sm-2 control-label">Skills</label>
+
+								<div class="col-sm-10">
+									<input class="form-control" id="inputSkills" placeholder="Skills" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-danger">Submit</button>
+								</div>
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+		*}
+
+		{*{dump $adminPageContentControls}*}
+
+
+
+
+		{foreach $adminPageControls as $key => $adminPageControl}
+			{*{snippet activity-$iterator->counter-service}*}
+				{*{control administrationItemControls-$key}*}
+			{*{/snippet}*}
+		{/foreach}
+
+		<div class="col-md-12">
+
+			<div class="nav-tabs-custom">
+
+				<ul class="nav nav-tabs">
+					<li n:ifset="$adminPageTabControls" n:foreach="$adminPageTabControls as $service => $adminPageTabControl">{control administrationItemControls-$service}</li>
+					<li class="active"><a href="#page" data-toggle="tab" aria-expanded="true">Stránka</a></li>
+					<li n:if="$adminSettingControls" class=""><a href="#pageSettings" data-toggle="tab" aria-expanded="true">Nastavení stránky</a></li>
+					<li n:if="$adminPageControls" class=""><a href="#activities" data-toggle="tab" aria-expanded="false">Activities</a></li>
+					<li n:if="$adminPageContentControls" n:foreach="$adminPageContentControls as $service => $adminPageContentControl"><a href="#{$service}" data-toggle="tab" aria-expanded="false">{_$adminPageContentControl['name']}</a></li>
+					<li class="pull-right"> {ifset $tab}{$tab}{/ifset} </li>
+					{*<li class="pull-right"><a n:href="addSubPage!" class="_ajax btn btn-xs btn-info">Add sub page</a></li>*}
+					<li n:if="count($pagePackageRoutes)>1" class="pull-right">{control package}</li>
+					<li class="pull-right"><a n:href="reload!" class="ajax btn-xs btn btn-info" data-ajax-signal-loading="true" data-target=".overlay"><i class="fa fa-refresh" aria-hidden="true"></i> Reload</a></li>
+				</ul>
+
+				<div class="tab-content p-0">
+					<div class="tab-pane active grido" data-route="{$route->id}" id="page">
+						{if $page->type==static}
+							<div class="_well-lg">
+							</div>
+
+							<div class="box box-info">
+								{*
+								<div class="box-header">
+									<h3 class="box-title">Loading</h3>
+								</div>
+								*}
+								<div class="_box-body" n:snippet="staticPageContent">
+									{$pageHtml|noescape}
+								</div>
+
+								{*
+								<div class="overlay">
+									<i class="fa fa-refresh fa-spin"></i>
+								</div>
+								*}
+
+								<!-- end loading -->
+							</div>
+
+						{else}
+							{snippet dynamicPageContent}
+								{control dynamicPageControl}
+							{/snippet}
+						{/if}
+					</div>
+
+					<div n:if="$adminSettingControls" class="tab-pane" id="pageSettings">
+						{snippetArea settingControls}
+							{foreach $adminSettingControls as $service => $adminSettingControl}
+								{*{snippet activity-$iterator->counter-service}*}
+								{*{/snippet}*}
+								{control administrationItemControls-$service}
+							{/foreach}
+						{/snippetArea}
+					</div>
+
+					{* vertical controls, custom control, may be only some page *}
+					<div n:if="$adminPageControls" class="tab-pane" id="activities">
+						<div class="well">
+							{snippetArea pageActivityControls}
+								{foreach $adminPageControls as $service => $adminPageControl}
+									{*{snippet activity-$iterator->counter-service}*}
+									{*{/snippet}*}
+									{control administrationItemControls-$service}
+								{/foreach}
+							{/snippetArea}
+						</div>
+					</div>
+					{* vertical controls, custom control, may be only some page *}
+
+					{* horizontal controls *}
+					{snippetArea pageContentControls}
+						<div n:foreach="$adminPageContentControls as $service => $adminPageContentControl" class="tab-pane" id="{$service}">
+							{snippet item-$iterator->counter-service}
+							{control administrationItemControls-$service}
+							{/snippet}
+						</div>
+					{/snippetArea}
+					{* horizontal controls *}
+				</div>
+
+				<!-- /.tab-content -->
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+	<div n:snippet="pageSettingsTab">
+	{ifset $tabSelect}
+		<script type="text/javascript">
+			$("[href='#'" + {$tabSelect} + "']").tab('show');
+		</script>
+	{/ifset}
+	</div>
+
+{/block}

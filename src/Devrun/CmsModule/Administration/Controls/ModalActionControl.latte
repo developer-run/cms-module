@@ -1,0 +1,251 @@
+{*<button n:if="$enable" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAction" data-whatever="@mdo">Open modal for @mdo</button>*}
+
+<div n:if="$enable" id="modalAction" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalActionLabel" aria-hidden="true">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="modalActionLabel">Modal Title</h4>
+			</div>
+
+			{snippet modalActionBody}
+				<div id="modalActionBody" class="modal-body">
+					<div class="overlay-wrapper">
+						<div class="overlay">
+							<i class="fa fa-refresh fa-spin"></i>
+						</div>
+					</div>
+				</div>
+			{/snippet}
+
+			<div id="modalActionFooter" class="modal-footer">
+				<div class='progress progress-striped active fade'>
+					<div style='width: 100%' class='progress-bar'>Pracuji ...</div>
+				</div>
+				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zavřít okno</button>
+				<button type="submit" class="btn btn-default">Uložit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script n:if="$enable">
+    (function ($, undefined) {
+
+        $(document).on('click', '#modalActionFooter button[type="submit"]', function (event) {
+
+            var form = $('#modalActionBody').find('form');
+            if ($(form).length > 0) {
+                form.submit();
+            }
+
+        });
+
+        $(function () {
+            $(document).on('click', 'a[data-modal-dialog]', function (event) {
+
+                var dialog = '#modalAction';
+
+                var dialogType = $(this).data('modal-dialog');
+                $(dialog).removeClass().addClass(dialogType).addClass('modal fade in');
+
+//                $("input[name='send']").appendTo("#modalActionFooter");
+                if (dialogType == 'modal-primary' || dialogType == 'modal-info' || dialogType == 'modal-warning' || dialogType == 'modal-danger') {
+                    $('#modalActionFooter').find('[type="submit"]').removeClass().addClass('btn btn-outline');
+                    $('#modalActionFooter').find('[data-dismiss="modal"]').removeClass().addClass('btn btn-outline pull-left');
+
+                } else {
+                    $('#modalActionFooter').find('[type="submit"]').removeClass().addClass('btn btn-primary');
+                    $('#modalActionFooter').find('[data-dismiss="modal"]').removeClass().addClass('btn btn-default pull-left');
+                }
+
+
+                var modalObj = $.nette.ext('modalActionDialog');
+
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                var self = this;
+                var url = event.currentTarget.href;
+
+                var title = $(this).data('modal-title');
+                if (title == undefined) title = 'Akce';
+
+                var popupType = $(this).data('modal-type');
+                if (popupType == undefined) popupType = 'modal-md';
+
+                var successCallback = $(this).data('modal-success');
+                if (successCallback) {
+                    modalObj.successCallback = successCallback;
+
+                } else {
+                    modalObj.successCallback = null;
+                }
+
+                var autoClose = $(this).data('modal-autoclose');
+                if (autoClose == undefined) autoClose = false;
+                modalObj.autoClose = autoClose;
+
+
+                $('#modalActionBody').html("<div class='overlay-wrapper'><div class='overlay'><i class='fa fa-refresh fa-spin'></i></div></div>");
+
+
+                $('#modalActionLabel').text(title);
+                $(dialog).find('.modal-dialog').removeClass('modal-lg modal-full modal-sm modal-md').addClass(popupType);
+                $(dialog).modal();
+
+                var $el = $(this);
+                var analyse = {
+                    e: this,
+                    el: $el,
+                    isForm: $el.is('form'),
+                    isSubmit: $el.is('input[type=submit]') || $el.is('button[type=submit]'),
+                    isImage: $el.is('input[type=image]'),
+                    url: $el.attr('href'),
+                    autoClose: autoClose,
+                    form: null
+                };
+
+                if (analyse.isSubmit || analyse.isImage) {
+                    analyse.form = analyse.el.closest('form');
+                } else if (analyse.isForm) {
+                    analyse.form = analyse.el;
+                }
+
+                modalObj.analyse = analyse;
+
+
+//                return;
+                $.nette.ajax({
+                    method: "POST",
+                    url: url,
+                    modalAction: true,
+                    data: {'layoutAjax': 'layoutAjax'}, // layout template  [@layoutAjax.latte]
+                    off: ['spinner'],
+                    success: function (payload) {
+                        $('#modalActionBody').html(payload);
+
+                        for (var i = 0; i < document.forms.length; i++) {
+                            Nette.initForm(document.forms[i]);
+                        }
+
+						/*
+						 * submit save button
+						 */
+
+                        // forms with out grido form (grido has id xxx-filter)
+                        var form = $('#modalActionBody').find('form').not('[id$="filter"]');
+                        if ($(form).length > 0) {
+                            var submits = $(form).find('[type="submit"]');
+
+                            if ($(submits).length == 1) {
+                                $(submits).css('display', 'none');
+
+                                $('#modalActionFooter').find('[type="submit"]').css('display', '');
+
+
+                            } else if ($(submits).length == 0) {
+                                $('#modalActionFooter').find('[type="submit"]').css('display', 'none');
+                                $('#modalActionFooter').find('[data-dismiss="modal"]').removeClass('pull-left');
+
+                            } else if ($(submits).length > 1) {
+
+                            }
+
+                        }
+
+                        return true;
+                    }
+                });
+
+
+            });
+
+
+            $.nette.ext('modalActionDialog', {
+                    init: function () {
+
+                    },
+
+                    load: function ($name, $callback) {
+
+//                        this.load($('body'));
+                    },
+                    before: function (response, sender) {
+                        var self = this;
+
+                        if (sender.modalAction) {
+
+                        }
+
+                        if (!jQuery.isEmptyObject(sender.nette)) {
+                            if (sender.nette.isSubmit) {
+                                $(self.selectorProgress).addClass('in');
+                            }
+                            if ($(sender.nette.el).is(".ajax")) {
+                                $(self.selectorProgress).addClass('in');
+                            }
+                        }
+                    },
+                    success: function (payload, status, xhr, settings) {
+                        // var snippets = this.ext('snippets', true);
+                        self = this;
+
+                        if (settings.modalAction) {
+
+                        }
+
+                        if (settings.nette) {
+                            if (self.successCallback) {
+                                $.nette.ajax({
+                                    url: self.successCallback,
+                                    //off: ['spinner'],
+                                    success: function (payload) {
+                                        $(self.selectorProgress).removeClass('in');
+                                        if (self.autoClose) {
+                                            $(self.selectorDialog).modal('hide');
+                                        }
+                                    }
+                                });
+
+                            } else {
+                                $(self.selectorProgress).removeClass('in');
+                                if (self.autoClose) {
+                                    $(self.selectorDialog).modal('hide');
+                                }
+
+                            }
+
+                            return true;
+                        }
+
+
+                    }
+                }, {
+
+                    callSuccessCallback: function () {
+
+                    },
+
+                    selector: '[data-modal-dialog]',
+                    creatorDialog: 'dPopup',
+                    selectorDialog: "#modalAction",
+                    selectorProgress: "#modalActionFooter .progress",
+                    successCallback: '',
+                    autoClose: false,
+                    analyse: null
+                }
+            );
+
+        });
+
+
+    })(jQuery);
+
+
+</script>

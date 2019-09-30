@@ -1,0 +1,50 @@
+{block title}{_admin.registrationPage.title}{/block}
+{block content}
+
+<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type">{$flash->message}</div>
+<p class="login-box-msg">{_admin.forms.registrationForm.windowTitle}</p>
+{form registrationForm class=>""}
+	<div class="alert alert-danger fade in" n:if="$form->hasErrors()">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<p n:foreach="$form->errors as $error"> {dump $form->errors}  {$error}</p>
+	</div>
+
+	<div class="form-group has-feedback">
+		{input firstName}
+		<span class="glyphicon glyphicon-user form-control-feedback"></span>
+	</div>
+	<div class="form-group has-feedback">
+		{input lastName}
+		<span class="glyphicon glyphicon-user form-control-feedback"></span>
+	</div>
+	<div class="form-group has-feedback">
+		{input email}
+		<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+	</div>
+	<div class="form-group has-feedback">
+		{input password}
+		<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+	</div>
+	<div class="form-group has-feedback">
+		{input password2}
+		<span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-8">
+			<div class="checkbox icheck">
+				{capture $link}<a n:href="terms">{_admin.forms.registrationForm.terms}</a>{/capture}
+				<input n:name="privacy">
+				<label n:name="privacy">{_admin.forms.registrationForm.privacy, [link => $link]|noescape}</label>
+			</div>
+		</div>
+		<div class="col-xs-4">
+			{input send}
+		</div>
+	</div>
+
+	<div class="social-auth-links text-center">
+		<a n:href="default" id="to-recover" class="btn btn-block btn-social btn-info btn-flat"><i class="fa fa-user m-r-5"></i> {_"admin.forms.registrationForm.loginUser"}</a>
+		{*<a n:href="forgottenPassword" id="to-recover" class="btn btn-block btn-social btn-info btn-flat"><i class="fa fa-lock m-r-5"></i> {_"admin.forms.registrationForm.forgotPassword"}</a>*}
+	</div>
+{/form}

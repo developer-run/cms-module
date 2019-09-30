@@ -1,0 +1,13 @@
+{block headerTitle}Správa rout{/block}
+{block headerSmallTitle}vývojář...{/block}
+
+{block content}
+
+<div class="page-header">
+	<a class="btn btn-default btn-md" n:href="default">Modules</a>
+	<a class="_ajax btn btn-danger btn-md" n:href="deleteUnknownImages!">Delete unknown images</a>
+</div>
+
+<div class="grido">
+	{control routesGridControl}
+</div>

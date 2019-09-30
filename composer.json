@@ -1,0 +1,46 @@
+{
+  "name": "devrun/cms-module",
+  "description": "DevRun Cms module",
+  "keywords": ["cms", "nette", "devrun", "module"],
+  "minimum-stability": "stable",
+  "homepage": "http://devrun.cz",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Pavel Paulík"
+    }
+  ],
+  "require": {
+    "devrun/framework": "dev-master",
+    "phpzip/phpzip": "^2.0",
+    "ublaboo/datagrid": "^5.5",
+    "wa72/htmlpagedom": "^1.3"
+  },
+  "require-dev": {
+    "dg/adminer-custom": "~1.6",
+    "phpunit/phpunit": "4.5.*",
+    "phpunit/phpunit-dom-assertions": "1.0.x-dev"
+
+  },
+  "repositories": [
+    {
+      "type": "github",
+      "url": "https://github.com/developer-run/framework.git"
+    }
+  ],
+  "autoload": {
+    "classmap": ["src/"]
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.8-dev"
+    },
+    "devrun": {
+      "configuration": {
+        "extensions": {
+          "cms": "Devrun\\CmsModule\\DI\\CmsExtension"
+        }
+      }
+    }
+  }
+}

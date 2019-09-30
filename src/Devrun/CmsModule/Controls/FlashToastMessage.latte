@@ -1,0 +1,23 @@
+{foreach $flashes as $flash}
+	{if $flash->type == 'toast'}
+		<script>
+            (function () {
+                var baseOptions = {
+                    heading: {$flash->title},
+                    text: {$flash->message},
+                    position: 'top-right',
+                    loaderBg: '#ff6849',
+                    icon: 'info',
+                    hideAfter: 3500
+                };
+
+                $.extend(baseOptions, {$flash->options});
+
+                $(function () {
+                    $.toast(baseOptions);
+                });
+
+            })(jQuery);
+		</script>
+	{/if}
+{/foreach}

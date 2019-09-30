@@ -1,0 +1,11 @@
+{snippet flashes}
+	<div n:if="$flashes" class="flash">
+		{foreach $flashes as $flash}
+			<div n:if="$flash->type != 'toast'" class="alert alert-{$flash->type} fade in alert-dismissible">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<h4><i class="icon fa fa-info"></i> {$flash->type|firstUpper}!</h4>
+				<p>{$flash->message}</p>
+			</div>
+		{/foreach}
+	</div>
+{/snippet}

@@ -1,0 +1,12 @@
+configuration has been saved.: konfigurace byla uložena.
+news configuration: konfigurace novinek
+manage news: Správa novinek
+news: novinky
+article has been saved.: článek byl uložen.
+
+# global
+page: Stránka
+home: Domů
+
+imageManagement: Správa obrázků
+images: jeden obrázek|%count% obrázky|%count% obrázků

@@ -1,0 +1,87 @@
+{block headerTitle}{_admin.image_management}{/block}
+{block headerSmallTitle} {/block}
+
+{block content}
+
+	<div class="box box-primary">
+		<div class="box-header with-border">
+			<i class="fa fa-file-image-o"></i>
+			<h3 class="box-title"></h3>
+
+			<div class="box-tools pull-right">
+				<a n:if="$user->isAllowed('Cms:Images', 'viewTable!')" n:href="viewTable!" class="_ajax btn btn-info btn-xs">view table</a>
+				<a n:href="update" class="btn btn-primary btn-xs"
+								   data-modal-type='modal-md'
+								   data-modal-title='Editace kategorie'
+								   data-modal-dialog='popup'>vložit nový</a>
+			</div>
+		</div>
+	</div>
+
+	{*<img class="attachment-img" src="http://placehold.it/150x100">*}
+
+	{snippet images}
+		<div n:if="!$viewTable" n:foreach="$assocImages as $namespace => $images" class="box box-primary">
+
+		<div class="box-header with-border">
+			<i class="fa fa-file-image-o"></i>
+			<h3 class="box-title">{$namespace|firstUpper}</h3>
+
+			<div class="box-tools pull-right">
+				<a n:if="$user->isAllowed('Cms:Images', 'updateNamespace')" n:href="update, 'namespace' => $namespace" class="btn btn-primary btn-xs"
+								   data-modal-type='modal-md'
+								   data-modal-title='Editace kategorie'
+								   data-modal-dialog='popup'>vložit nový</a>
+				<span class="label label-info">{_admin.images, count($images)}</span>
+				<div class="btn-group">
+					<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" title="download" aria-expanded="false"><i class="fa fa-download"></i></button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a n:href="downloadNamespace! id => $namespace">Download</a></li>
+						<li class="divider"></li>
+						<li class="dropdown-header">Options</li>
+						<li><a n:href="downloadNamespace! id => $namespace, path => real">with prefix path</a></li>
+					</ul>
+				</div>
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+				<a n:if="$user->isAllowed('Cms:Images', 'removeOnlyImageNamespace!')" n:href="removeOnlyImageNamespace! $namespace" title="Smazat celou sekci pouze fyzicky z disku" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+				<a n:if="$user->isAllowed('Cms:Images', 'removeNamespace!')" n:href="removeNamespace! $namespace" title="Kompletní smazání" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+			</div>
+		</div>
+
+		<div class="box-body">
+			<div class="row row-flex">
+				<div n:foreach="$images as $image" class="col-md-2">
+					<div class="attachment-block clearfix">
+						<a href="{img $image->namespace/$image->filename}" data-lightbox="{$image->namespace}" data-title="{$image->description}">
+							<img n:img="$image->namespace/$image->filename, 200x200, fill" class="attachment-img">
+						</a>
+						<div class="attachment-pushed">
+							<h4 class="attachment-heading">
+								<small>{$image->name|truncate:20}</small>
+							</h4>
+							<div class="attachment-text">
+								<small n:if="$image->description">{$image->description}<br></small>
+								<small>{$image->width}x{$image->height}</small>
+							</div>
+
+						</div>
+					</div>
+					<a n:href="update $image->id" class="btn btn-default btn-xs"
+									   data-modal-type='modal-md'
+									   data-modal-title='Editace obrázku {$image->name}'
+									   data-modal-dialog='popup'><i class="fa fa-pencil-square-o"></i> Edit</a>
+
+					<a n:href="download! $image->id" class="btn btn-default btn-xs"><i class="fa fa-download"></i> Download</a>
+					<a n:if="$user->isAllowed('Cms:Images', 'delete!')" n:href="delete! $image->id" class="ajax btn btn-default btn-xs"><i class="fa fa-times"></i> Delete</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+		<div n:if="$viewTable" class="box box-primary grido">
+			{control imagesControlGrid}
+		</div>
+	{/snippet}
+
+{/block}

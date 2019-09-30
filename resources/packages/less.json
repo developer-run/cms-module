@@ -1,0 +1,12 @@
+{
+  "development": {
+    "files": {
+      "%modules.cms.relativePath%/Resources/public/css/index.css": "%modules.cms.relativePath%/Resources/build/less/index.less"
+    }
+  },
+  "production": {
+    "files": {
+      "%modules.cms.relativePath%/Resources/public/css/index.min.css": "%modules.cms.relativePath%/Resources/build/less/index.less"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<div class="cf nestable-lists">
+	<div class="dd nestable" id="qnestable"></div>
+</div>
+
+{*<textarea id="nestable-output" rows="10" cols="50"></textarea>*}
+
+<script>
+    $(document).ready(function () {
+
+        var updateOutput = function (e) {
+            var list = e.length ? e : $(e.target),
+                output = list.data('output');
+
+            if (window.JSON) {
+                output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
+            }
+            else {
+                output.val('JSON browser support required for this demo.');
+            }
+        };
+
+        $('.nestable').nestable({
+            // group: 1,
+            json: {$data},
+            callback: function (list, e) {
+                $.nette.ajax({
+                    url: {link 'pagesNested!'},
+                    data: {'nestedData': window.JSON.stringify(list.nestable('serialize'))}
+                });
+            },
+            contentCallback: function (item) {
+                var content = item.content || '' ? item.content : item.id;
+                content += ' <i>(id = ' + item.id + ')</i>';
+
+                return content;
+            }
+        })
+            .on('change', updateOutput)
+            .data('output', $('#nestable-output')); // bug? must be output?
+
+        // output initial serialised data
+        // updateOutput($('#nestable').data('output', $('#nestable-output')));
+
+    });
+</script>

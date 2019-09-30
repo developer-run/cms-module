@@ -1,0 +1,84 @@
+services:
+	cms.controls.IDevrunForm:
+		implement: Devrun\CmsModule\Forms\IDevrunForm
+		inject: true
+
+
+
+	cms.controls.languageMenu:
+		implement: Devrun\CmsModule\Administration\Controls\ILanguageMenuControlFactory
+#		tags: [devrun.control, administration: [
+#			category: NavbarRight
+#			name: LanguageMenuControl
+#			priority: 200
+#		]]
+		inject: true
+
+	cms.controls.userMenu:
+		implement: Devrun\CmsModule\Administration\Controls\IUserMenuControlFactory
+		tags: [devrun.control, administration: [
+			category: NavbarRight
+			name: UserMenuControl
+			priority: 100
+		]]
+
+
+#	cms.controls.tabsContent:
+#		implement: Devrun\CmsModule\Administration\Controls\ITabsContentControlFactory
+#		tags: [devrun.control, administration: [
+#			category: Content
+#			name: tabs
+#			priority: 5
+#		]]
+
+
+
+
+
+#	cms.controls.pageImageControl:
+#		implement: Devrun\CmsModule\Administration\Controls\IPageImagesControlFactory
+#		tags: [devrun.control, administration: [
+#			category: Activity
+#			name: Page image settings
+#			uri: :Calendar:Homepage:default
+#		]]
+#		inject: true
+
+#	cms.controls.pageTabPackageControl:
+#		implement: Devrun\CmsModule\Administration\Controls\IPageTabPackageControlFactory
+#		tags: [devrun.control, administration: [
+#			category: PageTab
+#			name: Page packages
+#		]]
+#		inject: true
+
+	cms.controls.pagePhotoControl:
+		implement: Devrun\CmsModule\Administration\Controls\IPagePhotoControlFactory
+		tags: [devrun.control, administration: [
+			category: PageContent
+			name: Fota stránky
+		]]
+		inject: true
+
+	cms.controls.pageSettingsControl:
+		implement: Devrun\CmsModule\Administration\Controls\IPageSettingsControlFactory
+		tags: [devrun.control, administration: [
+			category: PageSettings
+			name: Page basic settings
+			priority: 5
+		]]
+		inject: true
+
+#	cms.service.pageImageSettings:
+#		class: Devrun\CmsModule\Administration\Controls\PageImagesSettings
+#		setup:
+#			- setImages(%cms.content.images%)
+
+
+	# component for clean image edit (not any image effect, width etc.)
+#	cms.controls.rawImages:
+#		implement: Devrun\CmsModule\Administration\Controls\IRawImagesControlFactory
+#		arguments: [as]
+#
+#		setup:
+#			 - setImageDir(@cache.storage)

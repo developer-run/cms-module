@@ -1,0 +1,17 @@
+{block content}
+{ifset $image}
+	<div class="row">
+		<div class="col-md-4">
+			<figure>
+				<img n:img="$image->namespace/$image->filename, 200x200, fill" class="img-responsive">
+			</figure>
+
+		</div>
+		<div class="col-md-8">
+			{control imageForm}
+		</div>
+	</div>
+
+{else}
+	{control imagesForm}
+{/ifset}

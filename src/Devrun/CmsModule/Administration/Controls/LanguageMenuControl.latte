@@ -1,0 +1,32 @@
+<li n:if="$availableLocales" class="dropdown notifications-menu">
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+		{var $icon = $locale}
+		{if $icon==cs}
+			{var $icon=cz}
+		{elseif $icon==en}
+			{var $icon=us}
+		{/if}
+		<span class="label label-info">{count($availableLocales)}</span>
+		{$locale|upper}&nbsp;&nbsp;
+		<span class="flag-icon flag-icon-{$icon} width-full m-r-10 m-t-0 m-b-3"></span>&nbsp;&nbsp;
+		<i class="fa fa-language"></i>
+	</a>
+	<ul class="dropdown-menu">
+		<li class="header">You have {count($availableLocales)} locales</li>
+		<li>
+			<ul class="menu">
+				<li n:foreach="$availableLocales as $availableLocale">
+					<a href="{plink this, locale => $availableLocale}">
+						{var $icon = $availableLocale}
+						{if $icon==cs}
+							{var $icon=cz}
+						{elseif $icon==en}
+							{var $icon=us}
+						{/if}
+						<span class="flag-icon flag-icon-{$icon} width-full m-r-10 m-t-0 m-b-3"></span>&nbsp;&nbsp;{$availableLocale}
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</li>

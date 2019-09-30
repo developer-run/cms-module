@@ -1,0 +1,100 @@
+{block headerTitle}Základní{/block}
+{block headerSmallTitle}stránka{/block}
+
+{block breadcrumb}
+	<li class="active"><i class="fa fa-dashboard"></i> {_admin.home}</li>
+{/block}
+
+{block content}
+<div n:if="$user->isAllowed('Cms:Default', 'info')" class="row">
+
+	<div class="col-md-3 col-sm-6 col-xs-12">
+		<div class="info-box">
+			<a n:href=":Cms:Translate:"><span class="info-box-icon bg-aqua"><i class="fa fa-language"></i></span></a>
+			<div class="info-box-content">
+				<span class="info-box-text">Translations</span>
+				<span class="info-box-number">{$locale} <small>{$selectLangMessageCount} messages</small></span>
+				<span class="info-box-number">default {$defaultLangMessageCount}<small> messages</small></span>
+			</div>
+
+			<!-- /.info-box-content -->
+		</div>
+		<!-- /.info-box -->
+	</div>
+	<div class="col-md-3 col-sm-6 col-xs-12">
+		<div class="info-box">
+			<a n:href=":Cms:Article:Default:"><span class="info-box-icon bg-yellow"><i class="fa fa-etsy"></i></span></a>
+			<div class="info-box-content">
+				<span class="info-box-text">Articles</span>
+				<span class="info-box-number">{$articleCount}</span>
+			</div>
+			<!-- /.info-box-content -->
+		</div>
+		<!-- /.info-box -->
+	</div>
+	<div class="col-md-3 col-sm-6 col-xs-12">
+		<div class="info-box">
+			<span class="info-box-icon bg-red"><i class="fa fa-pagelines"></i></span>
+
+			<div class="info-box-content">
+				<span class="info-box-text">Pages</span>
+				<span class="info-box-number">{$pageCount}</span>
+			</div>
+			<!-- /.info-box-content -->
+		</div>
+		<!-- /.info-box -->
+	</div>
+
+	<!-- fix for small devices only -->
+	<div class="clearfix visible-sm-block"></div>
+
+	<div class="col-md-3 col-sm-6 col-xs-12">
+		<div class="info-box">
+			<a n:href=":Cms:Images:"><span class="info-box-icon bg-green"><i class="fa fa-picture-o"></i></span></a>
+
+			<div class="info-box-content">
+				<span class="info-box-text">Images</span>
+				<span class="info-box-number">{$imageCount}</span>
+			</div>
+			<!-- /.info-box-content -->
+		</div>
+		<!-- /.info-box -->
+	</div>
+	<!-- /.col -->
+</div>
+
+{if $instancePackageControls}
+<div class="box box-primary">
+	<div class="box-header with-border">
+		<h3 class="box-title">Moje soutěže</h3>
+
+		<div class="box-tools pull-right">
+			<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+			</button>
+		</div>
+	</div>
+	<div class="box-body" style="background-color: #ecf0f5">
+		{foreach $instancePackageControls as $service => $instancePackageControl}
+			{control administrationItemControls-$service $instancePackageControl}
+		{/foreach}
+	</div>
+</div>
+{/if}
+
+{if $installPackageControls}
+	<div class="box box-info">
+		<div class="box-header with-border">
+			<h3 class="box-title">Souteže</h3>
+
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+				</button>
+			</div>
+		</div>
+		<div class="box-body" style="background-color: #ecf0f5">
+			{foreach $installPackageControls as $service => $installPackageControl}
+				{control administrationItemControls-$service $installPackageControl}
+			{/foreach}
+		</div>
+	</div>
+{/if}

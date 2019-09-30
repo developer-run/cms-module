@@ -1,0 +1,168 @@
+# global
+page:
+	edit: editace stránky
+	updated_title: Změna nastavení stránky
+	updated_successful: Stránka `%url%` byla upravena
+	updated_failed: "Stránku `%url%` se nepodařilo upravit, ověřte prosím její adresu, musí být unikátní v rámci celého systému."
+
+home: Domů
+
+sign_out: Odhlásit se
+instances: + jedna instance|+ %count% instance|+ %count% instancí
+users_edit: Správa uživatelů
+users_account: účty
+translate_edit: Úprava překladů
+template_content: překladové soubory
+configuration has been saved.: konfigurace byla uložena.
+news configuration: konfigurace novinek
+manage news: Správa novinek
+news: novinky
+article has been saved.: článek byl uložen.
+image_management: Správa obrázků
+images: jeden obrázek|%count% obrázky|%count% obrázků
+
+userPage:
+	title: Uživatelé
+
+loginPage:
+	title: Přihlásit se
+
+profilePage:
+	title: Profil uživatele
+	userUpdated: uživatel `%user%` upraven
+
+registrationPage:
+	title: Registrace
+	userAdded: Uživatel %username% úspěšně registován
+
+forgottenPasswordPage:
+	title: Zapomenuté heslo
+	userCodeNotValid: "Nevalidní kód obnovení hesla, zkuste prosím formulář odeslat znovu"
+	userCodeChanged: "Vaše heslo bylo aktivováno."
+	userCodeSend: "Vaše heslo bylo změněno, můžete jej aktivovat na e-mailu %mail%. Stále se můžete přihlásit stávajícími přístupy."
+
+roles:
+	all: všechny
+	guest: host
+	member: člen
+	admin: správce
+
+
+forms:
+	profileForm:
+		profile: Profil
+		address: Adresa
+		settings: Nastavení
+		domain: Doména
+		first_name: Jméno
+		last_name: Příjmení
+		email: E-mail
+		phone: Telefon
+		gender: Pohlaví
+		man: muž
+		woman: žena
+		street: Ulice
+		city: Místo
+		psc: Psč
+		nickname: Přezdívka
+		selectDomain: -- vyberte doménu --
+		placeholder.nickname: můžete zvolit přezdívku
+		placeholder.first_name: Jméno
+		placeholder.last_name: Příjmení
+		placeholder.email: E-mail
+		placeholder.phone: Telefon
+		placeholder.street: ''
+		placeholder.city: ''
+		placeholder.psc: ''
+		placeholder.domain: 'můžete si zvolit jednu z domén'
+		save: uložit
+
+		valid_email: Vyplňte prosím platný e-mail
+		valid_numeric: vyplňte prosím číslo
+		ruleFirstName: Vyplňte prosím jméno
+		ruleLastName: Vyplňte prosím příjmení
+		ruleEMail: Vyplňte prosím e-mail
+		ruleMinLength: Vyplňte prosím nejméně %d znak|Vyplňte prosím nejméně %d znaky|Vyplňte prosím nejméně %d znaků
+		ruleMaxLength: Vyplňte prosím nejvýše %d znaků
+
+	registrationForm:
+		windowTitle: Registrace do administrace
+		privacy: Souhlasím s %link%
+		terms: podmínkami
+		first_name: Jméno
+		last_name: Příjmení
+		placeholder.first_name: Jméno
+		placeholder.last_name: Příjmení
+		placeholder.email: E-mail
+		placeholder.password: Heslo
+		placeholder.confirm_password: Heslo pro kontrolu
+		ruleFirstName: Vyplňte prosím jméno
+		ruleLastName: Vyplňte prosím příjmení
+		ruleEMail: Vyplňte prosím e-mail
+		rulePassword: Vyplňte prosím heslo
+		ruleConfirmPassword: Vyplňte prosím znovu heslo pro kontrolu
+		ruleMinLength: Vyplňte prosím nejméně %d znak|Vyplňte prosím nejméně %d znaky|Vyplňte prosím nejméně %d znaků
+		ruleMaxLength: Vyplňte prosím nejvýše %d znaků
+		valid_email: Zadejte prosím platný e-mail
+		password_dont_match: hesla se neshodují
+		registration: Registrovat se
+		loginUser: Již jsem registrován
+		forgotPassword: Zapomenuté heslo
+		user_form_duplicate_error: Uživatel %email% již existuje
+
+
+	forgottenPasswordForm:
+		windowTitle: Vytvoření nového hesla
+		login: Přihlásit se
+		newUser: Registrovat se
+		placeholder.email: E-mail
+		placeholder.password: Heslo
+		placeholder.confirm_password: Heslo pro kontrolu
+		ruleLastName: Vyplňte prosím příjmení
+		ruleEMail: Vyplňte prosím e-mail
+		rulePassword: Vyplňte prosím heslo
+		ruleConfirmPassword: Vyplňte prosím znovu heslo pro kontrolu
+		ruleMinLength: Vyplňte prosím nejméně %d znak|Vyplňte prosím nejméně %d znaky|Vyplňte prosím nejméně %d znaků
+		ruleMaxLength: Vyplňte prosím nejvýše %d znaků
+		valid_email: Zadejte prosím platný e-mail
+		password_dont_match: hesla se neshodují
+		send: Zaslat nové heslo
+
+
+
+
+
+	loginForm:
+		remember: Pamatovat si
+		windowTitle: Přihlásit se na svůj účet
+		newUser: Registrovat se
+		forgotPassword: Zapomenuté heslo
+
+	pageSettingsForm:
+		title: Název
+		title_placeholder: Název stránky v menu
+		description: Popis
+		description_placeholder: Popis stránky
+		notation: Poznámka
+		notation_placeholder: Poznámka k této stránce
+		published: Aktivní
+		route_title: Titulka
+		route_title_placeholder: Název titulky
+		route_description: Popis
+		route_description_placeholder: Popis stránky
+		url: Adresa
+		url_placeholder: Url adresa stránky
+		route_notation: Poznámka
+		route_notation_placeholder: Poznámka k této stránce
+		route_keywords: Keywords
+		route_keywords_placeholder: Klíčová slova
+		invalid_url: Zadejte prosím pro tento typ stránek adresu ve formátu %mask%
+		send: nastavit
+
+
+
+		required: vyplňte prosím tuto položku
+		ruleMaxLength: Prosím zadejte nevýše %count% znaků
+
+article:
+	page_settings: Nastavení článků

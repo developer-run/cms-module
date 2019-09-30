@@ -1,0 +1,22 @@
+action: Akce
+show: Detail
+add: Přidat záznam
+edit: Edit
+save: Uložit
+cancel: Zrušit
+
+previous: předchozí
+next: další
+from: od
+all: všechny
+items: záznamů
+reset_filter: Resetovat
+no_item_found: žádný záznam
+no_item_found_reset: žádný záznam
+here: resetovat filtr
+
+show_filter: zobrazit filtr
+per_page_submit: změnit
+group_actions: Hromadné akce
+choose: Vyber jednu akci
+execute: Spustit

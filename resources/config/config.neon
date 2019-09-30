@@ -1,0 +1,30 @@
+translation:
+	dirs: ['%modules.cms.path%/resources/translations']
+
+includes:
+	- presenters.neon
+	- components.neon
+
+#webloader:
+#	sourceDir: '%wwwDir%'
+#	joinFiles: false
+#
+#	files:
+#		- assets/jquery-ui/themes/base/jquery-ui.css
+#		- assets/bootstrap/css/bootstrap.min.css
+#		- assets/font-awesome/css/font-awesome.min.css
+#		- css/animate.min.css
+#		- css/cms-style.min.css
+#		- css/cms-style-responsive.min.css
+#		- css/cms-theme-default.css
+#		- assets/gritter/css/jquery.gritter.css
+#		- assets/multiple-select/multiple-select.css
+#		- assets/flag-icon/css/flag-icon.css
+#		- css/typeahead.css
+#		- css/grido.css
+#		- css/admin.css
+#
+#	fileFilters:
+#		- @lessFilter
+##		- @wlCssFilter
+#

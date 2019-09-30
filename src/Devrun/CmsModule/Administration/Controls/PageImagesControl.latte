@@ -1,0 +1,31 @@
+<div class="box box-primary">
+	<div class="box-header with-border">
+		<i class="fa fa-file-image-o"></i>
+		<h3 class="box-title">{$title}</h3>
+		<div class="box-tools pull-right">
+		</div>
+	</div>
+
+	<div class="box-body">
+		<div class="row" style="display: flex; flex-flow: row wrap;">
+
+			<div n:if="empty($images)" class="alert alert-info alert-dismissible">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<h4><i class="icon fa fa-info"></i> Alert!</h4>
+				System image page is empty for preview.
+			</div>
+
+			<div n:foreach="$images as $index => $image" class="pull-left" data-has-file-upload="true" style="margin: 5px;">
+				<h3 class="text-center text-primary">{$image->fileName}</h3>
+				<figure class="thumbnail onClickFileUpload">
+					<img src="{$presenter->template->photo->getImageVersion($basePath . '/' . $image->fileName)}" class="img-responsive inline-block" alt="{$image->fileName}">
+					{*<img src="{$basePath}/{$image->fileName}" class="img-responsive inline-block" alt="{$image->fileName}">*}
+				</figure>
+				{control loadImage-$index}
+			</div>
+
+		</div>
+	</div>
+
+</div>
+

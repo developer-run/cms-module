@@ -1,0 +1,34 @@
+{block headerTitle}{_admin.translate_edit}{/block}
+{block headerSmallTitle}({_admin.template_content}){/block}
+
+{block content}
+
+
+{*{control transControl}*}
+
+<div class="nav-tabs-custom">
+	<ul n:if="$domains" class="nav nav-tabs">
+		<li n:foreach="$domains as $domain" n:class="$iterator->first ? active">
+			<a href="#{$domain}" data-toggle="tab">{$domain|firstUpper}</a>
+		</li>
+	</ul>
+
+	<div n:if="$domains" class="tab-content grido">
+
+		{*{control translateControl}*}
+		{var $t = 'site'}
+
+		{*{control translateControl-$t}*}
+
+		<div n:foreach="$domains as $domain" id="{$domain}" n:class="$iterator->first ? 'active tab-pane' : 'tab-pane'">
+			{control translateControl-$domain}
+
+
+			{*{foreach $translations as $id => $translation}*}
+				{*<div class="m-b-10">{control translateControls-$id}</div>*}
+			{*{/foreach}*}
+
+		</div>
+	</div>
+
+</div>

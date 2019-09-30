@@ -1,0 +1,29 @@
+{snippetArea wd}
+	{snippet qq}
+		{control form}
+	{/snippet}
+{/snippetArea}
+
+{*
+
+{form form}
+
+	{foreach $form->getComponents() as $name => $component}
+		{if $name != "_do"}
+
+			<div class="form-group">
+				<div class="col-sm-2 control-label">
+					{label $name /}
+				</div>
+				<div class="col-sm-10">
+					{input $name}
+				</div>
+			</div>
+
+		{/if}
+	{/foreach}
+
+
+{/form}
+
+*}

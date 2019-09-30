@@ -1,0 +1,106 @@
+{snippet images}
+	<div n:if="$assocImages" n:foreach="$assocImages as $namespace => $images" class="box box-info">
+		<div class="box-header with-border">
+			<i class="fa fa-file-image-o"></i>
+			<h3 class="box-title">{$namespace|firstUpper}</h3>
+
+			<div class="box-tools pull-right">
+				<a n:if="$user->isAllowed('Cms:Images', 'updateNamespace')" n:href="update, 'namespace' => $namespace" class="btn btn-primary btn-xs"
+																													   data-popup-type='modal-md'
+																													   data-popup-title='Editace kategorie'
+																													   data-popup-dialog='popup'>vložit nový</a>
+				<span class="label label-info">{_admin.images, count($images)}</span>
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+				<a n:if="$user->isAllowed('Cms:Images', 'removeNamespace!')" n:href="removeNamespace! $namespace" title="Smazat sekci" class="btn btn-box-tool ajax"><i class="fa fa-times"></i></a>
+			</div>
+		</div>
+
+		<div class="box-body">
+			<div class="row row-flex">
+				<div n:foreach="$images as $index => $image" class="col-md-3">
+
+					<div n:if="true || !isset($restoreImage) || $restoreImage==$image->id" class="attachment-block attachment-block-md clearfix" id="edit-image-{Nette\Utils\Strings::webalize($namespace)}-{$index}">
+						{ifset $restoreImage}
+						{/ifset}
+
+						<a href="{$basePath}/media/{$this->_imgStorage->fromIdentifier($image->identifier)->identifier}" data-lightbox="{$image->namespace}" data-title="{$image->description}">
+							<img n:img="$image->identifier, '100x100', fill" class="attachment-img">
+						</a>
+						<div class="attachment-pushed">
+							<h4 class="attachment-heading text-info">
+								{$image->identify->name|truncate:20}
+								<small>({$image->name|truncate:20})</small>
+							</h4>
+							<div class="attachment-text">
+								<small n:if="$image->alt"><span class="text-primary">alt</span> {$image->alt}<br></small>
+								<small><span class="text-primary">size</span> {$image->width}x{$image->height}</small>
+								<small n:if="$image->description">{$image->description}<br></small>
+							</div>
+
+						</div>
+					</div>
+
+					<a n:href="update! $image->id" class="ajax btn btn-default btn-xs" data-ajax-off="history" data-target="#edit-image-{Nette\Utils\Strings::webalize($namespace)}-{$index}" data-ajax-signal-loading="true" > Edit</a>
+
+{*
+					<a n:href="update $image->id" class="btn btn-default btn-xs"
+												  data-modal-type='modal-md'
+												  data-modal-title='Editace obrázku {$image->name}'
+												  data-modal-dialog='popup'><i class="fa fa-pencil-square-o"></i> Edit</a>
+*}
+
+					<a n:if="$user->isAllowed('Cms:Images', 'delete!')" n:href="delete! $image->id" class="ajax btn btn-default btn-xs"><i class="fa fa-times"></i> Delete</a>
+					<div class="btn-group">
+						<button type="button" class="btn _btn-default _btn-xs btn-box-tool dropdown-toggle" data-toggle="dropdown" title="download" aria-expanded="false"><i class="fa fa-clone" aria-hidden="true"></i> Menu</button>
+						<ul class="dropdown-menu" role="menu">
+							<li><a n:href="download! $image->id">Download</a></li>
+							<li class="divider"></li>
+							<li><a n:href="restore! $image->id" class="ajax">Resetovat obrázek</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div n:if="!$assocImages" class="box box-info">
+		<div class="alert alert-info alert-dismissible">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+			<h4><i class="icon fa fa-info"></i> Info!</h4>
+			Na této stránce nejsou žádné editovatelné obrázky.
+		</div>
+	</div>
+
+{/snippet}
+
+{snippet modalForm}
+	{if $editImageId}
+		<div id="form-modal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-md" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Úpravit obrázek</h4>
+					</div>
+
+					<div class="modal-body">
+						<div class="row">
+							<figure class="col-md-5">
+								<img n:img="$editImage->identifier, '250x300', 'shrink_only'" class="img-responsive">
+							</figure>
+							<div class="col-md-7">
+								{control imageForm}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+            $(function(){
+                $('#form-modal').modal('show');
+            });
+		</script>
+	{/if}
+{/snippet}

@@ -1,0 +1,5 @@
+{
+  "files" : [
+    "%modules.cms.relativePath%/src/Devrun/CmsModule/Presenters/templates/@layout.latte"
+  ]
+}

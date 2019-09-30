@@ -1,0 +1,5 @@
+{
+  "less": {
+    "files" : ["%modules.cms.relativePath%/Resources/build/less/**/*.less"]
+  }
+}
