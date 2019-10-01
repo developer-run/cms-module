@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "devrun/framework": "dev-master",
+    "devrun/framework": "^0.8",
     "phpzip/phpzip": "^2.0",
     "ublaboo/datagrid": "^5.5",
     "wa72/htmlpagedom": "^1.3"
