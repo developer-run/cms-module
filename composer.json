@@ -18,9 +18,9 @@
   },
   "require-dev": {
     "dg/adminer-custom": "~1.6",
-    "phpunit/phpunit": "4.5.*",
-    "phpunit/phpunit-dom-assertions": "1.0.x-dev"
-
+    "phpunit/phpunit": "^5.0",
+    "phpunit/phpunit-dom-assertions": "^2.0",
+    "contributte/codeception": "^0.7.7"
   },
   "repositories": [
     {
