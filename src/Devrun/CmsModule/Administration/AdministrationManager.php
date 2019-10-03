@@ -10,8 +10,8 @@
 namespace Devrun\CmsModule\Administration;
 
 use Flame\Application\UI\Presenter;
-use Nette\Object;
 use Nette\Security\User;
+use Nette\SmartObject;
 use Nette\Utils\Strings;
 use Nette\Utils\Validators;
 
@@ -21,10 +21,12 @@ use Nette\Utils\Validators;
  * @package Devrun\CmsModule\Administration
  * @property-read string $defaultPresenter
  * @property-read array  $login
- * @property-read array  $theme
+ * @property-read string $theme
  */
-class AdministrationManager extends Object
+class AdministrationManager
 {
+
+    use SmartObject;
 
     /** @var User */
     private $user;
@@ -75,6 +77,7 @@ class AdministrationManager extends Object
      *
      * @inheritdoc startup from di
      * @param       $tags
+     * @throws \Nette\Utils\AssertionException
      */
     public function addAdministrationPage($service, array $tags)
     {
@@ -103,6 +106,7 @@ class AdministrationManager extends Object
      * @inheritdoc startup from di
      * @param       $service
      * @param array $tags
+     * @throws \Nette\Utils\AssertionException
      */
     public function addAdministrationComponent($service, array $tags)
     {
@@ -125,6 +129,7 @@ class AdministrationManager extends Object
      * @inheritdoc startup from di
      * @param       $service
      * @param array $tags
+     * @throws \Nette\Utils\AssertionException
      */
     public function addAdministrationFactory($service, array $tags)
     {
