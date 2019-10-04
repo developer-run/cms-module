@@ -9,7 +9,6 @@
 
 namespace Devrun\CmsModule\Presenters;
 
-use ContestModule\Repositories\PageCaptureRepository;
 use Devrun\Application\UI\Presenter\TImgStoragePipe;
 use Devrun\CmsModule\Controls\DataGrid;
 use Devrun\CmsModule\Controls\FlashMessageControl;
@@ -18,6 +17,7 @@ use Devrun\CmsModule\Repositories\DomainRepository;
 use Devrun\CmsModule\Repositories\PackageRepository;
 use Devrun\CmsModule\Repositories\PageRepository;
 use Devrun\CmsModule\Repositories\RouteRepository;
+use Devrun\ContestModule\Repositories\PageCaptureRepository;
 use Devrun\Doctrine\Entities\UserEntity;
 use Devrun\Doctrine\Repositories\UserRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
