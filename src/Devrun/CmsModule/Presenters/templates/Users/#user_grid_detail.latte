@@ -22,9 +22,13 @@
 				{var $packages = $presenter->getUserPackages($item)}
 				<div n:foreach="$packages as $package" class="image">
 					<div class="image-inner">
+{*
+	 musíme nahradit jinak, nezávysle na modulu contest
+
 						<a href="{plink Page:edit $presenter->getEditLink($package)}">
 							{img $presenter->getImage($package)->identifier, '387x200', exact}
 						</a>
+*}
 						<p class="image-caption">
 							#{$iterator->counter} - {$package->inserted|date:"j. n. Y"}
 						</p>

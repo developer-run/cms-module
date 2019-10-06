@@ -1,0 +1,49 @@
+parameters:
+	database:
+		driver: pdo_sqlite
+		dbname: framework_test
+		path: %dataDir%/test.sqlite
+		user:
+		password:
+
+	testUser:
+		username: admin
+		password: 789
+
+
+translation:
+	dirs: ['%modules.cms.path%/resources/translations', '%modules.cms.path%/tests/resources/translations']
+
+
+tracy:
+#	maxDepth: 6
+#	maxLen: 5000
+	showLocation: true
+
+cms:
+	administration:
+		login:
+			name: admin
+			password: 789
+
+
+services:
+#	remove cache for tests
+	nette.latteFactory:
+		setup:
+			- setTempDirectory(null)
+
+	cacheStorage:
+		class: Nette\Caching\Storages\MemoryStorage
+#		class: Nette\Caching\Storages\DevNullStorage
+
+#	environmentStorage:
+#		class: Nette\Caching\Storages\FileStorage(%tempDir%\cache)
+
+	session:
+		class: Devrun\Tests\Http\FakeSession
+
+
+doctrine:
+	supportsForeignKeyConstraints: true
+

@@ -1,0 +1,100 @@
+#
+# WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+# https://nette.org/security-warning
+#
+parameters:
+	lang: cs # cs|sk|hu
+	autoFlush: false
+	languages: [cs, sk, hu]
+	securePage: true
+	database:
+		driver: pdo_mysql
+		host: localhost
+		path:
+		dbname:
+		user:
+		password:
+
+events:
+	globalDispatchFirst: true
+
+translation:
+	debugger: on
+	default: %lang%
+	whitelist: %languages%
+	fallback: [cs_CZ, cs]
+
+translatable:
+	currentLocaleCallable: [@translation.default, getLocale]
+	defaultLocaleCallable: [@translation.default, getDefaultLocale]
+	translatableTrait: Devrun\Doctrine\Entities\Attributes\Translatable
+	translationTrait: Devrun\Doctrine\Entities\Attributes\Translation
+
+imageStorage:
+	data_path          : %wwwDir%/media 		 # Filesystem location
+	data_dir           : media                   # Relative path
+	algorithm_file     : sha1_file               # Algorithm to take image prefix directory from
+	algorithm_content  : sha1                    # ...
+	quality            : 85                      # Default wuality when cropping
+	default_transform  : fit                     # Default crop transformation
+	noimage_identifier : noimage/03/no-image.png # No-image image
+	friendly_url       : FALSE                   # Create friendly URLs?
+
+migrations:
+    dir: %appDir%/../migrations # migrations base directory
+    driver: mysql               # pgsql or mysql
+    dbal: doctrine              # nextras, nette, doctrine or dibi
+
+monolog:
+	processors:
+		web: Monolog\Processor\WebProcessor(NULL, [
+				ip: REMOTE_ADDR,
+				userAgent: HTTP_USER_AGENT,
+			])
+
+	handlers:
+#		- Monolog\Handler\SyslogUdpHandler(logs6.papertrailapp.com, 39215)
+#		applog: Monolog\Handler\StreamHandler(%appDir%/../logs/symfony.log, Monolog\Logger::DEBUG)
+#		db: Devrun\CmsModule\Tools\Monolog\Handler\DbHandler(@Kdyby\Doctrine\EntityManager, @Devrun\Security\LoggedUser, Monolog\Logger::INFO)
+		netteFallback: Kdyby\Monolog\Handler\FallbackNetteHandler(monolog.logger.name, %logDir%)
+
+	name: Contests
+	hookToTracy: on
+#    tracyBaseUrl: NULL
+	usePriorityProcessor: on
+	registerFallback: on
+
+php:
+	date.timezone: Europe/Prague
+
+http:
+	frames: yes
+
+application:
+	errorPresenter: Front:Error
+
+session:
+	expiration: 14 days
+
+services:
+#	router: Devrun\CmsModule\Routes\PageRouteFactory::createRouter(@cms.pageRoute)
+#	translation.helpers:
+#		factory: Kdyby\Translation\TemplateHelpers(@Kdyby\Translation\Translator::domain(messages))
+
+doctrine:
+	charset: UTF8
+	driver: %database.driver%
+	host: %database.host%
+	path: %database.path%
+	user: %database.user%
+	password: %database.password%
+	dbname: %database.dbname%
+	autoGenerateProxyClasses: %debugMode%
+	proxyDir: "%tempDir%/proxies"
+	proxyNamespace: "proxy"
+	cacheClass: DoctrineModule\Cache
+	secondLevelCache:
+		enabled: true
+
+extensions:
+	cms: Devrun\CmsModule\DI\CmsExtension

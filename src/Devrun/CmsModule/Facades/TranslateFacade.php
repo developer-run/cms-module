@@ -151,8 +151,8 @@ class TranslateFacade
     {
         $result = false;
 
-        $catalogue     = $this->translator->getCatalogue();
-        $localeCatalog = $catalogue->getFallbackCatalogue();
+//        $catalogue     = $this->translator->getCatalogue();
+//        $localeCatalog = $catalogue->getFallbackCatalogue();
 
         if ($localeFile = $this->findNeonFile($domain)) {
 

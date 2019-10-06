@@ -14,8 +14,6 @@ use Devrun\CmsModule\Facades\TranslateFacade;
 use Devrun\CmsModule\TranslateException;
 use Nette;
 use Nette\Utils\Html;
-use Symfony\Component\Config\Resource\FileResource;
-use Tracy\Debugger;
 use Ublaboo\DataGrid\DataGrid;
 
 class TranslatePresenter extends AdminPresenter
@@ -42,23 +40,28 @@ class TranslatePresenter extends AdminPresenter
     }
 
 
+    /**
+     * @param $domain
+     * @param $translateId
+     * @param $content
+     *
+     * @throws Nette\Application\AbortException
+     * @throws Nette\Utils\AssertionException
+     *
+     * @example
+     *  $catalogue = $this->translator->getCatalogue();
+     *  $localeCatalog = $catalogue->getFallbackCatalogue();
+     *
+     *  foreach ($localeCatalog->getResources() as $resource => $fileResource) {
+     *      dump($resource);
+     *      dump($fileResource->getResource());
+     *  }
+     *
+     */
     public function renderUpdate($domain, $translateId, $content)
     {
-//        dump($translateId);
-//        dump($content);
-//        dump($translateId);
-//        die();
-        $catalogue = $this->translator->getCatalogue();
-
-
-        $localeCatalog = $catalogue->getFallbackCatalogue();
-
-
-        /** @var $fileResource FileResource */
-        foreach ($localeCatalog->getResources() as $resource => $fileResource) {
-//            dump($resource);
-//            dump($fileResource->getResource());
-        }
+        Nette\Utils\Validators::assert($domain, 'string', __METHOD__ . " `domain` ");
+        Nette\Utils\Validators::assert($translateId, 'string', __METHOD__ . " `translateId` ");
 
         try {
             $translate = $this->translateFacade->updateTranslate($domain, $translateId, $content);

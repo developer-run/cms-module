@@ -28,14 +28,18 @@ class TranslatePresenterTest extends Presenter
     }
 
 
+    /**
+     * @throws \Nette\Utils\AssertionException
+     */
     public function testTwoKeys()
     {
         $this->sendLoginForm();
 
         $params = array(
-            'content'     => 'Obsah česky',
-            'translateId' => "test.title1",
-            'action'      => 'update',
+            'content' => 'Obsah česky',
+            'domain' => "test",
+            'translateId' => "title1",
+            'action' => 'update',
         );
 
         $this->init('Cms:Translate');
@@ -52,14 +56,17 @@ class TranslatePresenterTest extends Presenter
     }
 
 
-
+    /**
+     * @throws \Nette\Utils\AssertionException
+     */
     public function testThreeKeys()
     {
         $this->sendLoginForm();
 
         $params = array(
             'content'     => 'Obsah česky',
-            'translateId' => "test.homepage.title1",
+            'domain' => "test",
+            'translateId' => "homepage.title1",
             'action'      => 'update',
         );
 
@@ -78,14 +85,17 @@ class TranslatePresenterTest extends Presenter
     }
 
 
-
+    /**
+     * @throws \Nette\Utils\AssertionException
+     */
     public function testFourKeys()
     {
         $this->sendLoginForm();
 
         $params = array(
             'content'     => 'scheduleAsyncSearch',
-            'translateId' => "test.homepage.demoComponent.title1",
+            'domain' => "test",
+            'translateId' => "homepage.demoComponent.title1",
             'action'      => 'update',
         );
 
@@ -112,7 +122,8 @@ class TranslatePresenterTest extends Presenter
 
         $params = array(
             'content'     => 'scheduleAsyncSearch',
-            'translateId' => "test.homepage.demoComponent.position.title1",
+            'domain' => "test",
+            'translateId' => "homepage.demoComponent.position.title1",
             'action'      => 'update',
         );
 
@@ -140,7 +151,8 @@ class TranslatePresenterTest extends Presenter
 
         $params = array(
             'content'     => 'scheduleAsyncSearch',
-            'translateId' => "test.homepage.demoComponent.position.two.title1",
+            'domain' => "test",
+            'translateId' => "homepage.demoComponent.position.two.title1",
             'action'      => 'update',
         );
 
@@ -169,7 +181,8 @@ class TranslatePresenterTest extends Presenter
 
         $params = array(
             'content'     => 'scheduleAsyncSearch',
-            'translateId' => "test.homepage.demoComponent.position.two.seventh.title1",
+            'domain' => "test",
+            'translateId' => "homepage.demoComponent.position.two.seventh.title1",
             'action'      => 'update',
         );
 
@@ -196,8 +209,7 @@ class TranslatePresenterTest extends Presenter
     protected function getTranslateFile()
     {
         $context = $this->getContainer();
-        $dir = $context->getParameters()['modules']['cms']['path'] . "tests/resources/locale";
-        $dirs = $context->getParameters()['translation']['dirs'];
+        $dir = $context->getParameters()['modules']['cms']['path'] . "tests/resources/translations";
 
         $file = "$dir/test.cs.neon";
 
@@ -211,8 +223,7 @@ class TranslatePresenterTest extends Presenter
     protected function initTranslateFile()
     {
         $context = $this->getContainer();
-        $dir = $context->getParameters()['modules']['cms']['path'] . "tests/resources/locale";
-        $dirs = $context->getParameters()['translation']['dirs'];
+        $dir = $context->getParameters()['modules']['cms']['path'] . "tests/resources/translations";
 
         $file = "$dir/test.cs.neon";
 

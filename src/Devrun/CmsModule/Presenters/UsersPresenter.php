@@ -51,7 +51,7 @@ class UsersPresenter extends AdminPresenter
     public $pageRepository;
 
 
-    /** @var PageCaptureRepository @inject */
+    /** @var PageCaptureRepository _@_inject */
     public $pageCaptureRepository;
 
 
@@ -385,7 +385,12 @@ class UsersPresenter extends AdminPresenter
         return $this->packageRepository->findBy(['user' => $userEntity], ['module' => 'ASC']);
     }
 
-
+    /**
+     * @todo musíme vyřešit jinak, nezávysle na modulu contest
+     *
+     * @param PackageEntity $package
+     * @return \Devrun\PhantomModule\Entities\ImageEntity|null
+     */
     public function getImage(PackageEntity $package)
     {
         $image = $this->pageCaptureRepository->findImageByRouteCriteria([
