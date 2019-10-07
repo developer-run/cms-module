@@ -8,3 +8,8 @@ composer.lock
 
 /resources/assets/AdminLTE/
 /resources/assets/font-awesome/
+
+/resources/public/*/package-lock.json
+/resources/public/*/Gemfile
+/resources/public/*/Gemfile.lock
+/resources/public/*/yarn.lock

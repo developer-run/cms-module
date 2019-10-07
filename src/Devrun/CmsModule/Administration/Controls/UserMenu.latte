@@ -1,14 +1,14 @@
 <li class="dropdown user user-menu">
 	<a href="#" class="dropdown-toggle" n:if="$user->loggedIn" data-toggle="dropdown">
-		<img n:if="$user->identity->gender" src="{$basePath}/images/admin-man-ico.png" class="user-image" alt="User Image">
-		<img n:if="!$user->identity->gender" src="{$basePath}/images/admin-woman-ico.png" class="user-image" alt="User Image">
+		<img n:if="$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-man-ico.png" class="user-image" alt="User Image">
+		<img n:if="!$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-woman-ico.png" class="user-image" alt="User Image">
 		<span class="hidden-xs">{$user->identity->firstName} {$user->identity->lastName}</span>
 	</a>
 	<ul n:if="$user->loggedIn" class="dropdown-menu">
 		<!-- User image -->
 		<li class="user-header">
-			<img n:if="$user->identity->gender" src="{$basePath}/images/admin-man-ico.png" class="img-circle" alt="User Image">
-			<img n:if="!$user->identity->gender" src="{$basePath}/images/admin-woman-ico.png" class="img-circle" alt="User Image">
+			<img n:if="$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-man-ico.png" class="img-circle" alt="User Image">
+			<img n:if="!$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-woman-ico.png" class="img-circle" alt="User Image">
 			<p>
 				{$user->identity->firstName} {$user->identity->lastName} - Web {if $user->isInRole(admin)} Admin{elseif $user->isInRole(supervisor)} Developer{/if}
 				<small>Member since {$user->identity->inserted|date:"j. n. Y"}</small>

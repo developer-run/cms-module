@@ -1,7 +1,6 @@
 parameters:
 	database:
 		driver: pdo_sqlite
-		dbname: framework_test
 		path: %dataDir%/test.sqlite
 		user:
 		password:
