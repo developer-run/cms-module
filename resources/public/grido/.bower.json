@@ -1,0 +1,31 @@
+{
+  "name": "grido",
+  "main": [
+    "client-side/js/grido.js",
+    "client-side/css/grido.css"
+  ],
+  "ignore": [
+    "src",
+    "tests",
+    ".gitignore",
+    ".travis.yml",
+    "composer.json",
+    "pre-commit.sh",
+    "standards.xml"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.7"
+  },
+  "homepage": "https://github.com/o5/grido",
+  "version": "2.1.2",
+  "_release": "2.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.1.2",
+    "commit": "2e96745b39eaff5624c8d35fd0b10c895bb1b069"
+  },
+  "_source": "https://github.com/o5/grido.git",
+  "_target": "^2.1.2",
+  "_originalSource": "grido",
+  "_direct": true
+}

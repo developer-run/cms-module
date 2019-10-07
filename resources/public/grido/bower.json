@@ -1,0 +1,19 @@
+{
+    "name": "grido",
+    "main": [
+        "client-side/js/grido.js",
+        "client-side/css/grido.css"
+    ],
+    "ignore": [
+        "src",
+        "tests",
+        ".gitignore",
+        ".travis.yml",
+        "composer.json",
+        "pre-commit.sh",
+        "standards.xml"
+    ],
+    "dependencies": {
+        "jquery": ">= 1.7"
+    }
+}

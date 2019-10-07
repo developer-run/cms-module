@@ -1,0 +1,289 @@
+.grido table {
+    margin-bottom: 0;
+}
+.grido .form-control[name^="filter"][type="text"] {
+    width: auto;
+    min-width: 100%;
+}
+.grido .form-control[name^="filter"] {
+    height: inherit;
+}
+
+.grido input.text, .grido select.form-control[name^="filter"] {
+    width: 100%;
+    min-width: 7em;
+}
+.grido .form-control[name^="filter"][data-provide="datepicker"] {
+    width: 7em;
+}
+.datagrid select.form-control {
+    padding: inherit;
+
+}
+
+.grido .datagrid table tbody td {
+    /*vertical-align: text-top;*/
+}
+.flash {
+    padding: 15px 15px 0 15px;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.row-group-actions {
+
+}
+
+.ublaboo-datagrid-th-form-inline .form-control {
+    display: inline-block;
+    width: auto;
+    height: inherit;
+    vertical-align: middle;
+}
+
+/*
+.nav.nav-tabs {
+    background: url("../images/progress.gif");
+    background-size: 100% 100%;
+}
+*/
+
+.datagrid table thead tr th {
+    vertical-align: middle !important;
+}
+
+.datagrid-column-header-additions {
+    display: inline-block;
+}
+
+.cke_editable.animated {
+    transition: all 600ms;
+    animation-duration: 600ms;
+}
+.cke_editable.animated.ok {
+    background-color: rgba(20,200,20,0.1);
+}
+.cke_editable.animated.fail {
+    background-color: rgba(200,20,20,0.1);
+}
+.onClickFileUpload {
+    cursor: pointer;
+    transition: all 600ms;
+}
+.onClickFileUpload img {
+    cursor: pointer;
+
+}
+p.cke_editable {
+    margin: 0 0 10px;
+}
+
+.row.row-flex {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+
+/* fix aminlte, pak předěpat přímo v lessu*/
+.bg-blue-gradient,
+.bg-red-gradient
+{
+    color: inherit;
+}
+
+html {
+    height: 100%;
+}
+body {
+    height: auto;
+}
+
+.login-page, .register-page {
+    background: #5e5e55 url("../images/car.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.login-logo a, .register-logo a {
+    color: #eee;
+    text-shadow: 1px 0px 20px #eee;
+}
+
+.icheckbox_square-blue, .iradio_square-blue {
+    margin-right: 0.2em;
+}
+
+li.treeview {
+    position: relative;
+}
+
+
+.sidebar-menu li > a.pull-right-container
+/*.treeview-menu > li a.pull-right-container */
+{
+    position : absolute;
+    top: 1px;
+    right: 0;
+
+}
+
+.sidebar-menu li > a.pull-right-container > .pull-right-container {
+    position : inherit;
+    top: 0;
+    right: 0;
+    margin-top: auto;
+}
+
+
+.sidebar-menu li.header a {
+    padding: 0;
+}
+
+.skin-blue .sidebar-menu > li.header:hover > a, .skin-blue .sidebar-menu > li.header.active > a {
+    border-left-color: transparent;
+}
+
+
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top  : 100%;
+    left : 0;
+    margin-top: 1px !important;
+    margin-left: -1px;
+    border-radius: 0 6px 6px 6px;
+
+    box-shadow: 1px 1px 8px rgba(100,100,100,0.5);
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+li.treeview.menu-open ul.treeview-menu:before {
+    /*content: '';*/
+    /*position: absolute;*/
+    /*left: 26px;*/
+    /*top: 0;*/
+    /*bottom: 0;*/
+    /*width: 2px;*/
+    /*background: #10181f;*/
+
+}
+
+.Qskin-blue .sidebar-menu > li > .treeview-menu:before {
+    /*content: '';*/
+    /*position: absolute;*/
+    /*left: 26px;*/
+    /*top: 0;*/
+    /*bottom: 0;*/
+    /*width: 2px;*/
+    /*background: #10181f;*/
+
+}
+
+/*
+
+
+*/
+
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    border-radius: 6px 0 6px 6px;
+}
+
+.grido .datagrid {
+    background-color: inherit;
+    padding: 0;
+}
+
+.datagrid-col-filter-date-range input {
+    min-width: 7em;
+}
+
+
+.loading {
+    transition: all 500ms;
+    opacity :0.5;
+    outline: 1px dashed #f0f050;
+    position: relative;
+}
+
+.loading:before {
+    /*content: "loading...";*/
+    position : absolute;
+    display: block;
+    left :0;
+    top:0;
+    right: 0;
+    width: 100%;
+    text-align: center;
+}
+
+/*
+.loaded {
+    transition: all 500ms;
+    opacity :0.5;
+    background-color: green;
+    outline: 1px dashed #f0f050;
+    position: relative;
+}
+*/

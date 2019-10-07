@@ -1,0 +1,36 @@
+{
+  "name": "nette-live-form-validation",
+  "description": "Nice client-side live form validation for Nette Forms 2.4. Script by default works nicely with Twitter Bootstrap 3.",
+  "main": [
+    "live-form-validation.js"
+  ],
+  "moduleType": "globals",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "nette",
+    "form",
+    "validation",
+    "bootstrap"
+  ],
+  "authors": [
+    "David Grudl",
+    "MartyIX",
+    "Radek Ježdík",
+    "Robert Pösel <robyer@seznam.cz> (http://www.robyer.cz)"
+  ],
+  "homepage": "https://github.com/Robyer/nette-live-form-validation/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Robyer/nette-live-form-validation.git"
+  },
+  "version": "1.9.0",
+  "_release": "1.9.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.9.0",
+    "commit": "3f9bc43be919a404c22e5ce68827fa6e51474986"
+  },
+  "_source": "https://github.com/Robyer/nette-live-form-validation.git",
+  "_target": "^1.8.1",
+  "_originalSource": "nette-live-form-validation"
+}
