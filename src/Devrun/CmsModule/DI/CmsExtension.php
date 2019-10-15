@@ -206,6 +206,10 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
             ]);
 
 
+        $builder->addDefinition($this->prefix('presenters.login'))
+                ->setType('Devrun\CmsModule\Presenters\LoginPresenter')
+                ->addSetup('setWebsiteInfo', [$config['website']]);
+
 
 
 

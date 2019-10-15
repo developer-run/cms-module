@@ -3,9 +3,6 @@ services:
 		class: Devrun\CmsModule\Presenters\DashboardPresenter
 		tags: [devrun.presenter]
 
-	cms.presenters.login:
-		class: Devrun\CmsModule\Presenters\LoginPresenter
-		tags: [devrun.presenter]
 
 #	cms.presenters.default:
 #		class: Devrun\CmsModule\Presenters\DefaultPresenter
