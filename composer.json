@@ -24,8 +24,8 @@
   },
   "repositories": [
     {
-      "type": "github",
-      "url": "https://github.com/developer-run/framework.git"
+      "type": "vcs",
+      "url": "https://github.com/developer-run/framework"
     }
   ],
   "autoload": {

@@ -223,7 +223,7 @@ class TranslatePresenterTest extends Presenter
     protected function initTranslateFile()
     {
         $context = $this->getContainer();
-        $dir = $context->getParameters()['modules']['cms']['path'] . "tests/resources/translations";
+        $dir = $context->getParameters()['modules']['cms']['path'] . "/tests/resources/translations";
 
         $file = "$dir/test.cs.neon";
 

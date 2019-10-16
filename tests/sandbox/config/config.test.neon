@@ -19,11 +19,11 @@ tracy:
 #	maxLen: 5000
 	showLocation: true
 
-cms:
-	administration:
-		login:
-			name: admin
-			password: 789
+#cms:
+#	administration:
+#		login:
+#			name: admin
+#			password: 789
 
 
 services:

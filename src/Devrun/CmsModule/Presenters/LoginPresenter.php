@@ -40,6 +40,11 @@ class LoginPresenter extends AdminPresenter
 
 
 
+    public function renderDefault()
+    {
+        $this->template->website = $this->websiteInfo;
+    }
+
 
     public function actionChangePassword($id, $code)
     {
@@ -177,6 +182,18 @@ class LoginPresenter extends AdminPresenter
 
         return $form;
     }
+
+
+    /**
+     * DI setter
+     *
+     * @param array $websiteInfo
+     */
+    public function setWebsiteInfo($websiteInfo)
+    {
+        $this->websiteInfo = $websiteInfo;
+    }
+
 
 
 

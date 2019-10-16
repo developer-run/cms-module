@@ -3,7 +3,7 @@
 return array(
 	"modules" => array(
         'cms' => [
-            'status' => 'uninstalled',
+            'status' => 'installed',
             'action' => '',
             'class' => 'Devrun\CmsModule\Module',
             'version' => '0.8.0',

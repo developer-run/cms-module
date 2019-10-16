@@ -65,7 +65,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
             'defaultDomain' => 'souteze.pixman.cz',
             'defaultPresenter' => 'Homepage',
             'errorPresenter' => 'Cms:Error',
-            'layout' => '@cms/bootstrap',
+            'layout' => 'cms/bootstrap',
             'cacheMode' => '',
             'cacheValue' => '10',
             'theme' => '',
