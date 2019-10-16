@@ -28,6 +28,27 @@ class TranslatePresenterTest extends Presenter
     }
 
 
+    public function testNoLoggedIn()
+    {
+        $this->init('Cms:Translate');
+
+        $params = array(
+            'content'     => 'Obsah česky',
+            'domain'      => "test",
+            'translateId' => "title1",
+            'action'      => 'update',
+        );
+
+        $request   = $this->getRequest($params);
+        $response  = $this->getResponse($request);
+        $presenter = $this->presenter;
+
+        $this->assertInstanceOf('Nette\Application\Responses\RedirectResponse', $response);
+        $this->assertEquals($this->uriCheck($presenter->link('//Login:')), $this->uriCheck($response->getUrl()));
+    }
+
+
+
     /**
      * @throws \Nette\Utils\AssertionException
      */

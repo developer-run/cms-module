@@ -32,7 +32,6 @@ class JSEnvironmentControl extends Control
         $template = $this->createTemplate();
 
         $template->editTranslateSignal = $this->getPresenter()->link(':Cms:Translate:update');
-        $template->editArticleSignal = $this->getPresenter()->link(':Cms:Article:Translate:update');
         $template->render();
     }
 

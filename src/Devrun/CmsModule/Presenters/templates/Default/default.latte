@@ -6,9 +6,9 @@
 {/block}
 
 {block content}
-<div n:if="$user->isAllowed('Cms:Default', 'info')" class="row">
+<div id="defaultContentInfo" n:if="$user->isAllowed('Cms:Default', 'info')" class="row">
 
-	<div class="col-md-3 col-sm-6 col-xs-12">
+	<div class="col-md-4 col-sm-6 col-xs-12">
 		<div class="info-box">
 			<a n:href=":Cms:Translate:"><span class="info-box-icon bg-aqua"><i class="fa fa-language"></i></span></a>
 			<div class="info-box-content">
@@ -21,18 +21,7 @@
 		</div>
 		<!-- /.info-box -->
 	</div>
-	<div class="col-md-3 col-sm-6 col-xs-12">
-		<div class="info-box">
-			<a n:href=":Cms:Article:Default:"><span class="info-box-icon bg-yellow"><i class="fa fa-etsy"></i></span></a>
-			<div class="info-box-content">
-				<span class="info-box-text">Articles</span>
-				<span class="info-box-number">{$articleCount}</span>
-			</div>
-			<!-- /.info-box-content -->
-		</div>
-		<!-- /.info-box -->
-	</div>
-	<div class="col-md-3 col-sm-6 col-xs-12">
+	<div class="col-md-4 col-sm-6 col-xs-12">
 		<div class="info-box">
 			<span class="info-box-icon bg-red"><i class="fa fa-pagelines"></i></span>
 
@@ -48,7 +37,7 @@
 	<!-- fix for small devices only -->
 	<div class="clearfix visible-sm-block"></div>
 
-	<div class="col-md-3 col-sm-6 col-xs-12">
+	<div class="col-md-4 col-sm-6 col-xs-12">
 		<div class="info-box">
 			<a n:href=":Cms:Images:"><span class="info-box-icon bg-green"><i class="fa fa-picture-o"></i></span></a>
 

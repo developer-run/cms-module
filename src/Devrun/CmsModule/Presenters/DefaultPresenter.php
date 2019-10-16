@@ -19,9 +19,6 @@ class DefaultPresenter extends AdminPresenter
     /** @var ImageRepository @inject */
     public $imageRepository;
 
-    /** @var ArticleFacade @inject */
-    public $articleFacade;
-
     /** @var PageRepository @inject */
     public $pageRepository;
 
@@ -54,7 +51,7 @@ class DefaultPresenter extends AdminPresenter
 
         $this->template->pageCount = $this->pageFacade->getPageRepository()->countBy();
         $this->template->imageCount = $this->imageRepository->countBy();
-        $this->template->articleCount = $this->articleFacade->getArticleRepository()->countBy();
+//        $this->template->articleCount = $this->articleFacade->getArticleRepository()->countBy();
 
         $this->template->installPackageControls = $this->administrationManager->getAdministrationComponentsByCategory('Dashboard');
         $this->template->instancePackageControls = $this->administrationManager->getAdministrationComponentsByCategory('Instance');
