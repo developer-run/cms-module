@@ -121,7 +121,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
             'modalActions' => true,
             'images' => [],
             'emptyImage' => [
-                'font'     => 'fonts/OpenSansEasy/OpenSans-Regular.ttf',
+                'font'     => 'resources/cmsModule/fonts/OpenSansEasy/OpenSans-Regular.ttf',
                 'text'     => 'upload image',
                 'fontSize' => 36,
                 'width'    => 640,
