@@ -9,7 +9,6 @@
 
 namespace Devrun\CmsModule\Presenters;
 
-use Brabijan\Images\TImagePipe;
 use Devrun\CmsModule\Controls\INavigationPageControlFactory;
 
 trait CmsPresenterTrait
