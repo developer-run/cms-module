@@ -36,6 +36,7 @@
       "dev-master": "0.8-dev"
     },
     "devrun": {
+      "installers" : ["Devrun\\Module\\Installers\\MigrationInstaller"],
       "configuration": {
         "extensions": {
           "cms": "Devrun\\CmsModule\\DI\\CmsExtension"

@@ -178,7 +178,7 @@ EON;
 
     public function tagImg(MacroNode $node, PhpWriter $writer)
     {
-        return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo "<img src=\"" . $basePath . "/" . $_img->createLink() . "\">";');
+        return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo "<img src=\"" . $proxyUrl . $basePath . "/" . $_img->createLink() . "\">";');
     }
 
 
@@ -186,7 +186,7 @@ EON;
 
     public function attrImg(MacroNode $node, PhpWriter $writer)
     {
-        return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo \' src="\' . $basePath . "/" . $_img->createLink() . \'"\'');
+        return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo \' src="\' . $proxyUrl . $basePath . "/" . $_img->createLink() . \'"\'');
     }
 
 

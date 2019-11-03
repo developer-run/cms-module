@@ -107,7 +107,7 @@ body {
 
 .login-logo a, .register-logo a {
     color: #eee;
-    text-shadow: 1px 0px 20px #eee;
+    text-shadow: 1px 0 20px #eee;
 }
 
 .icheckbox_square-blue, .iradio_square-blue {

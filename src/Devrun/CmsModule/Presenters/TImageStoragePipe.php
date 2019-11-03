@@ -22,6 +22,7 @@ trait TImageStoragePipe
     public function injectImageStorage(ImageManageStorage $imageStorage) {
         $this->imageStorage = $imageStorage;
         $this->template->_imageStorage = $imageStorage;
+        $this->template->proxyUrl = '';
     }
 
 

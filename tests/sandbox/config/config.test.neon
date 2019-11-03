@@ -1,9 +1,10 @@
 parameters:
 	database:
-		driver: pdo_sqlite
-		path: %dataDir%/test.sqlite
-		user:
-		password:
+#		driver: pdo_sqlite
+#		path: %dataDir%/test.sqlite
+		dbname: devrun_cms-module
+		user: saurian
+		password: 789
 
 	testUser:
 		username: admin
@@ -44,5 +45,5 @@ services:
 
 
 doctrine:
-	supportsForeignKeyConstraints: true
+#	supportsForeignKeyConstraints: true
 
