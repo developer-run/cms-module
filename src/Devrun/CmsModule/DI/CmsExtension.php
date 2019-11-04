@@ -191,7 +191,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
          * system
          */
         $builder->addDefinition($this->prefix('authenticator'))
-                ->setFactory(Authenticator::class, [$config['administration']['login']['name']], [$config['administration']['login']['password']])
+                ->setFactory(Authenticator::class, [$config['administration']['login']['name'], $config['administration']['login']['password']])
                 ->setInject();
 
 
