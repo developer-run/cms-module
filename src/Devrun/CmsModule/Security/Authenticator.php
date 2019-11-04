@@ -29,11 +29,13 @@ class Authenticator extends \Devrun\Security\Authenticator
     /**
      * Authenticator constructor.
      *
+     * @param $adminLogin
+     * @param $adminPassword
      * @param UserFacade $userFacade
      */
-    function __construct(UserFacade $userFacade)
+    public function __construct($adminLogin, $adminPassword, UserFacade $userFacade)
     {
-        parent::__construct();
+        parent::__construct($adminLogin, $adminPassword);
         $this->userFacade = $userFacade;
     }
 
