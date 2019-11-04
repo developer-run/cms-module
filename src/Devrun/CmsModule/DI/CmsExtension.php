@@ -18,6 +18,7 @@ use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Entities\SettingsEntity;
 use Devrun\CmsModule\InvalidStateException;
+use Devrun\CmsModule\Security\Authenticator;
 use Devrun\Config\CompilerExtension;
 use Devrun\Security\IAuthorizator;
 use Devrun\Utils\Debugger;
@@ -185,6 +186,13 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
                 ->addTag('route', array('priority' => 99));
         }
 */
+
+        /*
+         * system
+         */
+        $builder->addDefinition($this->prefix('authenticator'))
+                ->setType(Authenticator::class)
+                ->setInject();
 
 
         /*
