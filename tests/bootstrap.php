@@ -1,8 +1,8 @@
 <?php
 
-$loader = require __DIR__ . '/../vendor/autoload.php';
+$loader = require __DIR__ . '/../../../../vendor/autoload.php';
 
-$configurator = new \Devrun\Config\Configurator(dirname(__DIR__) . '/tests', $debugMode = null, $loader);
+$configurator = new \Devrun\Config\Configurator(dirname(__DIR__) . '/../../../app', $debugMode = null, $loader);
 
 /*
  * clear logs
@@ -23,13 +23,14 @@ error_reporting(~E_USER_DEPRECATED); // note ~ before E_USER_DEPRECATED
 $robotLoader = $configurator->createRobotLoader();
 $robotLoader
     ->addDirectory(dirname(__DIR__) . '/src')
+    ->addDirectory(dirname(__DIR__) . '/../front-module/src')
     ->ignoreDirs .= ', templates, test, resources';
 $robotLoader->register();
 
 $environment = 'test';
 
-$configurator->addConfig(__DIR__ . '/sandbox/config/config.neon');
-$configurator->addConfig(__DIR__ . "/sandbox/config/config.$environment.neon");
+$configurator->addConfig(__DIR__ . '/../../../../app/config/config.neon');
+$configurator->addConfig(__DIR__ . "/../../../../app/config/config.$environment.neon");
 
 $container = $configurator->createContainer();
 

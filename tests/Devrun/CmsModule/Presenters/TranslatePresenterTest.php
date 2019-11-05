@@ -21,6 +21,8 @@ use Nette\DI\Config\Adapters\NeonAdapter;
 class TranslatePresenterTest extends Presenter
 {
 
+    public static $migrations = true;
+
     protected function setUp()
     {
         parent::setUp();
@@ -46,7 +48,6 @@ class TranslatePresenterTest extends Presenter
         $this->assertInstanceOf('Nette\Application\Responses\RedirectResponse', $response);
         $this->assertEquals($this->uriCheck($presenter->link('//Login:')), $this->uriCheck($response->getUrl()));
     }
-
 
 
     /**
@@ -137,6 +138,9 @@ class TranslatePresenterTest extends Presenter
 
 
 
+    /**
+     * @throws \Nette\Utils\AssertionException
+     */
     public function testFifthKeys()
     {
         $this->sendLoginForm();
@@ -166,6 +170,9 @@ class TranslatePresenterTest extends Presenter
 
 
 
+    /**
+     * @throws \Nette\Utils\AssertionException
+     */
     public function testSixthKeys()
     {
         $this->sendLoginForm();
@@ -196,6 +203,9 @@ class TranslatePresenterTest extends Presenter
 
 
 
+    /**
+     * @throws \Nette\Utils\AssertionException
+     */
     public function testSeventhKeys()
     {
         $this->sendLoginForm();
@@ -244,14 +254,10 @@ class TranslatePresenterTest extends Presenter
     protected function initTranslateFile()
     {
         $context = $this->getContainer();
-        $dir = $context->getParameters()['modules']['cms']['path'] . "/tests/resources/translations";
-
-        $file = "$dir/test.cs.neon";
+        $dir     = $context->getParameters()['modules']['cms']['path'] . "tests/resources/translations";
+        $file    = "$dir/test.cs.neon";
 
         $neon = new NeonAdapter();
-        $data = $neon->load($file);
-
-        $dump = $neon->dump($data);
 
         $array = [
             'page'  => 'Strana',

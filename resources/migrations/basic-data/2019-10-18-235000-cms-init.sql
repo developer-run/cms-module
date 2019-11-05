@@ -1,0 +1,2 @@
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `birthday`, `gender`, `email`, `phone`, `username`, `nickname`, `password`, `new_password`, `street`, `city`, `psc`, `active`, `active_date_time`, `privacy`, `role`, `inserted`, `updated`) VALUES
+(1,	'Admin',	'Devrun',	NULL,	1,	'admin@devrun.cz',	NULL,	'admin-dev',	'AD',	'3346b7152dc91ab74c8e5083544b3988',	NULL,	NULL,	NULL,	NULL,	1,	NULL,	1,	'supervisor',	now(),	now());

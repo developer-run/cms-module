@@ -109,6 +109,9 @@ body {
     color: #eee;
     text-shadow: 1px 0 20px #eee;
 }
+.login-logo a b, .register-logo a b{
+    display: inline-block;
+}
 
 .icheckbox_square-blue, .iradio_square-blue {
     margin-right: 0.2em;
