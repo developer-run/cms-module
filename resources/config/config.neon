@@ -4,6 +4,7 @@ translation:
 includes:
 	- presenters.neon
 	- components.neon
+	- authorizator.neon
 
 #webloader:
 #	sourceDir: '%wwwDir%'

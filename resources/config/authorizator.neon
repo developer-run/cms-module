@@ -1,0 +1,78 @@
+services:
+	acl:
+		factory: Devrun\Security\Authorizator
+		setup:
+#			- addRole(guest)
+#			- addRole(member, guest)
+#			- addRole(admin)
+#			- addRole(supervisor, admin)
+#
+#			- deny(guest)
+#			- allow(admin)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Login)
+			- allow(guest, Cms:Login)
+			- deny(member, Cms:Login)
+			- deny(admin, Cms:Login)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Profile)
+			- allow(member, Cms:Profile)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Dashboard)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Default)
+			- allow(member, Cms:Default, default)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Page)
+			- allow(member, Cms:Page, edit)
+			- allow(admin, Cms:Page, [edit, editAllPackages, editNotations])
+			- deny(admin, Cms:Page, [published, viewUnpublishedPages])
+			- allow(supervisor, Cms:Page, [published, viewUnpublishedPages])
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Translate)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Images)
+			- deny(admin, Cms:Images, ['default', 'updateNamespace', 'removeNamespace!', delete!, 'viewTable!'])
+			- allow(supervisor, Cms:Images, ['default', 'updateNamespace', 'removeNamespace!', delete!, 'viewTable!'])
+
+# ------------------------------------------------------ #
+			- addResource(Cms:PageContent)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Module)
+			- deny(admin, Cms:Module)
+			- allow(supervisor, Cms:Module)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Log)
+			- deny(admin, Cms:Log)
+			- allow(supervisor, Cms:Log)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Domain)
+			- allow(member, Cms:Domain)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Route)
+			- deny(admin, Cms:Route)
+			- allow(supervisor, Cms:Route)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Users)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:NavigationTreePage)
+			- deny(admin, Cms:NavigationTreePage)
+			- allow(supervisor, Cms:NavigationTreePage)
+
+# ------------------------------------------------------ #
+			- addResource(Cms:Settings:Default)
+
+# ------------------------------------------------------ #

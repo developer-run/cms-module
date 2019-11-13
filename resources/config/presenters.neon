@@ -82,6 +82,17 @@ services:
 			priority: 25
 		]]
 
+	cms.presenters.routes:
+		class: Devrun\CmsModule\Presenters\RoutePresenter
+		tags: [devrun.presenter, administration: [
+			link: ':Cms:Route:default'
+			icon: fa-sitemap
+			category: Content
+			name: Routes
+			description: 'Manage routes...'
+			priority: 35
+		]]
+
 	cms.presenters.domains:
 		class: Devrun\CmsModule\Presenters\DomainPresenter
 		tags: [devrun.presenter, administration: [
@@ -90,6 +101,6 @@ services:
 			category: Content
 			name: Domains
 			description: 'Manage domains...'
-			priority: 35
+			priority: 45
 		]]
 
