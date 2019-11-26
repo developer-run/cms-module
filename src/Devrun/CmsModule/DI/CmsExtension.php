@@ -317,6 +317,10 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
             ])
             ->setInject(true);
 
+        $builder->addDefinition($this->prefix('control.carouselItemsControl'))
+                ->setImplement('Devrun\CmsModule\Controls\ICarouselItemsControlFactory')
+                ->setInject(true);
+
 
 
 //        $builder->addDefinition($this->prefix('control.nestablePagesEditControl'))

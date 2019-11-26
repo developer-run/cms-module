@@ -1,0 +1,39 @@
+<div n:if="$items" class="popular-products-slides owl-carousel border rounded gradient-vertical mb-30 p-10">
+
+	<!-- Single Product -->
+	<div n:foreach="$items as $item" class="single-product-wrapper">
+		<!-- Product Image -->
+		<div class="product-img">
+			<a href="{plink Product:detail $item->id}" class="ajax">
+				<img n:img="$item->images->first()->identifier, '250x250', fill" alt="{$item->name}" style="max-height: 250px">
+				<!-- Hover Thumb -->
+				<img n:if="$item->images->count() > 1" n:img="$item->images->get(1)->identifier, '250x250', fill" style="max-height: 250px" alt="{$item->name}" class="hover-img">
+				<!-- Favourite -->
+
+				{*
+				<div class="product-favourite">
+					<a href="#" class="favme fa fa-heart"></a>
+				</div>
+				*}
+			</a>
+		</div>
+		<!-- Product Description -->
+		<div class="product-description">
+			<a href="{plink Product:detail $item->id}" class="ajax">
+				<span>{$item->categories->last()->name}</span>
+				<h6>{$item->name}</h6>
+			</a>
+			<p class="product-price">{$item->price} Kč</p>
+
+			<!-- Hover Content -->
+			<div class="hover-content">
+				<!-- Add to Cart -->
+				{*
+				<div class="add-to-cart-btn">
+					<a href="#" class="btn essence-btn">Add to Cart</a>
+				</div>
+				*}
+			</div>
+		</div>
+	</div>
+</div>

@@ -76,3 +76,6 @@ services:
 			- addResource(Cms:Settings:Default)
 
 # ------------------------------------------------------ #
+			- addResource(Devrun\CmsModule\Administration\Controls\PagePhotoControl)
+
+# ------------------------------------------------------ #

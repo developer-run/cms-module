@@ -93,7 +93,6 @@ class LogPresenter extends AdminPresenter
     protected function createComponentGrid($name)
     {
         $grid = $this->createGrid($name);
-        $grid->setTranslator($this->translator);
         $grid->setDataSource($this->logs);
 
         $grid->addColumnText('id', 'Klíč')

@@ -9,13 +9,9 @@
 
 namespace Devrun\CmsModule\Presenters;
 
-use Devrun\CmsModule\Administration\Controls\IPageSettingsControlFactory;
-use Devrun\CmsModule\ArticleModule\Controls\IPageArticlesControlFactory;
-use Devrun\CmsModule\Controls\AdminControl;
 use Devrun\CmsModule\Controls\IPackageControlFactory;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
-use Devrun\CmsModule\PexesoModule\Controls\ISettingsCardsControlFactory;
 use Devrun\CmsModule\Repositories\ImageRepository;
 use Devrun\CmsModule\Repositories\RouteRepository;
 use Nette;
