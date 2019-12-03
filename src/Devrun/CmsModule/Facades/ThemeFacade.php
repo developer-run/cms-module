@@ -98,10 +98,7 @@ class ThemeFacade
      */
     public function generateThemeCss()
     {
-        if (($package = $this->packageEntity) === null) {
-            throw new InvalidStateException("settingsFromPackage() first");
-        }
-
+        $package = $this->getPackageEntity();
         $variableSettings = $this->getVariableSettings();
         $themeVariables = $this->getThemeVariables();
 
@@ -152,10 +149,7 @@ class ThemeFacade
      */
     public function getThemeVariables()
     {
-        if (!$packageEntity = $this->packageEntity) {
-            throw new InvalidStateException("settingsFromPackage() first");
-        }
-
+        $packageEntity = $this->getPackageEntity();
         return $packageEntity ? $packageEntity->getThemeVariables() : [];
     }
 
@@ -188,6 +182,52 @@ class ThemeFacade
         }
 
         return $filename;
+    }
+
+
+    /**
+     * @param bool $force
+     * @return string
+     */
+    private function getCustomLessFileName($force = false)
+    {
+        $moduleName = $this->getModuleName();
+        $themeName  = $this->getThemeName();
+        $customName = "custom-$themeName.less";
+        $filename   = $this->wwwDir . "/less/{$moduleName}/$customName";
+
+        if ($force && !file_exists($filename)) {
+            $content = "";
+            file_put_contents($filename, $content);
+        }
+
+        return $filename;
+    }
+
+
+    /**
+     * @return false|string
+     */
+    public function isCustomLess()
+    {
+        return file_exists($this->getCustomLessFileName(false));
+    }
+
+    /**
+     * @return false|string
+     */
+    public function loadCustomLess()
+    {
+        return file_get_contents($this->getCustomLessFileName(true));
+    }
+
+
+    /**
+     * @param $customLess
+     */
+    public function saveCustomLess($customLess)
+    {
+        file_put_contents($this->getCustomLessFileName(true), $customLess);
     }
 
 
@@ -231,6 +271,10 @@ class ThemeFacade
         $themeName = $this->getThemeName();
 
         if (!is_dir($dir = $this->wwwDir . "/css/{$moduleName}/themes")) {
+            if (!is_writable($dir)) {
+                throw new FileNotFoundException("{$dir} is not writable!");
+            }
+
             @mkdir($dir, 0775, true);
         }
 
@@ -257,6 +301,10 @@ class ThemeFacade
         $themeName = $this->getThemeName();
 
         if (!is_dir($imagesPath = $this->wwwDir . "/images/{$moduleName}/$themeName")) {
+            if (!is_writable($imagesPath)) {
+                throw new FileNotFoundException("{$imagesPath} is not writable!");
+            }
+
             @mkdir($imagesPath, 0775, true);
         }
 
@@ -374,6 +422,10 @@ class ThemeFacade
         // mask variables settings for form and less
         $settings = $this->getVariableSettings();
 
+        if ($values->custom) {
+            $this->saveCustomLess($values->custom);
+        }
+
         foreach ($values as $key => $value) {
             if (isset($settings[$key])) {
                 if ($value instanceof FileUpload) {
@@ -427,6 +479,29 @@ class ThemeFacade
     public function getThemeName()
     {
         return $this->themeName;
+    }
+
+
+
+    /**
+     * @return PackageEntity
+     */
+    public function getPackageEntity(): PackageEntity
+    {
+        if (!$packageEntity = $this->packageEntity) {
+            throw new InvalidStateException("settingsFromPackage() first");
+        }
+
+        return $this->packageEntity;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->getPackageEntity()->getModule();
     }
 
 

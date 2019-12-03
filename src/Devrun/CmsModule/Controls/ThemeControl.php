@@ -15,10 +15,7 @@ use Devrun\CmsModule\Facades\ThemeFacade;
 use Devrun\CmsModule\Forms\DevrunForm;
 use Devrun\CmsModule\Forms\IDevrunForm;
 use Devrun\CmsModule\Forms\IThemeFormFactory;
-use Devrun\CmsModule\InvalidArgumentException;
 use Kdyby\Doctrine\EntityManager;
-use Nette\Http\FileUpload;
-use Nette\Utils\Strings;
 
 interface IThemeControlFactory
 {
@@ -67,27 +64,24 @@ class ThemeControl extends Control
     protected function createComponentForm($name)
     {
         $form = $this->devrunForm->create();
+//        $form = $this->themeFormFactory->create();
 
 
         $this->themeFacade->settingsFromPackage($this->packageEntity);
 
         $variableSettings = $this->themeFacade->getVariableSettings();
         $themeVariables   = $this->themeFacade->getThemeVariables();
-//        dump($variableSettings);
-//        dump($themeVariables);
-
-//        $form = $this->themeFormFactory->create();
+        $customThemeLess  = $this->themeFacade->isCustomLess() ? $this->themeFacade->loadCustomLess() : '';
 
         $form->create();
-
         $form->addGroup('Základní nastavení');
 
 //        $container = $form->addContainer('themeVariables');
 
-
         foreach ($variableSettings as $key => $variableSetting) {
             $input = isset($variableSetting['input']) ? $variableSetting['input'] : null;
             $type  = isset($variableSetting['type']) ? $variableSetting['type'] : null;
+            $items = isset($variableSetting['items']) ? $variableSetting['items'] : [];
             $label = isset($variableSetting['label']) ? $variableSetting['label'] : null;
 
             if ($input == "text") {
@@ -95,6 +89,9 @@ class ThemeControl extends Control
 
             } elseif ($input == "textArea") {
                 $control = $form->addTextArea($key, $label);
+
+            } elseif ($input == "select") {
+                $control = $form->addSelect($key, $label, $items);
 
             } elseif ($input == "upload") {
                 $control = $form->addUpload($key, $label);
@@ -138,25 +135,29 @@ class ThemeControl extends Control
 
         }
 
+        $form->addGroup('Rozšířené nastavení');
+        $form->addTextArea('custom', 'Doplňující stylopis (css, less)', 1, 15);
         $form->addSubmit('send', 'Nastavit');
 
-        $form->setDefaults($themeVariables);
+        $form->setDefaults($themeVariables + ['custom' => $customThemeLess]);
 //        $form->bindEntity($this->packageEntity);
 
         $form->bootstrap3Render();
         $form->onSuccess[] = function (DevrunForm $form, $values) {
 
-//            dump($values);
-//            dump($form);
-
-            $packageEntity = $this->getPackageEntity();
-
+            $packageEntity   = $this->getPackageEntity();
             $modifyVariables = $this->themeFacade->modifyAndSendVariablesFromForm($values, $packageEntity);
             $modifyVariables = array_merge($packageEntity->getThemeVariables(), $modifyVariables);
 
             $packageEntity->setThemeVariables($modifyVariables);
 
-            $themeFacade = $this->themeFacade->generateThemeCss();
+            try {
+                $themeFacade = $this->themeFacade->generateThemeCss();
+
+            } catch (\Less_Exception_Compiler $exception) {
+                $this->presenter->flashMessage($exception->getMessage(), 'danger');
+                $this->redirect('this');
+            }
 
             $css = $themeFacade->getCss();
             $themeFacade->save();

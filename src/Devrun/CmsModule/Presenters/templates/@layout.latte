@@ -301,12 +301,14 @@
 		</section>
 
 		<!-- Main content -->
-		{snippet flash}
-			{control flashMessageControl}
-			{control flashMessageControl:toast}
-		{/snippet}
-		<section n:snippet="content" class="content">
-			{include content}
+		<section class="content">
+			{snippet flash}
+				{control flashMessageControl}
+				{control flashMessageControl:toast}
+			{/snippet}
+			{snippet content}
+				{include content}
+			{/snippet}
 		</section>
 		{control modalActionControl}
 	</div>
