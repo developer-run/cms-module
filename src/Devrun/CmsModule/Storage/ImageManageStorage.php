@@ -16,14 +16,12 @@ use Devrun\CmsModule\InvalidStateException;
 use Devrun\CmsModule\Repositories\ImageRepository;
 use Devrun\CmsModule\Repositories\RouteRepository;
 use Devrun\Storage\ImageStorage;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Kdyby\Events\Subscriber;
 use Kdyby\Translation\Translator;
-use Nette\Application\Application;
 use Nette\Application\Request;
 use Nette\Application\UI\Presenter;
 use Nette\SmartObject;
-use Nette\Utils\Image;
-use Nette\Utils\Validators;
 use Tracy\Debugger;
 use Tracy\ILogger;
 
@@ -151,7 +149,15 @@ class ImageManageStorage implements Subscriber
                      * @see FlushListener
                      */
                     if (!$this->autoFlush) {
-                        $this->imageRepository->getEntityManager()->flush();
+                        try {
+                            $this->imageRepository->getEntityManager()->flush();
+
+                        } catch (UniqueConstraintViolationException $e) {
+                            Debugger::log($e, "duplicateIdentifier");
+
+                        } catch (\Exception $e) {
+                            Debugger::log($e, ILogger::EXCEPTION);
+                        }
                     }
                 }
             }

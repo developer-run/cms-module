@@ -77,11 +77,7 @@ class PageRoute extends Route implements Subscriber
         $this->defaultDomain = $defaultDomain;
 
         $availLocales = implode("|", $availableLocales);
-//        $domainMask   = $defaultDomain ? '//<host .*>//<domain .*>/' : '';
-//        $domainMask   = $defaultDomain ? '[<host .*>]//<domain .*>/' : '';
-//        $domainMask   = $defaultDomain ? '%host%//<domain .*>/' : '';
-        $domainMask   = $defaultDomain ? '//<domain .*>/' : '';
-//        $domainMask   =  '';
+        $domainMask   = $defaultDomain ? '//<domain .*>/' : null;
 
         parent::__construct($prefix . "{$domainMask}[<locale=$defaultLocale $availLocales>/]<slug .+>[/<module qwertzuiop>/<presenter qwertzuiop>][/<id \\d+>]", $parameters + array(
 //                'presenter' => self::DEFAULT_PRESENTER,
@@ -125,9 +121,7 @@ class PageRoute extends Route implements Subscriber
 //                        return $q;
 //                    },
                 )
-            ));   // $oneWay ? Route::ONE_WAY : NULL
-
-
+            ), $oneWay ? Route::ONE_WAY : NULL);
 
     }
 
@@ -256,28 +250,28 @@ class PageRoute extends Route implements Subscriber
             $parameters['pageId'] = $page;
         }
 
+        if (isset($routeParameters['id']) && $routeParameters['id'] == '?') {
+            unset($routeParameters['id']);
+        }
+
         $parameters = $routeParameters + $parameters;
         $type = explode(':', $routeType);
-
         $parameters['action'] = $type[count($type) - 1];
 
 //        $parameters['domain'] = "localhost/pixman/souteze.pixman.cz/web/wwww";
 //        $parameters['presenter'] = "Homepage";
 //        $parameters[self::MODULE_KEY] = 'Calendar';
-
-
 //        $parameters['locale'] = $appRequest->parameters['locale'] ? : $this->defaultLanguage;
+
         unset($type[count($type) - 1]);
         $presenter = join(':', $type);
         $presenter = Nette\Utils\Strings::replace($presenter, "/^:/");
 
-//        dump($presenter);
-//        $presenter = "Cms:Pages:Homepage:Pokus:";
+//        dump($parameters);
 
         $appRequest->setParameters($parameters);
         $appRequest->setPresenterName($presenter);
-//        $appRequest->setPresenterName("Pexeso");
-//        $appRequest->setFlag(Route::SECURED);
+
         return $appRequest;
     }
 
@@ -288,12 +282,8 @@ class PageRoute extends Route implements Subscriber
 //        Debugger::barDump($refUrl);
 
 
-//        die("ASDDD");
-
 //        $data = parent::constructUrl($appRequest, $refUrl);
-
 //        dump($data);
-
 //        dump($appRequest);
 
 
@@ -402,16 +392,13 @@ class PageRoute extends Route implements Subscriber
 //            return null;
 
 
+            $uri       = ":" . $appRequest->getPresenterName() . ":" . $parameters['action'];
+            $id        = $parameters['id'] ?? null;
+            $lang      = $parameters['locale'] ?? null;
+            $packageId = $parameters['package'] ?? null;
 
-
-
-            $uri = ":" . $appRequest->getPresenterName() . ":" . $parameters['action'];
-            $packageId = isset($parameters['package']) ? $parameters['package'] : null;
-            $id = isset($parameters['id']) ? $parameters['id'] : null;
-            $lang = isset($parameters['locale']) ? $parameters['locale'] : null;
-
-//            dump($parameters);
-//            dump($id);
+//            Debugger::barDump($parameters);
+//            Debugger::barDump($id);
 //            dump($uri);
 //            dump($packageId);
 
@@ -432,7 +419,9 @@ class PageRoute extends Route implements Subscriber
             }
 
             if ($id) {
-                $query->andWhere('e.params = :params')->setParameter('params', json_encode(['id' => $id]));
+                $query->andWhere('e.params = :params OR e.params = :range')
+                    ->setParameter('params', json_encode(['id' => $id], JSON_NUMERIC_CHECK))
+                    ->setParameter('range', json_encode(['id' => '?']));
             }
 
             $routeEntity = $query
@@ -469,7 +458,7 @@ class PageRoute extends Route implements Subscriber
         $this->modifyConstructRequest($appRequest, $routeEntity, $parameters);
         $data = parent::constructUrl($appRequest, $refUrl);
 
-//        dump($data);
+//        Debugger::barDump($data);
 //        die();
 
 
@@ -507,7 +496,10 @@ class PageRoute extends Route implements Subscriber
             }
         }
 
-//        $request->setFlag(Route::SECURED, true);
+        if ($route->getParams($raw = true) != '{"id":"?"}' ) {
+            unset($parameters['id']);
+        }
+
         $request->setPresenterName(self::DEFAULT_MODULE . ':' . self::DEFAULT_PRESENTER);
         $request->setParameters(array(
                 'module' => self::DEFAULT_MODULE,

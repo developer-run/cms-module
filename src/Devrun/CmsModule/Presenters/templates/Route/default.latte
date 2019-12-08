@@ -1,0 +1,22 @@
+{block headerTitle}{_admin.translate_edit}{/block}
+{block headerSmallTitle}({_admin.template_content}){/block}
+
+{block content}
+
+    <div class="well">
+
+        <code>
+            define Devrun\Utils\PresenterUtil::PUBLIC_PRESENTER_TAG     [public.presenter]<br>
+            <br>
+
+            @example config:<br>
+            pexeso.presenters.homepage: (presenter module namespace) <br>
+            class: FrontModule\Presenters\HomepagePresenter<br>
+            tags: [public.presenter]<br>
+        </code>
+    </div>
+
+
+    <div class="grido">
+        {control pagesGrid}
+    </div>
