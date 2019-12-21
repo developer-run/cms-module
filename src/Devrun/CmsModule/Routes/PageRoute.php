@@ -10,7 +10,6 @@
 namespace Devrun\CmsModule\Routes;
 
 use Devrun;
-use Devrun\CmsModule\Entities\PackageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Entities\RouteTranslationEntity;
 use Devrun\CmsModule\Facades\PackageFacade;
@@ -20,7 +19,6 @@ use Kdyby\Events\Subscriber;
 use Nette;
 use Nette\Application;
 use Nette\Application\Routers\Route;
-use Tracy\Debugger;
 
 class PageRoute extends Route implements Subscriber
 {
@@ -96,7 +94,7 @@ class PageRoute extends Route implements Subscriber
                 ),
                 'module' => self::DEFAULT_MODULE,
 //                'module' => null,
-//                'package' => null,
+//                'package' => self::DEFAULT_PACKAGE,
 //                'package' => array(
 //                    self::VALUE => self::DEFAULT_PACKAGE,
 //                    self::FILTER_IN => function($q) {
@@ -108,7 +106,7 @@ class PageRoute extends Route implements Subscriber
 //                ),
                 'action' => self::DEFAULT_ACTION,
 //                'id' => NULL,
-                'locale' => 'cs',
+                'locale' => $defaultLocale,
                 'slug' => array(
                     self::VALUE => '',
 //                    self::FILTER_IN => function($q) {
@@ -127,20 +125,9 @@ class PageRoute extends Route implements Subscriber
 
     public function match(Nette\Http\IRequest $httpRequest)
     {
-        $request = parent::match($httpRequest);
-//        Debugger::barDump($httpRequest);
-//        Debugger::barDump($request);
-
         if (($request = parent::match($httpRequest)) === NULL || !array_key_exists('slug', $request->parameters)) {
-//            Debugger::barDump("neodpovídá?");
             return NULL;
         }
-
-//        dump($httpRequest);
-//        dump($request);
-
-//        die();
-//        Debugger::barDump($request);
 
         $parameters = $request->parameters;
         $generateDomain = $request->getParameter('generateDomain') ?? true;
@@ -159,15 +146,12 @@ class PageRoute extends Route implements Subscriber
         }
 
         $key = array($httpRequest->getUrl()->getAbsoluteUrl(), $parameters['locale']);
-//        Debugger::barDump($key, 'match');
-
         $data = $this->cache->load($key);
         if ($data) {
-            return $this->modifyMatchRequest($request, $data[0], $data[1], $data[2], $data[3], $parameters);
+            return $this->modifyMatchRequest($request, $data[0], $data[1], $data[2], $data[3], $data[4], $parameters);
         }
 
         /** @var RouteTranslationEntity $routeTranslation */
-//        $routeTranslation = $this->em->getRepository(RouteTranslationEntity::class)->findOneBy(['url' => $parameters['slug']]);
         $query = $this->em->createQueryBuilder()
             ->addSelect('t')
             ->addSelect('r')
@@ -195,59 +179,62 @@ class PageRoute extends Route implements Subscriber
             ->getQuery()
             ->getOneOrNullResult();
 
-//        Debugger::barDump($routeTranslation);
-//        die();
-
         if (!$routeTranslation) {
             return null;
         }
 
-//        dump($request->getPresenterName());
-
-//        dump($routeTranslation);
-
-
         /** @var RouteEntity $route */
         $route = $routeTranslation->getTranslatable();
 
-
-//        dump($route);
-//        dump($route->getPage());
-
-
-//        die();
-
         if ($this->useCache) {
-            $this->cache->save($key, array($route->id, $route->getPage()->id, $route->getUri(), $route->getParams()), array(
-                Nette\Caching\Cache::TAGS => array(RouteEntity::CACHE),
-            ));
+            $this->cache->save($key, array(
+                $route->id,
+                $route->getPage()->id,
+                $route->getUri(),
+                $route->getPackage() ? $route->getPackage()->getId() : null,
+                $route->getParams()),
+                array(
+                    Nette\Caching\Cache::TAGS => array(RouteEntity::CACHE),
+                ));
         }
 
-
-        $return = $this->modifyMatchRequest($request, $route, $route->getPage(), $route->getUri(), $route->getParams(), $parameters);
-
-
-//        dump($return);
-
-        return $return;
-
+        return $this->modifyMatchRequest($request, $route, $route->getPage(), $route->getUri(), $route->getPackage(), $route->getParams(), $parameters);
     }
 
 
-    protected function modifyMatchRequest(\Nette\Application\Request $appRequest, $route, $page, $routeType, $routeParameters, $parameters)
+    /**
+     * modify request by route, page, package + route parameters
+     *
+     * @param Application\Request $appRequest
+     * @param $route
+     * @param $page
+     * @param $routeType
+     * @param $package
+     * @param $routeParameters
+     * @param $parameters
+     * @return Application\Request
+     */
+    protected function modifyMatchRequest(\Nette\Application\Request $appRequest, $route, $page, $routeType, $package, $routeParameters, $parameters)
     {
         if (is_object($route)) {
-            $parameters['routeId'] = $route->id;
+            $parameters['route'] = $route->id;
             $parameters['_route'] = $route;
         } else {
-            $parameters['routeId'] = $route;
+            $parameters['route'] = $route;
         }
 
         if (is_object($page)) {
-            $parameters['pageId'] = $page->id;
+            $parameters['page'] = $page->id;
             $parameters['_page'] = $page;
         } else {
-            $parameters['pageId'] = $page;
+            $parameters['page'] = $page;
+        }
+
+        if (is_object($package)) {
+            $parameters['package'] = $package->id;
+            $parameters['_package'] = $package;
+        } else {
+            $parameters['package'] = $package;
         }
 
         if (isset($routeParameters['id']) && $routeParameters['id'] == '?') {
@@ -258,16 +245,9 @@ class PageRoute extends Route implements Subscriber
         $type = explode(':', $routeType);
         $parameters['action'] = $type[count($type) - 1];
 
-//        $parameters['domain'] = "localhost/pixman/souteze.pixman.cz/web/wwww";
-//        $parameters['presenter'] = "Homepage";
-//        $parameters[self::MODULE_KEY] = 'Calendar';
-//        $parameters['locale'] = $appRequest->parameters['locale'] ? : $this->defaultLanguage;
-
         unset($type[count($type) - 1]);
         $presenter = join(':', $type);
         $presenter = Nette\Utils\Strings::replace($presenter, "/^:/");
-
-//        dump($parameters);
 
         $appRequest->setParameters($parameters);
         $appRequest->setPresenterName($presenter);
@@ -279,89 +259,25 @@ class PageRoute extends Route implements Subscriber
 
     public function constructUrl(Application\Request $appRequest, Nette\Http\Url $refUrl)
     {
-//        Debugger::barDump($refUrl);
-
-
-//        $data = parent::constructUrl($appRequest, $refUrl);
-//        dump($data);
-//        dump($appRequest);
-
-
         $parameters = $appRequest->getParameters();
-//        Debugger::barDump($parameters);
-//        Debugger::barDump($refUrl);
-
-
-
-
-/*        Debugger::barDump($parameters);
-
-        unset($parameters['_route']);
-        unset($parameters['_page']);
-        unset($parameters['routeId']);
-        unset($parameters['pageId']);
-//        $parameters['package'] = 1;
-//        $parameters['id'] = 1;
-//        $parameters['package'] = null;
-
-//        $parameters['presenter'] = "Homepage";
-//        $parameters['presenter'] = "Form";
-//        $parameters['module'] = "Pexeso";
-//        $parameters['module'] = null;
-
-//        dump($parameters);
-
-
-
-//        $appRequest->setPresenterName('Pexeso:Homepage');
-//        $appRequest->setPresenterName('Pexeso:Form');
-        $appRequest->setParameters($parameters);
-//    dump($appRequest);
-
-        $data = parent::constructUrl($appRequest, $refUrl);
-
-
-
-//        Debugger::barDump($parameters);
-        Debugger::barDump($data);
-        Debugger::barDump($appRequest);
-//        Debugger::barDump($refUrl);
-//        dump($data);
-
-
-        if ($parameters['package'] == 1) {
-//          $data = "http://localhost/pixman/souteze.pixman.cz/web/www/marama-form/";
-
-//            $parameters['slug'] = 'marama-form';
-
-            $data = $refUrl->absoluteUrl . "marama-form";
-//            $data = $refUrl->absoluteUrl . "pexeso-form";
-        }
-
-
-//        $data = $refUrl->absoluteUrl . "pexeso-form";
-
-        return $data;
-
-        dump($data);
-        die("ASD");
-*/
-
-
-//        dump($parameters);
-
-        $key = ['presenter' => $appRequest->getPresenterName()] + (array)$parameters;
-//        Debugger::barDump($key, 'constructUrl');
+        $key        = ['presenter' => $appRequest->getPresenterName()] + (array)$parameters;
 
         unset($key['_route']);
         unset($key['_page']);
+        unset($key['_package']);
+
+        /*
+         * compatibility, can delete this yet
+         */
         if (isset($key['route']) && is_object($key['route'])) {
             $key['route'] = $key['route'] instanceof RouteEntity ? $key['route']->id : $key['route']->route->id;
         }
-        unset($key['page']);
-
-//        dump($parameters);
-//        dump($key);
+        if (isset($key['page']) && is_object($key['page']) && $key['page'] instanceof Devrun\CmsModule\Entities\PageEntity) {
+            $key['page'] = $key['page']->id;
+        }
+        if (isset($key['package']) && is_object($key['package']) && $key['package'] instanceof Devrun\CmsModule\Entities\PackageEntity) {
+            $key['package'] = $key['package']->id;
+        }
 
         $data = $this->cache->load($key);
         if ($data) {
@@ -375,32 +291,18 @@ class PageRoute extends Route implements Subscriber
             $route = is_object($parameters['route'])
                 ? ($parameters['route'] instanceof RouteEntity ? $parameters['route']->route->id : $parameters['route']->id)
                 : $parameters['route'];
-            unset($parameters['route']);
 
         } elseif (isset($parameters['_route'])) {
             $routeEntity = $parameters['_route'];
             $route = $routeEntity->id;
 
-        } elseif (isset($parameters['routeId'])) {
-            $route = $parameters['routeId'];
-
         } else {
             // pokusíme se sestavit url bez routy, to provedeme pomocí presenter requestu, balíčku a případných parametrů
-
-//            dump($appRequest);
-//            Debugger::barDump($appRequest);
-//            return null;
-
 
             $uri       = ":" . $appRequest->getPresenterName() . ":" . $parameters['action'];
             $id        = $parameters['id'] ?? null;
             $lang      = $parameters['locale'] ?? null;
             $packageId = $parameters['package'] ?? null;
-
-//            Debugger::barDump($parameters);
-//            Debugger::barDump($id);
-//            dump($uri);
-//            dump($packageId);
 
             $query = $this->routeRepository->createQueryBuilder('e')
                 ->addSelect('t')
@@ -446,21 +348,17 @@ class PageRoute extends Route implements Subscriber
 
         unset($parameters['_route']);
         unset($parameters['_page']);
-        unset($parameters['routeId']);
-        unset($parameters['pageId']);
+        unset($parameters['_package']);
+        unset($parameters['route']);
+        unset($parameters['page']);
+        unset($parameters['package']);
 
         if (!$routeEntity) {
             $routeEntity = $this->routeRepository->find($route);
         }
 
-//        dump($routeEntity);
-
         $this->modifyConstructRequest($appRequest, $routeEntity, $parameters);
         $data = parent::constructUrl($appRequest, $refUrl);
-
-//        Debugger::barDump($data);
-//        die();
-
 
         if ($this->useCache) {
             $this->cache->save($key, $data, array(
@@ -505,7 +403,6 @@ class PageRoute extends Route implements Subscriber
                 'module' => self::DEFAULT_MODULE,
                 'domain' => $domain,
                 'presenter' => self::DEFAULT_PRESENTER,
-                'package' => self::DEFAULT_PACKAGE,
                 'action' => self::DEFAULT_ACTION,
                 'locale' => $locale,
                 'slug' => $slug,

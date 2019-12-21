@@ -106,13 +106,9 @@ class RouteRepository extends EntityRepository
 
     public function getRouteFromApplicationRequest(Nette\Application\Request $request)
     {
-        if (!$route = $request->getParameter('_route')) {
-            if ($routeId = $request->getParameter('routeId')) {
-                $route = $this->find($routeId);
-            }
-        }
-
-        return $route;
+        return ($routeId = $request->getParameter('route'))
+            ? $this->find($routeId)
+            : null;
     }
 
 
