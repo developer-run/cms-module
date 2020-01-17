@@ -10,7 +10,7 @@
 namespace Devrun\CmsModule\Facades\ImageJobs;
 
 use Devrun\CmsModule\Entities\IImage;
-use Devrun\Doctrine\Entities\Attributes\Translation;
+use Devrun\DoctrineModule\Entities\Attributes\Translation;
 use Devrun\Storage\ImageNameScript;
 use Nette\Http\FileUpload;
 use Nette\Utils\Image;

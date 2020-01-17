@@ -10,7 +10,7 @@
 namespace Devrun\CmsModule\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
-use Devrun\Doctrine\Entities\Attributes\Translation;
+use Devrun\DoctrineModule\Entities\Attributes\Translation;
 use Kdyby\Doctrine\Entities\MagicAccessors;
 
 /**

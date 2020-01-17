@@ -10,7 +10,7 @@
 namespace Devrun\CmsModule\Tools\Monolog\Handler;
 
 use Devrun\CmsModule\Entities\LogEntity;
-use Devrun\Security\LoggedUser;
+use Devrun\Security\User;
 use Kdyby\Doctrine\EntityManager;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
@@ -21,8 +21,8 @@ class DbHandler extends AbstractProcessingHandler
     /** @var EntityManager */
     private $entityManager;
 
-    /** @var LoggedUser */
-    private $loggedUser;
+    /** @var User */
+    private $user;
 
     /** @var bool */
     private $autoFlush = false;
@@ -32,22 +32,26 @@ class DbHandler extends AbstractProcessingHandler
      * DbHandler constructor.
      *
      * @param EntityManager $entityManager
+     * @param User $user
+     * @param int $level
+     * @param bool $bubble
      */
-    public function __construct(EntityManager $entityManager, LoggedUser $loggedUser, $level = Logger::DEBUG, $bubble = true)
+    public function __construct(EntityManager $entityManager, User $user, $level = Logger::DEBUG, $bubble = true)
     {
         parent::__construct($level, $bubble);
         $this->entityManager = $entityManager;
-        $this->loggedUser    = $loggedUser;
+        $this->user          = $user;
     }
 
 
     /**
      * Writes the record down to the log of the implementing handler
      *
-     * @param  array $record
+     * @param array $record
      * @example $this->logger->info("some", ['target' => $userEntity, 'targetID' => 125, 'flush' => false]);
      *
      * @return void
+     * @throws \Exception
      */
     protected function write(array $record)
     {
@@ -85,7 +89,7 @@ class DbHandler extends AbstractProcessingHandler
             $targetID = $record['context']['targetID'];
         }
 
-        $userEntity = $this->loggedUser->getUserEntity();
+        $userEntity = $this->user->getIdentity();
         $role = $userEntity ? ucfirst($userEntity->getRole()) : 'guest';
 
         $logEntity = new LogEntity($userEntity, $realClassName, $targetID, $action);

@@ -9,8 +9,8 @@
 
 namespace Devrun\CmsModule\Entities;
 
-use Devrun\Doctrine\Entities\IdentifiedEntityTrait;
-use Devrun\Doctrine\Entities\UserEntity;
+use Devrun\DoctrineModule\Entities\IdentifiedEntityTrait;
+use Devrun\CmsModule\Entities\UserEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\MagicAccessors;
 
@@ -34,7 +34,7 @@ class PackageUsersEntity
 
     /**
      * @var UserEntity
-     * @ORM\ManyToOne(targetEntity="Devrun\Doctrine\Entities\UserEntity", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Devrun\CmsModule\Entities\UserEntity", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $user;

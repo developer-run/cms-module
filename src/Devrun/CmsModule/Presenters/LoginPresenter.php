@@ -10,14 +10,14 @@
 namespace Devrun\CmsModule\Presenters;
 
 use Devrun\CmsModule\Controls\FlashMessageControl;
+use Devrun\CmsModule\Entities\UserEntity;
 use Devrun\CmsModule\Forms\ForgottenPasswordForm;
 use Devrun\CmsModule\Forms\IForgottenPasswordFormFactory;
 use Devrun\CmsModule\Forms\ILoginFormFactory;
 use Devrun\CmsModule\Forms\IRegistrationFormFactory;
 use Devrun\CmsModule\Forms\LoginForm;
 use Devrun\CmsModule\Forms\RegistrationForm;
-use Devrun\Doctrine\Entities\UserEntity;
-use Devrun\Doctrine\Repositories\UserRepository;
+use Devrun\CmsModule\Repositories\UserRepository;
 use Nette\Security\AuthenticationException;
 
 class LoginPresenter extends AdminPresenter

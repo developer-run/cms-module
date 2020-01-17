@@ -105,7 +105,7 @@ EOT
         $em = $this->em;
         $em->getConnection()
             ->getConfiguration()
-            ->setSQLLogger($sqlLogger = new \Devrun\Doctrine\Logging\SQLLogger());
+            ->setSQLLogger($sqlLogger = new \Devrun\DoctrineModule\Logging\SQLLogger());
 
         try {
             $sqlQueries = [];

@@ -2,6 +2,8 @@
 
 namespace Devrun\CmsModule\Security;
 
+use Devrun\CmsModule\Entities\UserEntity;
+use Devrun\CmsModule\Repositories\UserRepository;
 use Devrun\Facades\UserFacade;
 use Nette;
 
@@ -12,7 +14,6 @@ use Nette;
 class Authenticator extends \Devrun\Security\Authenticator
 {
 
-
     const
         COLUMN_ID = 'id',
         COLUMN_NAME = 'username',
@@ -22,8 +23,8 @@ class Authenticator extends \Devrun\Security\Authenticator
         COLUMN_MEMBER = 'member',
         COLUMN_MEMBER_ID = 'memberId';
 
-    /** @var UserFacade */
-    private $userFacade;
+    /** @var UserRepository */
+    private $userRepository;
 
 
     /**
@@ -31,12 +32,12 @@ class Authenticator extends \Devrun\Security\Authenticator
      *
      * @param $adminLogin
      * @param $adminPassword
-     * @param UserFacade $userFacade
+     * @param UserRepository $userRepository
      */
-    public function __construct($adminLogin, $adminPassword, UserFacade $userFacade)
+    public function __construct($adminLogin, $adminPassword, UserRepository $userRepository)
     {
         parent::__construct($adminLogin, $adminPassword);
-        $this->userFacade = $userFacade;
+        $this->userRepository = $userRepository;
     }
 
 
@@ -45,7 +46,7 @@ class Authenticator extends \Devrun\Security\Authenticator
      *
      * @param array $credentials
      *
-     * @return Nette\Security\Identity
+     * @return UserEntity
      * @throws Nette\Security\AuthenticationException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -63,23 +64,21 @@ class Authenticator extends \Devrun\Security\Authenticator
             $password = null;
         }
 
-        /** @var $row array */
-        $row = $this->userFacade->findByLogin($username);
+        /** @var $row UserEntity */
+        $row = $this->userRepository->findOneBy([self::COLUMN_NAME => $username]);
 
         if (!$row) {
             throw new Nette\Security\AuthenticationException('Neplatné přihlašovací údaje', self::IDENTITY_NOT_FOUND);
 
-        } elseif ($username !== $row[self::COLUMN_NAME]) {
+        } elseif ($username !== $row->{self::COLUMN_NAME}) {
             throw new Nette\Security\AuthenticationException('Neplatné přihlašovací údaje', self::INVALID_CREDENTIAL);
 
-        } elseif (md5($username . $password) !== $row[self::COLUMN_PASSWORD_HASH]) {
+        } elseif (md5($username . $password) !== $row->{self::COLUMN_PASSWORD_HASH}) {
             throw new Nette\Security\AuthenticationException('Neplatné přihlašovací údaje', self::INVALID_CREDENTIAL);
         }
 
-        $arr = $row;
-        unset($arr[self::COLUMN_PASSWORD_HASH]);
-        unset($arr[self::COLUMN_NEW_PASSWORD_HASH]);
-        return new Nette\Security\Identity($row[self::COLUMN_ID], $row[self::COLUMN_ROLE], $arr);
+        return $row;
+//        return new Nette\Security\Identity($row[self::COLUMN_ID], $row[self::COLUMN_ROLE], $arr);
     }
 
 

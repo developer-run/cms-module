@@ -10,7 +10,7 @@
 namespace Devrun\CmsModule\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
-use Devrun\Doctrine\Entities\IdentifiedEntityTrait;
+use Devrun\DoctrineModule\Entities\IdentifiedEntityTrait;
 use Kdyby\Doctrine\Entities\MagicAccessors;
 
 /**

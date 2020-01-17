@@ -13,7 +13,7 @@ use Devrun\CmsModule\Controls\FlashMessageControl;
 use Devrun\CmsModule\Forms\IProfileFormFactory;
 use Devrun\CmsModule\Forms\ProfileForm;
 use Devrun\CmsModule\Repositories\PackageRepository;
-use Devrun\Doctrine\Entities\UserEntity;
+use Devrun\CmsModule\Entities\UserEntity;
 
 class ProfilePresenter extends AdminPresenter
 {

@@ -11,7 +11,7 @@ namespace Devrun\CmsModule\Forms;
 
 use Devrun\CmsModule\Controls\FlashMessageControl;
 use Devrun\CmsModule\Presenters\AdminPresenter;
-use Devrun\Doctrine\Entities\UserEntity;
+use Devrun\CmsModule\Entities\UserEntity;
 use Flame\Application\UI\Form;
 use Kdyby\Translation\Phrase;
 use Kdyby\Translation\Translator;

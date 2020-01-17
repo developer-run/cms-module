@@ -12,17 +12,15 @@ namespace Devrun\CmsModule\Presenters;
 use Devrun\Application\UI\Presenter\BasePresenter;
 use Devrun\CmsModule\Administration\AdministrationManager;
 use Devrun\CmsModule\Administration\Controls\IModalActionControlFactory;
-use Devrun\CmsModule\Administration\Controls\SettingsControl;
 use Devrun\CmsModule\Controls\DataGrid;
 use Devrun\CmsModule\Controls\FlashMessageControl;
 use Devrun\CmsModule\Controls\IFlashMessageControlFactory;
 use Devrun\CmsModule\Controls\IJSEnvironmentControl;
 use Devrun\CmsModule\Controls\INavigationPageControlFactory;
+use Devrun\CmsModule\Entities\UserEntity;
 use Devrun\CmsModule\Facades\PageFacade;
 use Devrun\CmsModule\Facades\SettingsFacade;
-use Devrun\Doctrine\DoctrineForms\EntityFormMapper;
-use Devrun\Doctrine\Entities\UserEntity;
-use Devrun\Facades\UserFacade;
+use Devrun\DoctrineModule\DoctrineForms\EntityFormMapper;
 use Devrun\Module\ModuleFacade;
 use Devrun\ServiceNotFoundException;
 use Devrun\Utils\Arrays;
@@ -54,9 +52,6 @@ class AdminPresenter extends BasePresenter
 
     /** @var SettingsFacade @inject */
     public $settingsFacade;
-
-    /** @var UserFacade @inject */
-    public $userFacade;
 
     /** @var EntityFormMapper @inject */
     public $entityFormMapper;
@@ -126,10 +121,6 @@ class AdminPresenter extends BasePresenter
 
             dump($e);
             throw new Nette\InvalidStateException($e->getMessage());
-        }
-
-        if ($this->getUser()->isLoggedIn()) {
-            $this->userEntity = $this->userFacade->getUserRepository()->find($this->getUser()->getId());
         }
 
         $this->modules = $this->context->getParameters()['modules'];
@@ -278,6 +269,22 @@ class AdminPresenter extends BasePresenter
      */
     public function getUserEntity()
     {
+        if (null === $this->userEntity) {
+
+            $userEntity = null;
+            if ($this->getUser()->isLoggedIn()) {
+                $userEntity = $this->user->getIdentity();
+                if (!$userEntity instanceof UserEntity) {
+                    $this->user->logout(true);
+
+                    $this->flashMessage('user identity is not UserEntity',ILogger::WARNING);
+                    $this->ajaxRedirect();
+                }
+            }
+
+            $this->userEntity = $userEntity;
+        }
+
         return $this->userEntity;
     }
 

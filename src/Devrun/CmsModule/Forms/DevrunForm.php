@@ -9,7 +9,7 @@
 
 namespace Devrun\CmsModule\Forms;
 
-use Devrun\Doctrine\DoctrineForms\EntityFormTrait;
+use Devrun\DoctrineModule\DoctrineForms\EntityFormTrait;
 use Devrun\InvalidArgumentException;
 use Flame\Application\UI\Form;
 use Nette\ArrayHash;

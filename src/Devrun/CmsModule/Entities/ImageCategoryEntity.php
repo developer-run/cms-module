@@ -11,9 +11,8 @@ namespace Devrun\CmsModule\Entities;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Devrun\Doctrine\Entities\BlameableTrait;
-use Devrun\Doctrine\Entities\DateTimeTrait;
-use Devrun\Doctrine\Entities\IdentifiedEntityTrait;
+use Devrun\DoctrineModule\Entities\DateTimeTrait;
+use Devrun\DoctrineModule\Entities\IdentifiedEntityTrait;
 use Kdyby\Doctrine\Entities\MagicAccessors;
 
 /**

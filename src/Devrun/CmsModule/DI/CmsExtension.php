@@ -17,7 +17,9 @@ use Devrun\CmsModule\Entities\PackageEntity;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Entities\SettingsEntity;
+use Devrun\CmsModule\Entities\UserEntity;
 use Devrun\CmsModule\InvalidStateException;
+use Devrun\CmsModule\Repositories\UserRepository;
 use Devrun\CmsModule\Security\Authenticator;
 use Devrun\Config\CompilerExtension;
 use Devrun\Security\IAuthorizator;
@@ -343,6 +345,10 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
         /*
          * repositories
          */
+        $builder->addDefinition($this->prefix('repository.user'))
+            ->setFactory(UserRepository::class)
+            ->addTag(OrmExtension::TAG_REPOSITORY_ENTITY, UserEntity::class);
+
         $builder->addDefinition($this->prefix('repository.page'))
             ->setFactory('Devrun\CmsModule\Repositories\PageRepository')
             ->addTag(OrmExtension::TAG_REPOSITORY_ENTITY, PageEntity::class);

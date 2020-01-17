@@ -14,20 +14,15 @@ use Devrun\CmsModule\Entities\ImagesTranslationEntity;
 use Devrun\CmsModule\Entities\PackageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Entities\RouteTranslationEntity;
-use Devrun\CmsModule\Facades\Package\PackageDomain;
 use Devrun\CmsModule\Repositories\PackageRepository;
 use Devrun\CmsModule\Repositories\RouteRepository;
 use Devrun\CmsModule\Routes\PageRoute;
-use Devrun\Doctrine\Entities\UserEntity;
-use Devrun\Facades\ImageFacade;
-use Devrun\Security\LoggedUser;
+use Devrun\CmsModule\Entities\UserEntity;
 use Devrun\Storage\ImageNameScript;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Monolog\Logger;
 use Nette\Security\User;
 use Nette\SmartObject;
-use Nette\Utils\Image;
-use Tracy\Debugger;
 
 /**
  * Class PackageFacade
@@ -65,8 +60,8 @@ class PackageFacade
     /** @var Logger */
     private $logger;
 
-    /** @var UserEntity */
-    private $userEntity;
+    /** @var User */
+    private $user;
 
     /** @var string DI setting www path */
     private $wwwDir;
@@ -93,14 +88,14 @@ class PackageFacade
      *
      * @param PackageRepository $packageRepository
      */
-    public function __construct($wwwDir, PackageRepository $packageRepository, ImageManageFacade $imageManageFacade, LoggedUser $loggedUser, Logger $logger)
+    public function __construct($wwwDir, PackageRepository $packageRepository, ImageManageFacade $imageManageFacade, User $user, Logger $logger)
     {
         $this->wwwDir = $wwwDir;
         $this->packageRepository = $packageRepository;
         $this->imageManageFacade = $imageManageFacade;
         $this->logger = $logger;
+        $this->user = $user;
         $this->em = $packageRepository->getEntityManager();
-        $this->userEntity = $loggedUser->getUserEntity();
     }
 
     /**
@@ -113,8 +108,9 @@ class PackageFacade
 
 
     /**
-     * @param PackageEntity      $newPackage
+     * @param PackageEntity $newPackage
      * @param PackageEntity|null $oldPackage
+     * @throws \Exception
      */
     public function copyPackage(PackageEntity & $newPackage, PackageEntity $oldPackage = null)
     {
@@ -190,17 +186,20 @@ class PackageFacade
     }
 
 
-
     /**
      * check source and destination module
      * check new package id, must exist
      *
-     * @param PackageEntity      $newPackage
+     * @param PackageEntity $newPackage
      * @param PackageEntity|null $oldPackage
+     * @throws \Exception
      */
     private function checkPackagesForCopy(PackageEntity $newPackage, PackageEntity $oldPackage = null)
     {
-        $newPackage->setUser($this->userEntity);
+        /** @var UserEntity $userEntity */
+        $userEntity = $this->user->getIdentity();
+
+        $newPackage->setUser($userEntity);
 
         if ($oldPackage) {
             $newPackage

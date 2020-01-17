@@ -9,10 +9,10 @@
 
 namespace Devrun\CmsModule\Entities;
 
-use Devrun\Doctrine\Entities\Attributes\Translatable;
-use Devrun\Doctrine\Entities\DateTimeTrait;
-use Devrun\Doctrine\Entities\IdentifiedEntityTrait;
-use Devrun\Doctrine\Entities\UserEntity;
+use Devrun\DoctrineModule\Entities\Attributes\Translatable;
+use Devrun\DoctrineModule\Entities\DateTimeTrait;
+use Devrun\DoctrineModule\Entities\IdentifiedEntityTrait;
+use Devrun\CmsModule\Entities\UserEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\MagicAccessors;
@@ -85,7 +85,7 @@ class PackageEntity
 
     /**
      * @var UserEntity|null
-     * @ORM\ManyToOne(targetEntity="Devrun\Doctrine\Entities\UserEntity")
+     * @ORM\ManyToOne(targetEntity="Devrun\CmsModule\Entities\UserEntity")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $user;
@@ -93,7 +93,7 @@ class PackageEntity
 
     /**
      * @var UserEntity[]|ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Devrun\Doctrine\Entities\UserEntity", mappedBy="packages")
+     * @ORM\ManyToMany(targetEntity="Devrun\CmsModule\Entities\UserEntity", mappedBy="packages")
      */
     protected $users;
 

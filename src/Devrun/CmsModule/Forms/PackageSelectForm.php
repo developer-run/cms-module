@@ -9,7 +9,7 @@
 
 namespace Devrun\CmsModule\Forms;
 
-use Devrun\Doctrine\DoctrineForms\IComponentMapper;
+use Devrun\DoctrineModule\DoctrineForms\IComponentMapper;
 use Nette\Application\UI\Form;
 
 interface IPackageSelectFormFactory

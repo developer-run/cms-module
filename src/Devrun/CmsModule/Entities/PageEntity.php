@@ -9,14 +9,14 @@
 
 namespace Devrun\CmsModule\Entities;
 
-use Devrun\Doctrine\Entities\Attributes\Translatable;
-use Devrun\Doctrine\Entities\NestedEntityTrait;
-use Devrun\Doctrine\InvalidArgumentException;
+use Devrun\DoctrineModule\Entities\Attributes\Translatable;
+use Devrun\DoctrineModule\Entities\NestedEntityTrait;
+use Devrun\DoctrineModule\InvalidArgumentException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Devrun\Doctrine\Entities\DateTimeTrait;
-use Devrun\Doctrine\Entities\IdentifiedEntityTrait;
+use Devrun\DoctrineModule\Entities\DateTimeTrait;
+use Devrun\DoctrineModule\Entities\IdentifiedEntityTrait;
 use Kdyby\Doctrine\Entities\MagicAccessors;
 use Kdyby\Translation\ITranslator;
 use Kdyby\Translation\Translator;
