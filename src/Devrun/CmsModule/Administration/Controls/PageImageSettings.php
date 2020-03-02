@@ -9,9 +9,7 @@
 
 namespace Devrun\CmsModule\Administration\Controls;
 
-
 use Kdyby\Translation\Translator;
-use Nette\Object;
 
 class PageImagesSettings
 {
@@ -79,7 +77,7 @@ class PageImagesSettings
 
 
 
-class PageImageSettings extends Object
+class PageImageSettings
 {
     /** @var string */
     private $path;

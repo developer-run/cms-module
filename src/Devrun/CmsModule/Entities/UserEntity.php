@@ -28,6 +28,7 @@ use Nette\Utils\DateTime;
  *      @ORM\UniqueConstraint(name="username_idx", columns={"username"})
  * },
  *  indexes={
+ *      @ORM\Index(name="hash_idx", columns={"hash"}),
  *      @ORM\Index(name="newPassword_idx", columns={"new_password"}),
  *      @ORM\Index(name="first_last_name_idx", columns={"first_name", "last_name"}),
  *      @ORM\Index(name="active_idx", columns={"active"}),
@@ -59,6 +60,11 @@ class UserEntity implements IIdentity
      */
     protected $packages;
 
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=32, unique=true, nullable=true)
+     */
+    protected $hash;
 
     /**
      * @var string

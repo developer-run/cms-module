@@ -2,7 +2,6 @@
   "name": "devrun/cms-module",
   "description": "DevRun Cms module",
   "keywords": ["cms", "nette", "devrun", "module"],
-  "version": "v0.8.3",
   "minimum-stability": "dev",
   "homepage": "http://devrun.cz",
   "license": "proprietary",

@@ -279,8 +279,7 @@ class PageRoute extends Route implements Subscriber
             $key['package'] = $key['package']->id;
         }
 
-        $data = $this->cache->load($key);
-        if ($data) {
+        if ($data = $this->cache->load($key)) {
             return $data;
         }
 
@@ -311,7 +310,8 @@ class PageRoute extends Route implements Subscriber
                 ->join('e.translations', 't')
                 ->join('e.package', 'p')
                 ->leftJoin('p.user', 'u')
-                ->where('e.uri = :uri')->setParameter('uri', $uri);
+                ->where('e.uri = :uri')->setParameter('uri', $uri)
+                ->setMaxResults(1);
 
             if ($packageId === null) {
                 $query->andWhere('e.package IS NULL OR p.name = :packageName')->setParameter('packageName', 'default');;

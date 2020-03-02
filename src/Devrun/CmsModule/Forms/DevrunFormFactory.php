@@ -2,13 +2,17 @@
 
 namespace Devrun\CmsModule\Forms;
 
+use Nette\SmartObject;
+
 /**
  * Class DevrunFormFactory
  *
  * @package Devrun\CmsModule\Forms
  */
-class DevrunFormFactory extends \Nette\Object
+class DevrunFormFactory
 {
+
+    use SmartObject;
 
     /**
      * @return DevrunForm
