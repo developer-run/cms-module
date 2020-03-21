@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2019
  *
  * @file    PackageControl.php
@@ -52,7 +52,7 @@ class PackageControl extends Control
 
 
 
-    protected function attached($presenter)
+    protected function attached($presenter): void
     {
         parent::attached($presenter);
 

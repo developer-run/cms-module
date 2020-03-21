@@ -65,6 +65,20 @@ class PagePhotoControl extends AdminControl
     private $route;
 
 
+    public function __construct()
+    {
+        $this->monitor(PagePresenter::class, function (PagePresenter $presenter): void {
+            $this->page  = $presenter->getPageEntity();
+            $this->route = $presenter->getRouteEntity();
+
+            $presenter->onPageRedraw[] = function() {
+                if ($this->presenter->isAjax()) {
+                    $this->redrawControl('images');
+                }
+            };
+        });
+    }
+
 
     public function QQQsetControlPageRedraw(PagePresenter $presenter)
     {
@@ -74,30 +88,6 @@ class PagePhotoControl extends AdminControl
             }
         };
 
-    }
-
-
-
-    protected function attached($presenter)
-    {
-//        dump("attached");
-
-
-        if ($presenter instanceof PagePresenter) {
-            $this->page  = $presenter->getPageEntity();
-            $this->route = $presenter->getRouteEntity();
-
-            $presenter->onPageRedraw[] = function() {
-
-
-                if ($this->presenter->isAjax()) {
-                    $this->redrawControl('images');
-                }
-            };
-
-        }
-
-        parent::attached($presenter);
     }
 
 

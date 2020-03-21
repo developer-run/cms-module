@@ -11,12 +11,12 @@ namespace Devrun\CmsModule\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use Devrun\DoctrineModule\Entities\Attributes\Translation;
-use Kdyby\Doctrine\Entities\MagicAccessors;
+use Kdyby\Doctrine\MagicAccessors\MagicAccessors;
 use Zenify\DoctrineBehaviors\Entities\Attributes\Translatable as ZenifyTranslatable;
 
 /**
  * Class RouteTranslationEntity
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Devrun\CmsModule\Repositories\RouteTranslationRepository")
  * @ORM\Table(name="route_translation", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="domain_url_locale_idx", columns={"domain_id", "domain_url", "locale"}),
  *     @ORM\UniqueConstraint(name="url_locale_idx", columns={"url", "locale"}),

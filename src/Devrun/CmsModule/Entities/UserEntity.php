@@ -13,7 +13,7 @@ use Devrun\DoctrineModule\Entities\DateTimeTrait;
 use Devrun\DoctrineModule\Entities\IdentifiedEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\MagicAccessors;
+use Kdyby\Doctrine\MagicAccessors\MagicAccessors;
 use Nette\Security\IIdentity;
 use Nette\Utils\DateTime;
 
@@ -568,7 +568,7 @@ class UserEntity implements IIdentity
     /**
      * @inheritDoc
      */
-    function getRoles()
+    function getRoles(): array
     {
         return [$this->role];
     }

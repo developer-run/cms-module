@@ -1,5 +1,6 @@
 {block headerTitle}{_admin.translate_edit}{/block}
 {block headerSmallTitle}({_admin.template_content}){/block}
+{block title}{_admin.translatePage.title}{/block}
 
 {block content}
 
@@ -7,11 +8,22 @@
 {*{control transControl}*}
 
 <div class="nav-tabs-custom">
+	<div n:if="!$domains" class="card bg-warning">
+		<div class="card-header">
+			<h3 class="card-title">Danger</h3>
+		</div>
+		<div class="card-body">
+			<h2>Nejsou žádná data pro překlad</h2>
+		</div>
+	</div>
+
 	<ul n:if="$domains" class="nav nav-tabs">
 		<li n:foreach="$domains as $domain" n:class="$iterator->first ? active">
 			<a href="#{$domain}" data-toggle="tab">{$domain|firstUpper}</a>
 		</li>
 	</ul>
+
+	{dump $domains}
 
 	<div n:if="$domains" class="tab-content grido">
 

@@ -406,11 +406,8 @@ class ImageManageFacade implements Subscriber
 
     public function onRequest(Application $application)
     {
-//        $this->imageManageStorage->callCreateImage = $this->updateImageFromIdentifier;
         $pageImageJob = $this->getPageImageJob();
-
-
-        $this->imageManageStorage->callCreateImage = $pageImageJob->updateImageFromIdentifier;
+        $this->imageManageStorage->callCreateImage = [$pageImageJob, 'updateImageFromIdentifier'];
     }
 
 

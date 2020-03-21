@@ -9,7 +9,7 @@
 
 namespace Devrun\CmsModule\Controls;
 
-use Flame\Application\UI\Control;
+use Devrun\Application\UI\Control\Control;
 
 class ArticleControl extends Control
 {

@@ -372,94 +372,44 @@ class PagePresenter extends AdminPresenter
          */
         if ($routeEntity = $this->getRouteEntity()) {
 
-
-
-//            dump($page);
-
-
-//            dump($routeEntity);
-//            die();
-
-
             $params = $routeEntity->getParams();
             $params['generateDomain'] = false;
+            if ($routeEntity->getPackage()) $params['package'] = $routeEntity->getPackage()->getId();
 
-//            dump($url = $this->link("//{$routeEntity->getUri()}", $params));
-//            dump($url = $this->link("{$routeEntity->getUri()}", $params));
+            try {
+                $html = $this->pageFacade->getPageRepository()->getPageContentFromUrl($url = $this->link("//{$routeEntity->getUri()}", $params));
+                $pageStyles      = $this->pageFacade->getPageRepository()->getPageStyles($url);
+                $pageJavaScripts = $this->pageFacade->getPageRepository()->getPageJavaScripts($url);
 
-
-
-            $html = $this->pageFacade->getPageRepository()->getPageContentFromUrl($url = $this->link("//{$routeEntity->getUri()}", $params));
-
-
-
-//            dump($params);
-//            dump($routeEntity);
-//            Debugger::barDump($url);
-//            dump($html);
-
-
-//            $html = $this->pageFacade->getPageRepository()->getPageContentFromUrl($url = "http://localhost/pixman/souteze.pixman.cz/web/www/pexeso");
-//            $html = $this->pageFacade->getPageRepository()->getPageContentFromUrl($url = "http://localhost/pixman/souteze.pixman.cz/web/www/pexeso-sestka");
-//            dump($html);
-
-//            die();
-
-
-//            $params = ['id' => 1, 'package' => 4];
-
-//            $html = $this->pageFacade->getPageRepository()->getPageContentFromUrl($url = $this->link("//{$page->getMainRoute()->getUri()}", $params));
-
-//            dump($html);
-//            die();
-
-
-
-            $pageStyles      = $this->pageFacade->getPageRepository()->getPageStyles($url);
-            $pageJavaScripts = $this->pageFacade->getPageRepository()->getPageJavaScripts($url);
-//            $pageStyles      = [];
-//            $pageJavaScripts = [];
-
-//            Debugger::barDump($pageStyles);
-//            Debugger::barDump($pageJavaScripts);
+            } catch (\Exception $exception) {
+                $html = "<h2 class='text-danger text-center'>{$exception->getMessage()}</h2>";
+                $pageStyles      = [];
+                $pageJavaScripts = [];
+            }
 
         } else {
             /*
              * dynamic pages sources
              */
-            $routeEntity = $this->getRouteEntity();
-            $url   = $this->link("//{$routeEntity->getUri()}", $routeEntity->getParams());
+            if ($routeEntity = $this->getRouteEntity()) {
+                try {
+                    $url             = $this->link("//{$routeEntity->getUri()}", $routeEntity->getParams());
+                    $pageStyles      = $this->pageFacade->getPageRepository()->getPageStyles($url);
+                    $pageJavaScripts = $this->pageFacade->getPageRepository()->getPageJavaScripts($url);
 
-            $pageStyles      = $this->pageFacade->getPageRepository()->getPageStyles($url);
-            $pageJavaScripts = $this->pageFacade->getPageRepository()->getPageJavaScripts($url);
+                } catch (\Exception $exception) {
+                    $html = "<h2 class='text-danger text-center'>{$exception->getMessage()}</h2>";
+                    $pageStyles      = [];
+                    $pageJavaScripts = [];
+                }
+            }
         }
 
-//        $q = $this->link($routeEntity->getUri(), $routeEntity->getParams());
-//        dump($q);
-//        die();
-
-
-
         $this->template->route             = $routeEntity;
+        $this->template->pageHtml          = $html;
         $this->template->pageStyles        = $pageStyles;
         $this->template->pageJavaScripts   = $pageJavaScripts;
         $this->template->pagePackageRoutes = $this->getPagePackageRoutes();
-
-
-//        dump($html);
-//        die();
-
-
-
-
-
-        $this->template->pageHtml = $html;
-
-
-//        dump($this->pageFacade->getPageRepository()->getPageContent($id));
-//        die();
-
-
 
         $settingControls = $this->administrationManager->getAdministrationComponentsByCategory('PageSettings');
 
@@ -503,11 +453,6 @@ class PagePresenter extends AdminPresenter
         }
 
         $pageTabControls = $this->administrationManager->getAdministrationComponentsByCategory('PageTab');
-
-//        dump($pageTabControls);
-//        dump($pageContentControls);
-//        die();
-
 
 
 

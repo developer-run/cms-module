@@ -2,10 +2,9 @@
 
 namespace Devrun\CmsModule\Entities;
 
-use Devrun\CmsModule\Entities\UserEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
-use Kdyby\Doctrine\Entities\MagicAccessors;
+use Kdyby\Doctrine\MagicAccessors\MagicAccessors;
 use Kdyby\Monolog\Logger;
 use Nette\Utils\DateTime;
 

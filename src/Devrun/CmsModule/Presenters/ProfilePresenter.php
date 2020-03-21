@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2019
  *
  * @file    ProfilePresenter.php
@@ -44,7 +44,7 @@ class ProfilePresenter extends AdminPresenter
         }
 
         $form->create()
-            ->bootstrap3Render()
+            ->bootstrap4Render()
             ->bindEntity($userEntity)
             ->onSuccess[] = function (ProfileForm $form, $values) use ($name) {
 

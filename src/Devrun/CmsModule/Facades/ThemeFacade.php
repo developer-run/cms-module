@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2019
  *
  * @file    ThemeFacade.php
@@ -14,6 +14,7 @@ use Devrun\CmsModule\Entities\PackageEntity;
 use Devrun\CmsModule\InvalidArgumentException;
 use Devrun\CmsModule\InvalidStateException;
 use Devrun\FileNotFoundException;
+use Kdyby\Monolog\Logger;
 use Nette\Http\FileUpload;
 use Nette\Neon\Neon;
 use Nette\Utils\FileSystem;
@@ -35,6 +36,8 @@ class ThemeFacade
     /** @var string */
     private $cssFilename;
 
+    /** @var Logger */
+    private $logger;
 
     /** @var bool */
     private $generateImgVersion = true;
@@ -62,16 +65,18 @@ class ThemeFacade
     private $css = '';
 
 
-
     /**
      * ThemeFacade constructor.
      *
      * @param array $modulesInfo
+     * @param $wwwDir
+     * @param Logger $logger
      */
-    public function __construct(array $modulesInfo, $wwwDir)
+    public function __construct(array $modulesInfo, $wwwDir, Logger $logger)
     {
         $this->wwwDir      = $wwwDir;
         $this->modulesInfo = $modulesInfo;
+        $this->logger      = $logger;
     }
 
 
@@ -301,7 +306,8 @@ class ThemeFacade
         $themeName = $this->getThemeName();
 
         if (!is_dir($imagesPath = $this->wwwDir . "/images/{$moduleName}/$themeName")) {
-            if (!is_writable($imagesPath)) {
+            if (!is_writable($this->wwwDir . "/images/{$moduleName}")) {
+                $this->logger->addError($this->wwwDir . "/images/{$moduleName}", []);
                 throw new FileNotFoundException("{$imagesPath} is not writable!");
             }
 

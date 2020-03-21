@@ -11,7 +11,7 @@ namespace Devrun\CmsModule\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 use Devrun\DoctrineModule\Entities\Attributes\Translation;
-use Kdyby\Doctrine\Entities\MagicAccessors;
+use Kdyby\Doctrine\MagicAccessors\MagicAccessors;
 
 /**
  * Class PageTranslationEntity

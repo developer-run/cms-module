@@ -3,7 +3,7 @@
   "description": "DevRun Cms module",
   "keywords": ["cms", "nette", "devrun", "module"],
   "minimum-stability": "dev",
-  "version": "v0.8.4",
+  "version": "v0.9.0",
   "homepage": "http://devrun.cz",
   "license": "proprietary",
   "authors": [
@@ -12,23 +12,29 @@
     }
   ],
   "require": {
-    "devrun/framework": "^0.8",
-    "devrun/ckeditor-module": "v4.*",
-    "devrun/doctrine-module": "v3.3.*",
-    "phpzip/phpzip": "^2.0",
-    "ublaboo/datagrid": "^5.5",
-    "wa72/htmlpagedom": "^1.3"
+    "devrun/framework": "^0.9",
+    "devrun/doctrine-module": "v4.*",
+    "devrun/ckeditor-module": "v5.*",
+
+    "kdyby/events": "^3.2@dev",
+    "devrun/monolog": "^1.3@dev",
+
+    "ublaboo/datagrid": "^6.3@dev",
+    "phpzip/phpzip": "2.1.0.x-dev",
+    "wa72/htmlpagedom": "^2.0@dev"
+
   },
   "require-dev": {
-    "dg/adminer-custom": "~1.6",
-    "phpunit/phpunit": "^5.0",
-    "phpunit/phpunit-dom-assertions": "^2.0",
-    "contributte/codeception": "^0.7.7"
+    "contributte/codeception": "^1.4@dev"
   },
   "repositories": [
     {
       "type": "vcs",
       "url": "https://github.com/developer-run/framework"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/developer-run/monolog"
     },
     {
       "type": "vcs",
@@ -48,13 +54,17 @@
 
   "extra": {
     "branch-alias": {
-      "dev-master": "0.8-dev"
+      "dev-master": "0.9-dev"
     },
     "devrun": {
       "installers" : ["Devrun\\Module\\Installers\\MigrationInstaller"],
       "configuration": {
         "extensions": {
           "cms": "Devrun\\CmsModule\\DI\\CmsExtension"
+        },
+
+        "doctrineModule": {
+          "treeable": true
         }
       }
     }

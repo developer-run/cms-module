@@ -16,132 +16,87 @@ use Devrun\CmsModule\Entities\LogEntity;
 use Devrun\CmsModule\Entities\PackageEntity;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
+use Devrun\CmsModule\Entities\RouteTranslationEntity;
 use Devrun\CmsModule\Entities\SettingsEntity;
 use Devrun\CmsModule\Entities\UserEntity;
+use Devrun\CmsModule\Forms\LoginTestFormFactory;
 use Devrun\CmsModule\InvalidStateException;
+use Devrun\CmsModule\Presenters\AdminPresenter;
+use Devrun\CmsModule\Repositories\RouteTranslationRepository;
 use Devrun\CmsModule\Repositories\UserRepository;
+use Devrun\CmsModule\Routes\PageRouteFactory;
 use Devrun\CmsModule\Security\Authenticator;
 use Devrun\Config\CompilerExtension;
+use Devrun\Module\Providers\IRouterMappingProvider;
 use Devrun\Security\IAuthorizator;
 use Devrun\Utils\Debugger;
-use Flame\Modules\Providers\IPresenterMappingProvider;
-use Flame\Modules\Providers\IRouterProvider;
 use Kdyby\Console\DI\ConsoleExtension;
 use Kdyby\Doctrine\DI\IEntityProvider;
 use Kdyby\Doctrine\DI\OrmExtension;
 use Kdyby\Events\DI\EventsExtension;
 use Nette;
 use Nette\Application\Routers\Route;
-use Nette\Application\Routers\RouteList;
+use Nette\DI\Extensions\InjectExtension;
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 
-class CmsExtension extends CompilerExtension implements IPresenterMappingProvider, IRouterProvider, IEntityProvider
+class CmsExtension extends CompilerExtension implements /*IPresenterMappingProvider,*/ IRouterMappingProvider, IEntityProvider
 {
 
-    public $defaults = array(
-        'emailSending' => true,
-        'emailFrom'    => 'Soutěže <info@souteze.pixman.cz>',
-        'administration' => array(
-            'login'            => array(
-                'name'     => '',
-                'password' => ''
-            ),
-            'routePrefix'      => 'admin',
-            'defaultPresenter' => 'Default',
-            'theme'            => 'cms',
-            'treePageMenuFirstLevelVisible' => true,
-            'filenameDomain' => "%appDir%/config/valid-domains.txt",
-        ),
+    public function getConfigSchema(): Schema
+    {
+        return Expect::structure([
+            'administration' => Expect::structure([
+                'login' => Expect::structure([
+                    'name' => Expect::string()->required(),
+                    'password' => Expect::string(),
+                ]),
+                'routePrefix' => Expect::string('admin'),
+                'defaultPresenter' => Expect::string('Default'),
+                'theme' => Expect::structure([
+                    'color' => Expect::anyOf('primary', 'warning', 'info', 'danger', 'success', 'indigo', 'lightblue', 'navy', 'purple', 'fuchsia', 'pink', 'maroon', 'orange', 'lime', 'teal', 'olive')
+                                     ->default('primary'),
+                    'type' => Expect::anyOf('light', 'dark')->default('light'),
+                    'text' => Expect::anyOf('text-xl', 'text-md', 'text-sm', 'text-xs'),
+                    'pageMenu' => Expect::anyOf('card-outline', 'card-outline card-outline-tabs'),
+                ]),
+                'filenameDomain' => Expect::string("%appDir%/config/valid-domains.txt")->assert('is_file'),
+                'emailSending' => Expect::bool(false),
+                'emailFrom'    => Expect::string('Devrun info <info@devrun.cz>'),
+                'modalActions' => Expect::bool(true),
+                'autoSyncPages' => Expect::bool(false),
+                'treePageMenuFirstLevelVisible' => Expect::bool(true),
+                'translateUrl' => Expect::string("http://api.microsofttranslator.com/v2/Http.svc/Translate"), //Application Translate Url
+                'emptyImage' => Expect::structure([
+                    'font'     => Expect::string('resources/cmsModule/fonts/OpenSansEasy/OpenSans-Regular.ttf')->assert('is_file'),
+                    'text'     => Expect::string('upload image'),
+                    'fontSize' => Expect::int(36),
+                    'width'    => Expect::int(640),
+                    'height'   => Expect::int(480),
+                ]),
+            ]),
 
-        'website' => array(
-            'name' => 'Blog',
-            'title' => '%n %s %t',
-            'titleSeparator' => '|',
-            'keywords' => '',
-            'description' => '',
-            'author' => '',
-            'robots' => 'index, follow',
-            'routePrefix' => '',
-            'oneWayRoutePrefix' => '',
-            'languages' => array(),
-            'defaultLanguage' => 'cs',
-            'domainIPs' => [],
-            'defaultDomain' => 'souteze.pixman.cz',
-            'defaultPresenter' => 'Homepage',
-            'errorPresenter' => 'Cms:Error',
-            'layout' => 'cms/bootstrap',
-            'cacheMode' => '',
-            'cacheValue' => '10',
-            'theme' => '',
-        ),
-
-        'webloader'      => [
-            'outputDir' => '%wwwCacheDir%',
-            'tempUri'   => 'webTemp',
-            'panelName' => 'Admin',
-            'css'       => [
-                'files' => [
-                    'assets/AdminLTE/bootstrap/css/bootstrap.css',
-                    'assets/AdminLTE/dist/css/adminLTE.css',
-                    'assets/font-awesome/css/font-awesome.css',
-                    'assets/AdminLTE/dist/css/skins/_all-skins.min.css',
-                    'assets/AdminLTE/plugins/iCheck/flat/blue.css',
-                    'assets/AdminLTE/plugins/morris/morris.css',
-                    'assets/AdminLTE/plugins/jvectormap/jquery-jvectormap-1.2.2.css',
-                    'assets/AdminLTE/plugins/datepicker/datepicker3.css',
-                    'assets/AdminLTE/plugins/daterangepicker/daterangepicker.css',
-                    'assets/AdminLTE/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css',
-                    'assets/grido/css/grido.css',
-                ],
-            ],
-
-            'js' => [
-                'files' => [
-                    'assets/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js',
-                    'assets/AdminLTE/bootstrap/js/bootstrap.min.js',
-                    'assets/AdminLTE/plugins/morris/morris.min.js',
-                    'assets/AdminLTE/plugins/sparkline/jquery.sparkline.min.js',
-                    'assets/AdminLTE/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js',
-                    'assets/AdminLTE/plugins/jvectormap/jquery-jvectormap-world-mill-en.js',
-                    'assets/AdminLTE/plugins/knob/jquery.knob.js',
-                    'assets/moment/moment.js',
-                    'assets/moment/locale/cs.js',
-                    'assets/AdminLTE/plugins/daterangepicker/daterangepicker.js',
-                    'assets/AdminLTE/plugins/datepicker/bootstrap-datepicker.js',
-                    'assets/AdminLTE/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js',
-                    'assets/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js',
-                    'assets/AdminLTE/plugins/fastclick/fastclick.js',
-                    'assets/AdminLTE/dist/js/app.min.js',
-                    'assets/nette.ajax.js/nette.ajax.js',
-                    'assets/nette/live-form-validation.js',
-                    'assets/grido/js/grido.js',
-                    'assets/grido/js/plugins/grido.nette.ajax.js',
-                    "%modules.cms.path%/resources/assets/extensions/popupDialogExtension.js",
-                ],
-            ],
-        ],
-
-        'content' => [
-            'modalActions' => true,
-            'images' => [],
-            'emptyImage' => [
-                'font'     => 'resources/cmsModule/fonts/OpenSansEasy/OpenSans-Regular.ttf',
-                'text'     => 'upload image',
-                'fontSize' => 36,
-                'width'    => 640,
-                'height'   => 480,
-            ],
-        ],
-
-        'options' => [
-            'autoSyncPages'=> false, // PageListener , presenter -> onStartup event
-            'fromLanguage' => "en",
-            'toLanguage'   => "cs",
-            'contentType'  => 'text/plain',
-            'category'     => 'general',
-            'translateUrl' => "http://api.microsofttranslator.com/v2/Http.svc/Translate", //Application Translate Url
-        ],
-
-    );
+            'website' => Expect::structure([
+                'name' => Expect::string('Blog'),
+                'title' => Expect::string('%n %s %t'),
+                'titleSeparator' => Expect::string('|'),
+                'keywords' => Expect::string(),
+                'description' => Expect::string(),
+                'author' => Expect::string(),
+                'robots' => Expect::string('index, follow'),
+                'routePrefix' => Expect::string(),
+                'oneWayRoutePrefix' => Expect::string(),
+                'languages' => Expect::array(),
+                'defaultLanguage' => Expect::string('cs'),
+                'domainIPs' => Expect::array(),
+                'defaultDomain' => Expect::string(),
+                'defaultPresenter' => Expect::string('Homepage'),
+                'errorPresenter' => Expect::string('Cms:Error'),
+                'layout' => Expect::string('cms/bootstrap'),
+                'theme' => Expect::string('default'),
+            ]),
+        ]);
+    }
 
 
     public function loadConfiguration()
@@ -150,50 +105,51 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
 
         /** @var Nette\DI\ContainerBuilder $builder */
         $builder = $this->getContainerBuilder();
-        $config  = $this->getConfig($this->defaults);
+
+        /** @var \stdClass $config */
+        $config  = $this->getConfig();
 
         $builder->addDefinition($this->prefix('manager.administrationManager'))
             ->setFactory('Devrun\CmsModule\Administration\AdministrationManager', [
-                $config['administration']['defaultPresenter'],
-                $config['administration']['login'],
-                $config['administration']['theme']
+                $config->administration->defaultPresenter,
+                $config->administration->login,
+                $config->administration->theme
             ]);
 
 
 
+        /* @deprecated CMS old route for nette <3
         // detect prefix
-        $prefix = $config['website']['routePrefix'];
-        $adminPrefix = $config['administration']['routePrefix'];
-        $languages = $config['website']['languages'];
-//        $prefix = str_replace('<lang>/', '<lang ' . implode('|', $languages) . '>/', $prefix);
+        $prefix = $config->website->routePrefix;
+        $adminPrefix = $config->administration->routePrefix;
+        $languages = $config->website->languages;
+        $prefix = str_replace('<lang>/', '<lang ' . implode('|', $languages) . '>/', $prefix);
 
 
         $parameters = array();
-//        $parameters['lang'] = count($languages) > 1 || $config['website']['routePrefix'] ? NULL : $config['website']['defaultLanguage'];
+        $parameters['lang'] = count($languages) > 1 || $config['website']['routePrefix'] ? NULL : $config['website']['defaultLanguage'];
 
 
-        // CMS route
-        $builder->addDefinition($this->prefix('pageRoute'))
-            ->setFactory('Devrun\CmsModule\Routes\PageRoute', array($prefix, $parameters, $config['website']['defaultLanguage'], $config['website']['languages'], $config['website']['defaultDomain']))
+         $builder->addDefinition($this->prefix('pageRoute'))
+            ->setFactory('Devrun\CmsModule\Routes\PageRoute', array($prefix, $parameters, $config->website->defaultLanguage, $config->website->languages, $config->website->defaultDomain))
             ->setAutowired(false)
             ->setInject(true)
             ->addTag('route', array('priority' => 100))
-            ->addTag(EventsExtension::TAG_SUBSCRIBER);
+            ->addTag(EventsExtension::TAG_SUBSCRIBER);*/
 
-/*
-        if ($config['website']['oneWayRoutePrefix']) {
-            $container->addDefinition($this->prefix('oneWayPageRoute'))
-                ->setClass('CmsModule\Content\Routes\PageRoute', array('@container', '@cacheStorage', '@doctrine.checkConnectionFactory', $config['website']['oneWayRoutePrefix'], $parameters, $config['website']['languages'], $config['website']['defaultLanguage'], TRUE)
-                )
-                ->addTag('route', array('priority' => 99));
-        }
-*/
+
+        $builder->addDefinition($this->prefix('route'))
+            //->setFactory("Devrun\CmsModule\Routes\PageRouteFactory::createRouter")
+            ->setType("Devrun\CmsModule\Routes\PageRouteFactory")
+            ->addTag(EventsExtension::TAG_SUBSCRIBER)
+            ->addTag('route', array('priority' => 100)); // tag route is not use yet
+
 
         /*
          * system
          */
         $builder->addDefinition($this->prefix('authenticator'))
-                ->setFactory(Authenticator::class, [$config['administration']['login']['name'], $config['administration']['login']['password']])
+                ->setFactory(Authenticator::class, [$config->administration->login->name, $config->administration->login->password])
                 ->setInject();
 
 
@@ -202,8 +158,8 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
          */
         $builder->addDefinition($this->prefix('presenters.users'))
             ->setFactory('Devrun\CmsModule\Presenters\UsersPresenter')
-            ->addSetup('setEmailSending', [$config['emailSending']])
-            ->addSetup('setEmailFrom', [$config['emailFrom']])
+            ->addSetup('setEmailSending', [$config->administration->emailSending])
+            ->addSetup('setEmailFrom', [$config->administration->emailFrom])
             ->addTag('devrun.presenter')
             ->addTag('administration', [
                 'link'        => ':Cms:Users:default',
@@ -218,7 +174,11 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
 
         $builder->addDefinition($this->prefix('presenters.login'))
                 ->setType('Devrun\CmsModule\Presenters\LoginPresenter')
-                ->addSetup('setWebsiteInfo', [$config['website']]);
+                ->addSetup('setWebsiteInfo', [$config->website]);
+
+        $builder->addDefinition($this->prefix('presenters.admin'))
+                ->setType(AdminPresenter::class)
+                ->addSetup('setWaebsiteInfo', [$config->website]);
 
 
 
@@ -226,41 +186,46 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
         /*
          * form factory
          */
+        $builder->addDefinition($this->prefix('forms.loginTestFormFactory'))
+                ->setType(LoginTestFormFactory::class)
+                ->setInject(true);
+
+
         $builder->addDefinition($this->prefix('forms.devrunFormFactory'))
             ->setFactory('Devrun\CmsModule\Forms\DevrunFormFactory');
 
-        $builder->addDefinition($this->prefix('form.imagesFormFactory'))
+        $builder->addFactoryDefinition($this->prefix('form.imagesFormFactory'))
             ->setImplement('Devrun\CmsModule\Forms\IImagesFormFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('form.packageFormFactory'))
+        $builder->addFactoryDefinition($this->prefix('form.packageFormFactory'))
             ->setImplement('Devrun\CmsModule\Forms\IPackageSelectFormFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
 
-        $builder->addDefinition($this->prefix('form.imageFormFactory'))
+        $builder->addFactoryDefinition($this->prefix('form.imageFormFactory'))
             ->setImplement('Devrun\CmsModule\Forms\IImageFormFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('form.loginForm'))
+        $builder->addFactoryDefinition($this->prefix('form.loginForm'))
             ->setImplement('Devrun\CmsModule\Forms\ILoginFormFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('form.registrationForm'))
+        $builder->addFactoryDefinition($this->prefix('form.registrationForm'))
             ->setImplement('Devrun\CmsModule\Forms\IRegistrationFormFactory')
-            ->addSetup('setEmailSending', ['emailSending' => $config['emailSending']])
-            ->addSetup('setEmailFrom', ['emailFrom' => $config['emailFrom']])
-            ->setInject(true);
+            ->addSetup('setEmailSending', ['emailSending' => $config->administration->emailSending])
+            ->addSetup('setEmailFrom', ['emailFrom' => $config->administration->emailFrom])
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('form.forgottenPasswordForm'))
+        $builder->addFactoryDefinition($this->prefix('form.forgottenPasswordForm'))
             ->setImplement('Devrun\CmsModule\Forms\IForgottenPasswordFormFactory')
-            ->addSetup('setEmailSending', ['emailSending' => $config['emailSending']])
-            ->addSetup('setEmailFrom', ['emailFrom' => $config['emailFrom']])
-            ->setInject(true);
+            ->addSetup('setEmailSending', ['emailSending' => $config->administration->emailSending])
+            ->addSetup('setEmailFrom', ['emailFrom' => $config->administration->emailFrom])
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('form.profileFormFactory'))
+        $builder->addFactoryDefinition($this->prefix('form.profileFormFactory'))
             ->setImplement('Devrun\CmsModule\Forms\IProfileFormFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
 
 
@@ -268,60 +233,56 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
         /*
          * controls
          */
-        $builder->addDefinition($this->prefix('control.navigationPage'))
+        $builder->addFactoryDefinition($this->prefix('control.navigationPage'))
             ->setImplement('Devrun\CmsModule\Controls\INavigationPageControlFactory')
-            ->setInject();
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('control.environment'))
+        $builder->addFactoryDefinition($this->prefix('control.environment'))
             ->setImplement('Devrun\CmsModule\Controls\IJSEnvironmentControl');
 
 
-        $builder->addDefinition($this->prefix('control.pagesNestable'))
+        $builder->addFactoryDefinition($this->prefix('control.pagesNestable'))
             ->setImplement('Devrun\CmsModule\Administration\Controls\INestablePagesControl')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('control.settingsControlFactory'))
+        $builder->addFactoryDefinition($this->prefix('control.settingsControlFactory'))
             ->setImplement('Devrun\CmsModule\Administration\Controls\ISettingsControlFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('control.rawImagesControlFactory'))
+        $builder->addFactoryDefinition($this->prefix('control.rawImagesControlFactory'))
             ->setImplement('Devrun\CmsModule\Administration\Controls\IRawImagesControlFactory')
             ->addSetup('setImageDir', [$builder->parameters['wwwDir'] . 'images' . DIRECTORY_SEPARATOR]);
 
-        $builder->addDefinition($this->prefix('control.imageSettings'))
-            ->setFactory('Devrun\CmsModule\Administration\Controls\PageImagesSettings')
-            ->addSetup('setImages', [$config['content']['images']]);
-
-        $builder->addDefinition($this->prefix('control.flashMessageControlFactory'))
+        $builder->addFactoryDefinition($this->prefix('control.flashMessageControlFactory'))
             ->setImplement('Devrun\CmsModule\Controls\IFlashMessageControlFactory');
 
-        $builder->addDefinition($this->prefix('control.packageControlFactory'))
+        $builder->addFactoryDefinition($this->prefix('control.packageControlFactory'))
             ->setImplement('Devrun\CmsModule\Controls\IPackageControlFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('control.themeControlFactory'))
+        $builder->addFactoryDefinition($this->prefix('control.themeControlFactory'))
             ->setImplement('Devrun\CmsModule\Controls\IThemeControlFactory')
-            ->setInject(true);
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('control.modalActionControl'))
+        $builder->addFactoryDefinition($this->prefix('control.modalActionControl'))
             ->setImplement('Devrun\CmsModule\Administration\Controls\IModalActionControlFactory')
-            ->addSetup('setEnable', [$config['content']['modalActions']])
-            ->setInject(true);
+            ->addSetup('setEnable', [$config->administration->modalActions])
+            ->addTag(InjectExtension::TAG_INJECT);
 
-        $builder->addDefinition($this->prefix('control.treePageControlFactory'))
+        $builder->addFactoryDefinition($this->prefix('control.treePageControlFactory'))
             ->setImplement('Devrun\CmsModule\Administration\Controls\ITreePagesControlFactory')
-            ->addSetup('setFirstLevelVisible', [$config['administration']['treePageMenuFirstLevelVisible']])
+            ->addSetup('setFirstLevelVisible', [$config->administration->treePageMenuFirstLevelVisible])
+            ->addTag(InjectExtension::TAG_INJECT)
             ->addTag('devrun.control')
             ->addTag('administration', [
                 'category' => 'Content',
                 'name'     => 'TreePagesControl',
                 'priority' => 5
-            ])
-            ->setInject(true);
+            ]);
 
-        $builder->addDefinition($this->prefix('control.carouselItemsControl'))
+        $builder->addFactoryDefinition($this->prefix('control.carouselItemsControl'))
                 ->setImplement('Devrun\CmsModule\Controls\ICarouselItemsControlFactory')
-                ->setInject(true);
+                ->addTag(InjectExtension::TAG_INJECT);
 
 
 
@@ -357,7 +318,11 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
         $builder->addDefinition($this->prefix('repository.route'))
             ->setFactory('Devrun\CmsModule\Repositories\RouteRepository')
             ->addTag(OrmExtension::TAG_REPOSITORY_ENTITY, RouteEntity::class)
-            ->addSetup('setDefaultDomain', [$config['website']['defaultDomain']]);
+            ->addSetup('setDefaultDomain', [$config->website->defaultDomain]);
+
+        $builder->addDefinition($this->prefix('repository.routeTranslation'))
+            ->setFactory(RouteTranslationRepository::class)
+            ->addTag(OrmExtension::TAG_REPOSITORY_ENTITY, RouteTranslationEntity::class);
 
 
         $builder->addDefinition($this->prefix('repository.image'))
@@ -400,7 +365,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
             ->setFactory('Devrun\CmsModule\Facades\PackageFacade', [$builder->parameters['wwwDir']]);
 
         $builder->addDefinition($this->prefix('facade.domain'))
-            ->setFactory('Devrun\CmsModule\Facades\DomainFacade', [$config['administration']['filenameDomain'], $config['website']['domainIPs']]);
+            ->setFactory('Devrun\CmsModule\Facades\DomainFacade', [$config->administration->filenameDomain, $config->website->domainIPs]);
 
         $builder->addDefinition($this->prefix('facade.settings'))
             ->setFactory('Devrun\CmsModule\Facades\SettingsFacade');
@@ -411,7 +376,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
 
         $builder->addDefinition($this->prefix('facade.image'))
             ->setFactory('Devrun\CmsModule\Facades\ImageManageFacade')
-            ->addSetup('setConfigEmptyImage', [$config['content']['emptyImage']])
+            ->addSetup('setConfigEmptyImage', [(array)$config->administration->emptyImage])
             ->addTag(EventsExtension::TAG_SUBSCRIBER)
             ->setInject(true);
 
@@ -438,7 +403,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
         if (!Debugger::isConsole()) {
         }
         $builder->addDefinition($this->prefix('listener.page'))
-            ->setFactory('Devrun\CmsModule\Listeners\PageListener', [$config['options']['autoSyncPages']])
+            ->setFactory('Devrun\CmsModule\Listeners\PageListener', [$config->administration->autoSyncPages])
             ->addTag(EventsExtension::TAG_SUBSCRIBER);
 
         $builder->addDefinition($this->prefix('listener.imagePresenter'))
@@ -501,7 +466,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
         $builder = $this->getContainerBuilder();
         $config = $this->getConfig();
 
-        $registerToLatte = function (Nette\DI\ServiceDefinition $def) {
+        $registerToLatte = function (Nette\DI\Definitions\FactoryDefinition $def) {
             $def->addSetup('?->onCompile[] = function($engine) { Devrun\CmsModule\Macros\UICmsMacros::install($engine->getCompiler()); }', ['@self']);
         };
 
@@ -587,7 +552,7 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
     {
         /** @var Nette\DI\ContainerBuilder $builder */
         $builder = $this->getContainerBuilder();
-        $config  = $this->getConfig($this->defaults);
+        $config  = $this->getConfig();
         $manager = $builder->getDefinition($this->prefix('manager.administrationManager'));
 
         $presenters      = $builder->findByTag('devrun.presenter');
@@ -642,70 +607,24 @@ class CmsExtension extends CompilerExtension implements IPresenterMappingProvide
      * Returns array of ServiceDefinition,
      * that will be appended to setup of router service
      *
-     * @example https://github.com/nette/sandbox/blob/master/app/router/RouterFactory.php - createRouter()
      * @return \Nette\Application\IRouter
      */
     public function getRoutesDefinition()
     {
-        $router   = new RouteList();
-        $router[] = $adminRouter = new RouteList('Cms');
+        global /** @var Nette\DI\Container $container */
+        $container;
 
-        $cmsDefaultLang = $defaultLocale = $availableLocales = 'cs';
+        /** @var PageRouteFactory $service */
+        $service = $container->getService('cms.route');
 
-        if ($translation = Nette\Environment::getService('translation.default')) {
-            $availableLocalesArray = ($locales = $translation->getAvailableLocales())
-                ? $locales
-                : [$cmsDefaultLang];
-
-            $availableLocales = implode('|', array_unique(preg_replace("/^(\w{2})_(.*)$/m", "$1", $availableLocalesArray)));
-
-            if ($default = $translation->getDefaultLocale()) $defaultLocale = $default;
-        }
-
-
-        $pageRoute = Nette\Environment::getService('cms.pageRoute');
-
-        $router[] = $pageRoute;
-
-
-//        \Devrun\CmsModule\Routes\PageRouteFactory::createRouter(@cms.pageRoute)
+        /** @var Nette\Application\IRouter $routeList */
+        $routeList = $service->create();
 
         /*
-         * @unComplete
-         * must be at the end, afterCompile?
+         * default route
          */
-        $frontRouter[] = new Route("[<locale={$defaultLocale} $availableLocales>/][<module>/]<presenter>/<action>[/<id>]", array(
-            'module' => 'Front',
-            'presenter' => array(
-                Route::VALUE        => 'Homepage',
-                Route::FILTER_TABLE => array(
-                    'testovaci' => 'Test',
-                ),
-            ),
-            'action'    => array(
-                Route::VALUE        => 'default',
-                Route::FILTER_TABLE => array(
-                    'operace-ok' => 'operationSuccess',
-                ),
-            ),
-            'id'        => null,
-            'locale'    => [
-                Route::FILTER_TABLE => [
-                    'cz'  => 'cs',
-                    'sk'  => 'sk',
-                    'pl'  => 'pl',
-                    'com' => 'en'
-                ]]
-        ));
-
-
-        $adminRouter[] = new Route("[<module>-]admin[-package-<package>]/[<locale=$defaultLocale $availableLocales>/]<presenter>/<action>[/<id>]", array(
-            'presenter' => 'Default',
-            'action'    => 'default',
-
-        ));
-
-        return $router;
+        $routeList[] = new Route("[<locale={$service->getDefaultLocale()} {$service->getLocales()}>/]<presenter>/<action>[/<id>]", 'Homepage:default');
+        return $routeList;
     }
 
     /**

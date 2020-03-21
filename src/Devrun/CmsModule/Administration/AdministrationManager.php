@@ -9,7 +9,6 @@
 
 namespace Devrun\CmsModule\Administration;
 
-use Flame\Application\UI\Presenter;
 use Nette\Security\User;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
@@ -282,7 +281,7 @@ class AdministrationManager
         $ex   = explode(':', trim($link, ":"));
         $last = end($ex);
 
-        $privilege = Presenter::DEFAULT_ACTION;
+        $privilege = \Nette\Application\UI\Presenter::DEFAULT_ACTION;
         if (\Devrun\Utils\Strings::starts_with_lower($last)) {
             $privilege = $last;
             unset($ex[count($ex) - 1]);

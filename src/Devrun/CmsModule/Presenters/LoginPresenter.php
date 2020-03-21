@@ -16,8 +16,10 @@ use Devrun\CmsModule\Forms\IForgottenPasswordFormFactory;
 use Devrun\CmsModule\Forms\ILoginFormFactory;
 use Devrun\CmsModule\Forms\IRegistrationFormFactory;
 use Devrun\CmsModule\Forms\LoginForm;
+use Devrun\CmsModule\Forms\LoginTestFormFactory;
 use Devrun\CmsModule\Forms\RegistrationForm;
 use Devrun\CmsModule\Repositories\UserRepository;
+use Nette\ComponentModel\IComponent;
 use Nette\Security\AuthenticationException;
 
 class LoginPresenter extends AdminPresenter
@@ -29,6 +31,11 @@ class LoginPresenter extends AdminPresenter
     /** @var ILoginFormFactory @inject */
     public $loginForm;
 
+
+    /** @var LoginTestFormFactory @inject */
+    public $loginTestForm;
+
+
     /** @var IRegistrationFormFactory @inject */
     public $registrationFormFactory;
 
@@ -38,6 +45,8 @@ class LoginPresenter extends AdminPresenter
     /** @var UserRepository @inject */
     public $userRepository;
 
+    /** @var \stdClass */
+    private $websiteInfo;
 
 
     public function renderDefault()
@@ -72,14 +81,23 @@ class LoginPresenter extends AdminPresenter
 
 
 
+    protected function createComponentLoginTestForm(): ?IComponent
+    {
+        dump($this->loginTestForm);
+
+        $form = $this->loginTestForm->create();
 
 
-
+        return $form;
+    }
 
 
     protected function createComponentLoginForm()
     {
         $form = $this->loginForm->create();
+
+//        dump($form);
+//        die;
 
         $form->create()
             ->bootstrap3Render()

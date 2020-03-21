@@ -11,16 +11,19 @@ namespace Devrun\CmsModule\Administration\Controls;
 
 use Devrun\Application\UI\Control\Control;
 use Devrun\CmsModule\Controls\FlashMessageControl;
+use Devrun\CmsModule\Entities\PackageEntity;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Forms\DevrunForm;
 use Devrun\CmsModule\Forms\IDevrunForm;
+use Devrun\CmsModule\InvalidArgumentException;
 use Devrun\CmsModule\Presenters\PagePresenter;
 use Devrun\CmsModule\Repositories\RouteRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Kdyby\Translation\Phrase;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 
 interface IPageSettingsControlFactory
 {
@@ -50,10 +53,6 @@ class PageSettingsControl extends Control
     /** @var IDevrunForm @inject */
     public $devrunForm;
 
-    /** @var \Nette\Caching\IStorage $storage @inject */
-    public $storage;
-
-
     /** @var \Nette\Caching\Cache */
     private $cache;
 
@@ -61,10 +60,9 @@ class PageSettingsControl extends Control
     private $urlMask = '';
 
 
-
-    protected function attached($presenter)
+    public function __construct(IStorage $storage)
     {
-        if ($presenter instanceof PagePresenter) {
+        $this->monitor(PagePresenter::class, function (PagePresenter $presenter): void {
             $this->page  = $presenter->getPageEntity();
             $this->route = $presenter->getRouteEntity();
 
@@ -73,10 +71,9 @@ class PageSettingsControl extends Control
             if (isset($moduleConfiguration['pagesMask'])) {
                 $this->urlMask = $moduleConfiguration['pagesMask'];
             }
-        }
+        });
 
-        $this->cache = new \Nette\Caching\Cache($this->storage, 'routes');
-        parent::attached($presenter);
+        $this->cache = new \Nette\Caching\Cache($storage, 'routes');
     }
 
 
@@ -91,19 +88,36 @@ class PageSettingsControl extends Control
 
     public function getValidDomain()
     {
-        return $this->routeRepository->getValidDomain($this->route);
+        return $this->routeRepository->getValidDomain($this->getRoute());
     }
 
     public function isSetValidDomain()
     {
-        return $this->routeRepository->isSetValidDomain($this->route);
+        return $this->routeRepository->isSetValidDomain($this->getRoute());
     }
 
-
-    private function getPackage()
+    /**
+     * @return RouteEntity
+     */
+    private function getRoute(): RouteEntity
     {
-        return $this->route->getPackage();
+        if (!$this->route) {
+            throw new InvalidArgumentException('Route not by set, component can run only in PagePresenter');
+        }
+
+        return $this->route;
     }
+
+    private function getPackage(): ?PackageEntity
+    {
+        return $this->getRoute()->getPackage();
+    }
+
+    private function isValidDomain(): bool
+    {
+        return $this->getPackage() && $this->getPackage()->getDomain() && $this->getPackage()->getDomain()->isValid();
+    }
+
 
     /**
      * @param $name
@@ -116,9 +130,9 @@ class PageSettingsControl extends Control
         $form = $this->devrunForm->create();
         $form->setTranslator($this->translator->domain("admin.forms.$name"));
 
-        $isDomain = $this->getPackage()->domain && $this->getPackage()->getDomain()->isValid();
 
-        $routeEntity          = $this->route;
+        $isDomain             = $this->isValidDomain();
+        $routeEntity          = $this->getRoute();
         $presenter            = $this->getPresenter();
         $allowedEditPageItems = $presenter->getUser()->isAllowed('Cms:Page', 'editNotations');
 
@@ -126,19 +140,19 @@ class PageSettingsControl extends Control
 
         $form->addText('title', 'title')
             ->setDisabled(!$allowedEditPageItems)
-            ->setAttribute('placeholder', "title_placeholder")
+            ->setHtmlAttribute('placeholder', "title_placeholder")
             ->addRule(Form::FILLED, 'required')
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $form->addTextArea('description', 'description')
             ->setDisabled(!$allowedEditPageItems)
-            ->setAttribute('placeholder', "description_placeholder")
+            ->setHtmlAttribute('placeholder', "description_placeholder")
             ->addCondition(Form::FILLED, 'required')
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $form->addTextArea('notation', 'notation')
             ->setDisabled(!$allowedEditPageItems)
-            ->setAttribute('placeholder', "notation_placeholder")
+            ->setHtmlAttribute('placeholder', "notation_placeholder")
             ->addCondition(Form::FILLED, 'required')
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
@@ -153,13 +167,13 @@ class PageSettingsControl extends Control
         $route = $form->addContainer("route");
 
         $route->addText("title", "route_title")
-            ->setAttribute('placeholder', "route_title_placeholder")
+            ->setHtmlAttribute('placeholder', "route_title_placeholder")
             ->addRule(Form::FILLED, 'required')
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         if (!$isDomain) {
             $url = $route->addText("url", "url")
-                ->setAttribute('placeholder', "url_placeholder");
+                ->setHtmlAttribute('placeholder', "url_placeholder");
 
             if ($this->urlMask && !$this->isSetValidDomain()) {
                 $url->addRule(Form::FILLED, 'required');
@@ -174,7 +188,7 @@ class PageSettingsControl extends Control
 
         } else {
             $url = $route->addText("domainUrl", "url")
-                ->setAttribute('placeholder', "url_placeholder");
+                ->setHtmlAttribute('placeholder', "url_placeholder");
 
             if ($this->urlMask && !$this->isSetValidDomain()) {
                 $url->addRule(Form::FILLED, 'required');
@@ -192,17 +206,17 @@ class PageSettingsControl extends Control
         $form->addGroup('Route settings');
 
         $route->addTextArea('description', 'route_description')
-            ->setAttribute('placeholder', "route_description_placeholder")
+            ->setHtmlAttribute('placeholder', "route_description_placeholder")
             ->addCondition(Form::FILLED, 'required')
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $route->addTextArea('notation', 'route_notation')
-            ->setAttribute('placeholder', "route_notation_placeholder")
+            ->setHtmlAttribute('placeholder', "route_notation_placeholder")
             ->addCondition(Form::FILLED, 'required')
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $route->addTextArea('keywords', 'route_keywords')
-            ->setAttribute('placeholder', "route_keywords_placeholder")
+            ->setHtmlAttribute('placeholder', "route_keywords_placeholder")
             ->addCondition(Form::FILLED, 'required')
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
@@ -210,7 +224,7 @@ class PageSettingsControl extends Control
 
 
         $form->addSubmit('send', 'send')
-            ->setAttribute('data-dismiss', 'modal');
+            ->setHtmlAttribute('data-dismiss', 'modal');
 
 
 
@@ -218,7 +232,7 @@ class PageSettingsControl extends Control
         $form->addFormClass(['ajax']);
 
         $form->bindEntity($entity = $this->page);
-        $routeEntity = $this->route;
+        $routeEntity = $this->getRoute();
 
         $form->setDefaults([
             'title' => $entity->getTitle(),
@@ -241,7 +255,7 @@ class PageSettingsControl extends Control
 
             /** @var PageEntity $entity */
             $entity = $form->getEntity();
-            $routeEntity = $this->route;
+            $routeEntity = $this->getRoute();
 
             foreach ($values as $key => $value) {
                 if (isset($entity->$key)) {

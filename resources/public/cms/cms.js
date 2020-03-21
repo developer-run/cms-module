@@ -136,6 +136,48 @@ $(function(){
     });
 
 
+    let editor;
+
+    return;
+
+    InlineEditor
+        .create(document.querySelector('#editor'), {
+            toolbar: [  'bold', 'italic', 'link' ]
+
+        })
+        .then(newEditor => {
+            editor = newEditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+    $('#submit').click(function (e) {
+        const editorData = editor.getData();
+
+        console.log(editorData);
+
+    });
+
+
+    return;
+
+
+    BalloonEditor
+        .create(document.querySelector('[contenteditable=true]'), {
+            toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(err => {
+            console.error(err.stack);
+        });
+
+
+
+    return;
 
     CKEDITOR.on("instanceReady", function(ev) {
         // alert('Editor instance ready');

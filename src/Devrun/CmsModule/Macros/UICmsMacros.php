@@ -64,12 +64,7 @@ class UICmsMacros extends MacroSet
         $set->addMacro('edit', array($set, 'macroEditable'));
 
         $set->addMacro('image', [$set, 'tagImg'], NULL, [$set, 'attrImg']);
-
-
-
-
-//        dump($set);
-//        die();
+        $set->addMacro('imageAbs', [$set, 'tagImgAbs'], NULL, [$set, 'attrImgAbs']);
 
     }
 
@@ -182,11 +177,21 @@ EON;
     }
 
 
-
-
     public function attrImg(MacroNode $node, PhpWriter $writer)
     {
         return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo \' src="\' . $proxyUrl . $basePath . "/" . $_img->createLink() . \'"\'');
+    }
+
+
+    public function tagImgAbs(MacroNode $node, PhpWriter $writer)
+    {
+        return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo "<img src=\"" . $baseUrl . "/" . $_img->createLink() . "\">";');
+    }
+
+
+    public function attrImgAbs(MacroNode $node, PhpWriter $writer)
+    {
+        return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo \' src="\' . $baseUrl . "/" . $_img->createLink() . \'"\'');
     }
 
 

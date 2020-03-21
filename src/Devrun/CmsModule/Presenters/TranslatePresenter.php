@@ -14,6 +14,7 @@ use Devrun\CmsModule\Facades\TranslateFacade;
 use Devrun\CmsModule\TranslateException;
 use Nette;
 use Nette\Utils\Html;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 
 class TranslatePresenter extends AdminPresenter
@@ -205,9 +206,7 @@ class TranslatePresenter extends AdminPresenter
 
             $grid->addActionHref('delete', 'Smazat', 'delete!')
                 ->setIcon('trash fa-2x')
-                ->setConfirm(function ($item) {
-                    return "Opravdu chcete smazat článek {$item['id']}?";
-                })
+                ->setConfirmation(new StringConfirmation("Opravdu chcete smazat článek id: %s?", 'id'))
                 ->setCustomRender(function ($row , Html $el) use ($originalTranslationId) {
                     $el->href($this->link('delete!', ['id' => "$originalTranslationId.{$row['id']}"]));
                     return $el;

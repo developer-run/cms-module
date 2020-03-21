@@ -12,7 +12,7 @@ namespace Devrun\CmsModule\Administration\Controls;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Facades\PageFacade;
 use Devrun\CmsModule\Presenters\PagePresenter;
-use Flame\Application\UI\Control;
+use Devrun\Application\UI\Control\Control;
 use Kdyby\Events\Event;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Multiplier;
@@ -51,7 +51,7 @@ class PageImagesControl extends Control
     private $page;
 
 
-    protected function attached($presenter)
+    protected function attached($presenter): void
     {
         if ($presenter instanceof PagePresenter) {
            $this->page = $presenter->getPageEntity();

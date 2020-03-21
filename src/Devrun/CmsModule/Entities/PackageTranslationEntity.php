@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2019
  *
  * @file    PackageTranslationEntity.php
@@ -11,7 +11,7 @@ namespace Devrun\CmsModule\Entities;
 
 use Devrun\DoctrineModule\Entities\Attributes\Translation;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\MagicAccessors;
+use Kdyby\Doctrine\MagicAccessors\MagicAccessors;
 
 /**
  * Class PackageTranslationEntity

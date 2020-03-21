@@ -50,7 +50,7 @@ class Authenticator extends \Devrun\Security\Authenticator
      * @throws Nette\Security\AuthenticationException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function authenticate(array $credentials)
+    public function authenticate(array $credentials): Nette\Security\IIdentity
     {
         if (count($credentials) == 2) {
             list($username, $password) = $credentials;

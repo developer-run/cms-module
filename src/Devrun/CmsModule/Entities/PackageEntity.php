@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2019
  *
  * @file    PackageEntity.php
@@ -12,10 +12,9 @@ namespace Devrun\CmsModule\Entities;
 use Devrun\DoctrineModule\Entities\Attributes\Translatable;
 use Devrun\DoctrineModule\Entities\DateTimeTrait;
 use Devrun\DoctrineModule\Entities\IdentifiedEntityTrait;
-use Devrun\CmsModule\Entities\UserEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Kdyby\Doctrine\Entities\MagicAccessors;
+use Kdyby\Doctrine\MagicAccessors\MagicAccessors;
 use Kdyby\Translation\ITranslator;
 use Kdyby\Translation\Translator;
 use Nette\Utils\Strings;

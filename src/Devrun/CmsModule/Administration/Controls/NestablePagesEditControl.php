@@ -9,10 +9,10 @@
 
 namespace Devrun\CmsModule\Administration\Controls;
 
+use Devrun\Application\UI\Control\Control;
 use Devrun\CmsModule\Controls\INavigationPageControlFactory;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Repositories\PageRepository;
-use Flame\Application\UI\Control;
 use Kdyby\Translation\ITranslator;
 use Nette\Security\User;
 use Nette\Utils\Html;

@@ -11,7 +11,7 @@
 
 namespace Devrun\CmsModule\Administration\Controls;
 
-use Flame\Application\UI\Control;
+use Devrun\Application\UI\Control\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\Multiplier;
 use Nette\Http\FileUpload;

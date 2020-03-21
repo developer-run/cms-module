@@ -9,7 +9,7 @@
 
 namespace Devrun\CmsModule\Forms;
 
-use Flame\Application\UI\Form;
+use Nette\Application\UI\Form;
 use Nette\Security\IUserStorage;
 
 interface ILoginFormFactory

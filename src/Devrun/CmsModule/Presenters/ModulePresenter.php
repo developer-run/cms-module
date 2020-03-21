@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2019
  *
  * @file    ModulePresenter.php
@@ -15,7 +15,6 @@ use Devrun\CmsModule\Entities\ImagesEntity;
 use Devrun\CmsModule\Entities\ImagesTranslationEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Entities\RouteTranslationEntity;
-use Devrun\CmsModule\Facades\Images\ImageStorageManager;
 use Devrun\CmsModule\Repositories\RouteRepository;
 use Devrun\CmsModule\Storage\ImageManageStorage;
 use Devrun\Storage\ImageStorage;
@@ -24,16 +23,13 @@ use Devrun\Utils\FileTrait;
 use Flame\Utils\Finder;
 use JonnyW\PhantomJs\Client;
 use JonnyW\PhantomJs\Http\CaptureRequest;
-use Kdyby\Events\Event;
-use Kdyby\Events\EventManager;
 use Nette\Application\IPresenter;
 use Nette\Application\PresenterFactory;
 use Nette\Application\Request;
 use Nette\Application\Responses\TextResponse;
 use Nette\Bridges\ApplicationLatte\Template;
-use Nette\Http\Context;
 use Nette\Utils\Strings;
-use Tracy\Debugger;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 
 class ModulePresenter extends AdminPresenter
 {
@@ -224,9 +220,7 @@ class ModulePresenter extends AdminPresenter
         $grid->addAction('update', 'Update', 'update!')
             ->setIcon('eye fa-2x')
             ->setClass('_ajax btn btn-xs btn-info')
-            ->setConfirm(function ($item) {
-                return "Opravdu chcete updatovat modul [id: {$item->name}]?";
-            });
+            ->setConfirmation(new StringConfirmation('Opravdu chcete updatovat modul [id: %s]?', 'name'));
 
 
 
@@ -271,9 +265,7 @@ class ModulePresenter extends AdminPresenter
         $grid->addAction('garbage', 'Garbage', 'garbageRoute!')
             ->setIcon('eye fa-2x')
             ->setClass('_ajax btn btn-xs btn-warning')
-            ->setConfirm(function ($item) {
-                return "Opravdu chcete vyčistit routu [id: {$item->url}]?";
-            });
+            ->setConfirmation(new StringConfirmation('Opravdu chcete vyčistit routu [id: %s]?', 'url'));
 
         $grid->addGroupAction('Delete routes images')->onSelect[] = [$this, 'garbageRoutes'];
 

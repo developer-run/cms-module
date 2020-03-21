@@ -9,7 +9,7 @@
 
 namespace Devrun\CmsModule\Administration\Controls;
 
-use Flame\Application\UI\Control;
+use Devrun\Application\UI\Control\Control;
 
 interface ITabsContentControlFactory
 {

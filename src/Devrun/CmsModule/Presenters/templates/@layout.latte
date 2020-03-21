@@ -9,7 +9,7 @@
 <html lang="en" xmlns:n="http://www.w3.org/1999/xhtml">
 <!--<![endif]-->
 <head>
-	<title>{ifset title}{include title|striptags} | {/ifset}DevRun</title>
+	<title n:snippet="title">{ifset title}{include title|striptags} | {/ifset}DevRun</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
@@ -17,45 +17,50 @@
 	<meta name="robots" content="{$robots}" n:ifset="$robots"/>
 	<meta content="{$webLocale}" http-equiv="Content-language" n:ifset="$webLocale">
 	<meta content="{$keywords}" name="keywords" n:ifset="$keywords">
-	<meta content="Etnetera a.s." name="author">
+	<meta content="Devrun" name="author">
 	<link rel="shortcut icon" href="{$basePath}/favicon2.png">
 
 	{*================ BEGIN ENVIRONMENT SETTINGS ==============*}
 	{control environmentControl}
 	{*================  END ENVIRONMENT SETTINGS  ==============*}
 
-
 	{*================== BEGIN BASE CSS STYLE ==================*}
-	{if $production && true == false}
+	{if true == false && $production}
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/main-cms.min.css?rel=1535795614410">
 	{else}
 		{*<!-- build:css {$basePath}/css/main-cms.min.css -->*}
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/bootstrap/dist/css/bootstrap.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/lightbox2/dist/css/lightbox.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/plugins/fontawesome-free/css/all.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/dist/css/adminlte.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/plugins/select2/css/select2.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/plugins/pace-progress/themes/blue/pace-theme-center-radar.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/plugins/toastr/toastr.min.css">
 
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/flag-icon/css/flag-icon.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/dist/css/AdminLTE.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/dist/css/skins/_all-skins.min.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/plugins/iCheck/flat/blue.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/plugins/timepicker/bootstrap-timepicker.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+		<!-- Google Font: Source Sans Pro -->
+		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid.css">
+		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid-spinners.css">
+
+
+
+
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/animate.css/animate.min.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/grido/client-side/css/grido.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/jquery-toast-plugin/dist/jquery.toast.min.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/nprogress/nprogress.css">
+{*		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/nprogress/nprogress.css">*}
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/cms/cms.css?v=1">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/nestable2/jquery.nestable.css">
+{*		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/nestable2/jquery.nestable.css">*}
 		{*<!-- endbuild -->*}
 
 		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/happy/dist/happy.css">
 		{*<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/bootstrap-datepicker/css/bootstrap-datepicker3.css">*}
 
-		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/dist/datagrid.css">
-		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/dist/datagrid-spinners.css">
+{*		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/dist/datagrid.css">*}
+{*		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/dist/datagrid-spinners.css">*}
 
 		{*<link n:if="!$production" rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/pexeso.css">*}
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/select2/dist/css/select2.css">
+{*		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/select2/dist/css/select2.css">*}
 
 	{/if}
 
@@ -69,8 +74,13 @@
 
 	{*================== END BASE CSS STYLE ==================*}
 
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/jquery/dist/jquery.min.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/ckeditor/ckeditor.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/jquery/jquery.min.js"></script>
+{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/ckeditor/ckeditor.js"></script>*}
+
+
+	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/inline/ckeditor.js"></script>
+{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/classic/ckeditor.js"></script>*}
+{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/baloon/ckeditor.js"></script>*}
 
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -83,245 +93,178 @@
 	{block head}{/block}
 </head>
 
-<body id="{$pageIdName}" class="hold-transition skin-blue sidebar-mini{$pageClassName}">
+<body id="{$pageIdName}" class="hold-transition sidebar-mini text-sm{$pageClassName}">
+
+
+
 <div class="wrapper">
+	<!-- Navbar -->
+	<nav class="main-header navbar navbar-expand navbar-{$theme->type} navbar-{$theme->color}{if $theme->text} {$theme->text}{/if}">
+		<!-- Left navbar links -->
+		<ul class="navbar-nav">
+			<li class="nav-item">
+				<a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+			</li>
+			<li class="nav-item d-none d-sm-inline-block">
+				<a href="index3.html" class="nav-link">Home</a>
+			</li>
+			<li class="nav-item d-none d-sm-inline-block">
+				<a href="#" class="nav-link">Contact</a>
+			</li>
 
-	<header class="main-header">
-		<a n:href=":Cms:{$presenter->administrationManager->defaultPresenter}:" class="logo">
-			<span class="logo-mini"><b>A</b>DR</span>
-			<span class="logo-lg"><b>Admin</b> DevRun</span>
-		</a>
+			{*{control languagesControl}*}
 
-		<!-- Header Navbar: style can be found in header.less -->
-		<nav class="navbar navbar-static-top">
-			<!-- Sidebar toggle button-->
-			<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-				<span class="sr-only">Toggle navigation</span>
-			</a>
+			{if $systemAdminItems}
+				{include menu adminItems => $systemAdminItems}
+			{/if}
 
-			<div class="navbar-left">
-				<ul class="nav navbar-nav">
-
-					<!-- Messages: style can be found in dropdown.less-->
-					{*{include "#messagesMenuDemo.latte"}*}
-
-
-					<!-- Notifications: style can be found in dropdown.less -->
-					{*{include "#notificationsMenuDemo.latte"}*}
-
-
-					{*{control languagesControl}*}
-
-					{if $systemAdminItems}
-						{include menu adminItems => $systemAdminItems}
-					{/if}
-
-					{if $moduleAdminItems}
-						{include menu adminItems => $moduleAdminItems}
-					{/if}
+			{if $moduleAdminItems}
+				{include menu adminItems => $moduleAdminItems}
+			{/if}
 
 
-					{* user defined all "li" sections *}
-					{foreach $navbarLeftAdminItems as $service => $params}
-						{if $params['type'] == page}
-							<li class="dropdown">
-								<a n:href="$params['link']" n:class="$presenter->isLinkCurrent($params['link']) ? 'active'" title="{$params['description']}">
-									<i class="fa {$params['icon']}"></i>
-									<span class="hidden-xs">{$params['name']}</span>
-								</a>
-							</li>
-						{elseif $params['type'] == control}
-							{control administrationItemControls-$service}
-						{elseif $params['type'] == factory}
-							{control $params['name']}
-						{/if}
-					{/foreach}
-					{* user defined all "li" sections *}
-
-					<!-- Tasks: style can be found in dropdown.less -->
-					{*{include "#tasksMenuDemo.latte"}*}
-
-
-					<!-- User Account: style can be found in dropdown.less -->
-					{*{include "#userMenu.latte"}*}
-
-					<!-- Control Sidebar Toggle Button -->
-					{*
-					<li>
-						<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+			{* user defined all "li" sections *}
+			{foreach $navbarLeftAdminItems as $service => $params}
+				{if $params['type'] == page}
+					<li class="dropdown">
+						<a n:href="$params['link']" n:class="$presenter->isLinkCurrent($params['link']) ? active, ajax" title="{$params['description']}">
+							<i class="fa {$params['icon']}"></i>
+							<span class="hidden-xs">{$params['name']}</span>
+						</a>
 					</li>
-					*}
-				</ul>
+				{elseif $params['type'] == control}
+					{control administrationItemControls-$service}
+				{elseif $params['type'] == factory}
+					{control $params['name']}
+				{/if}
+			{/foreach}
+			{* user defined all "li" sections *}
+
+
+
+		</ul>
+
+		<!-- SEARCH FORM -->
+		<form class="form-inline ml-3">
+			<div class="input-group input-group-sm">
+				<input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+				<div class="input-group-append">
+					<button class="btn btn-navbar" type="submit">
+						<i class="fas fa-search"></i>
+					</button>
+				</div>
 			</div>
+		</form>
 
-			<div class="navbar-custom-menu">
-				<ul class="nav navbar-nav">
+		<!-- Right navbar links -->
+		<ul class="navbar-nav ml-auto">
+			{include "#messages.latte"}
+			{include "#notificationsMenuDemo.latte"}
 
-					<!-- Messages: style can be found in dropdown.less-->
-					{*{include "#messagesMenuDemo.latte"}*}
-
-
-					<!-- Notifications: style can be found in dropdown.less -->
-					{*{include "#notificationsMenuDemo.latte"}*}
-
-
-
-					{*{control sectionNavbarOneAdminControls}*}
-					{*{control languagesControl}*}
-
-					{foreach $navbarRightAdminItems as $service => $params}
-						{if $params['type'] == page}
-							<li class="dropdown">
-								<a n:href="$params['link']" n:class="$presenter->isLinkCurrent($params['link']) ? 'active'" title="{$params['description']}">
-									<i class="fa {$params['icon']}"></i>
-									<span class="hidden-xs">{$params['name']}</span>
-								</a>
-							</li>
-						{elseif $params['type'] == control}
-							{control administrationItemControls-$service $params}
-						{elseif $params['type'] == factory}
-							{control $params['name']}
-						{/if}
-					{/foreach}
-
-					<!-- Tasks: style can be found in dropdown.less -->
-					{*{include "#tasksMenuDemo.latte"}*}
-
-
-					<!-- User Account: style can be found in dropdown.less -->
-					{*{include "#userMenu.latte"}*}
-
-					<!-- Control Sidebar Toggle Button -->
-					{*
-					<li>
-						<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+			{foreach $navbarRightAdminItems as $service => $params}
+				{if $params['type'] == page}
+					<li class="dropdown">
+						<a n:href="$params['link']" n:class="$presenter->isLinkCurrent($params['link']) ? 'active'" title="{$params['description']}">
+							<i class="fa {$params['icon']}"></i>
+							<span class="hidden-xs">{$params['name']}</span>
+						</a>
 					</li>
-					*}
-				</ul>
-			</div>
+				{elseif $params['type'] == control}
+					{control administrationItemControls-$service $params}
+				{elseif $params['type'] == factory}
+					{control $params['name']}
+				{/if}
+			{/foreach}
 
+			<li class="nav-item">
+				<a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#"><i class="fas fa-th-large"></i></a>
+			</li>
+		</ul>
+	</nav>
+	<!-- /.navbar -->
 
-
-		</nav>
-	</header>
-
-
-	<!-- Left side column. contains the logo and sidebar -->
-	<aside class="main-sidebar" _style="position: relative; width: auto;">
-		<!-- sidebar: style can be found in sidebar.less -->
-		<section class="sidebar">
-			<!-- Sidebar user panel -->
-			<div class="user-panel">
-				<div class="pull-left image">
-					<img n:if="$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-man-ico.png" class="img-circle" alt="User Image">
-					<img n:if="!$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-woman-ico.png" class="img-circle" alt="User Image">
-				</div>
-				<div n:if="$user->loggedIn" class="pull-left info">
-					<p>{$user->identity->firstName} {$user->identity->lastName}</p>
-					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-				</div>
-				<div n:if="!$user->loggedIn" class="pull-left info">
-					<p>administrátor</p>
-					<a href="#"><i class="fa fa-circle text-success"></i> Offline</a>
-				</div>
-			</div>
-			<!-- search form -->
-			<form action="#" method="get" class="hidden sidebar-form">
-				<div class="input-group">
-					<input type="text" name="q" class="form-control" placeholder="Search...">
-					<span class="input-group-btn">
-						<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
-					  </span>
-				</div>
-			</form>
-			<!-- /.search form -->
-			<!-- sidebar menu: : style can be found in sidebar.less -->
-
-			<ul class="sidebar-menu tree" data-widget="tree" data-follow-link="true" data-accordion="false" data-animation-speed="300">
-				<li class="header">MAIN NAVIGATION</li>
-
-				<li n:class="$presenter->isLinkCurrent(':Cms:Default:') ? 'treeview active' : 'treeview'">
-					<a n:href=":Cms:Default:">
-						<i class="fa fa-dashboard"></i> <span>Dashboard</span>
-						<small><br>Rozcestník a přehled stránek</small>
-					</a>
-				</li>
-
-				{foreach $contentAdminItems as $service => $contentAdminItem}
-					{*{dump $contentAdminItem}*}
-
-					{if $contentAdminItem['type'] == 'page'}
-						<li n:if="$presenter->isAllowedLink($contentAdminItem['link'])" n:class="$presenter->isLinkCurrent($contentAdminItem['link']) ? 'treeview active' : 'treeview'">
-							<a n:href="$contentAdminItem['link']">
-								<i class="fa {$contentAdminItem['icon']}" aria-hidden="true"></i>
-								<span>{$contentAdminItem['name']}<small n:ifset="$contentAdminItem['description']"><br>{$contentAdminItem['description']}</small></span>
-							</a>
-						</li>
-					{elseif $contentAdminItem['type'] == 'control'}
-						{control administrationItemControls-$service $contentAdminItem}
-					{elseif $contentAdminItem['type'] == 'factory'}
-						{control $contentAdminItem['name']}
-					{/if}
-				{/foreach}
-
-				{*
-                                <li class="treeview" n:foreach="$contentAdminItems as $service => $contentAdminItem">
-                                    {if $contentAdminItem['type'] == page}
-                                    <a n:href="$contentAdminItem['link']">
-                                        <i class="fa {$contentAdminItem['icon']}" aria-hidden="true"></i>
-                                        <span>{$contentAdminItem['name']}<small n:ifset="$contentAdminItem['description']"><br>{$contentAdminItem['description']}</small></span>
-                                    </a>
-                                    {elseif $contentAdminItem['type'] == control}
-                                        {control administrationItemControls-$service}
-                                    {elseif $contentAdminItem['type'] == factory}
-                                        {control $contentAdminItem['name']}
-                                    {/if}
-                                </li>
-                *}
-
-			</ul>
-
-		</section>
-		<!-- /.sidebar -->
-	</aside>
+	{snippetArea menuArea}
+	{include "#leftSidebar.latte"}
+	{/snippetArea}
 
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
 		<!-- Content Header (Page header) -->
-		<section class="content-header">
-			<h1>{block headerTitle}{/block}
-				<small n:inner-block="headerSmallTitle"></small>
-			</h1>
-			<ol n:inner-block="breadcrumb" class="breadcrumb">
-				<li><a n:href=":Cms:{$presenter->administrationManager->defaultPresenter}:"><i class="fa fa-dashboard"></i> {_admin.home}</a></li>
-				<li class="active">{_admin.page.edit}</li>
-			</ol>
-		</section>
+		<div class="content-header">
+			<div class="container-fluid">
+				<div n:snippet="breadcrumb" class="row mb-2">
+					<div class="col-sm-6">
+						<h1 class="m-0 text-dark">{block headerTitle}{/block}
+							<small n:inner-block="headerSmallTitle"></small>
+						</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol n:inner-block="breadcrumb" class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item"><a n:href=":Cms:{$presenter->administrationManager->defaultPresenter}:" class="ajax"><i class="fa fa-dashboard"></i> {_admin.home}</a></li>
+							<li class="breadcrumb-item active">{_admin.page.edit}</li>
+						</ol>
+					</div>
+				</div><!-- /.row -->
+			</div><!-- /.container-fluid -->
+		</div>
+		<!-- /.content-header -->
 
 		<!-- Main content -->
-		<section class="content">
-			{snippet flash}
-				{control flashMessageControl}
-				{control flashMessageControl:toast}
-			{/snippet}
-			{snippet content}
-				{include content}
-			{/snippet}
-		</section>
+		<div class="content">
+			<div class="container-fluid">
+{*				{include "#demoContent.latte"}*}
+				{snippet flash}
+					{control flashMessageControl}
+					{control flashMessageControl:toast}
+				{/snippet}
+				{snippet content}
+					{include content}
+				{/snippet}
+			</div>
+		</div>
 		{control modalActionControl}
+		<!-- /.content -->
 	</div>
 	<!-- /.content-wrapper -->
 
-	{include "#footer.latte"}
-
 	<!-- Control Sidebar -->
-	{block rightSidebar}
-		{*{include "#rightSidebar.latte"}*}
-	{/block}
+	<aside class="control-sidebar control-sidebar-dark">
+		<!-- Control sidebar content goes here -->
+	</aside>
 	<!-- /.control-sidebar -->
 
-	<div class="control-sidebar-bg"></div>
+	{include "#footer.latte"}
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{*{include "_#oldLayout.latte"}*}
+
+
+
+
+
+
 <!-- ./wrapper -->
 
 
@@ -331,37 +274,44 @@
 	<script type="application/javascript" src="{$basePath}/js/cms-index.min.js?rel=1535795614410"></script>
 {else}
 	{*<!-- build:js {$basePath}/js/cms-index.min.js -->*}
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/moment/moment.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/moment/locale/cs.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/timepicker/bootstrap-timepicker.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/bootstrap-slider/bootstrap-slider.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/dist/js/adminlte.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/dist/js/adminlte.js"></script>
+
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nette.ajax.js/nette.ajax.js"></script>
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nette-live-form-validation/live-form-validation.js"></script>
 
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/lightbox2/dist/js/lightbox.min.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid-instant-url-refresh.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid-spinners.js"></script>
+
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/moment/moment.min.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/moment/locale/cs.js"></script>
+
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/pace-progress/pace.min.js"></script>
+
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/moment/moment.min.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+
+
+
+
+
+
+
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nestable2/jquery.nestable.js"></script>
+{*	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nestable2/jquery.nestable.js"></script>*}
 
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/happy/dist/happy.js"></script>
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/jquery-ui-sortable/jquery-ui-sortable.js"></script>
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/select2/dist/js/select2.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/dist/datagrid.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/dist/datagrid-instant-url-refresh.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/dist/datagrid-spinners.js"></script>
 
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/input-mask/jquery.inputmask.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 
-	{*<script type="application/javascript" src="{$basePath}/js/history.ajax.js/history.ajax.js"></script>*}
-	<script type="application/javascript" src="{$basePath}/js/nette.nprogress.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nprogress/nprogress.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/cmsModule/history.ajax.js/history.ajax.js"></script>
+{*	<script type="application/javascript" src="{$basePath}/js/nette.nprogress.js"></script>*}
+{*	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nprogress/nprogress.js"></script>*}
 
 	{*<script type="application/javascript" src="{$basePath}/js/extensions/popupDialogExtension.js"></script>*}
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/cms/cms.js?v=1"></script>
@@ -374,10 +324,6 @@
 
 
 	{*<script type="application/javascript" src="{$basePath}/js/modernizr.js"></script>*}
-	{*<script type="application/javascript" src="{$basePath}/js/pexeso.js"></script>*}
-
-
-
 	{*<script type="application/javascript" src="{$basePath}/js/select2-nivea.js"></script>*}
 	{*<script type="application/javascript" src="{$basePath}/js/main.js"></script>*}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2018
  *
  * @file    UsersPresenter.php
@@ -29,6 +29,7 @@ use Nette\Mail\Message;
 use Nette\Utils\Random;
 use Nette\Utils\Validators;
 use Tracy\Debugger;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 
 class UsersPresenter extends AdminPresenter
 {
@@ -62,8 +63,8 @@ class UsersPresenter extends AdminPresenter
     /** @var IMailer @inject */
     public $mailer;
 
-    /** @var Logger @inject */
-    public $logger;
+//    /** @var Logger @inject */
+//    public $logger;
 
 
     /** @var bool sending email? (DI) */
@@ -301,9 +302,7 @@ class UsersPresenter extends AdminPresenter
         $grid->addAction('delete', 'Smazat', 'delete!')
             ->setIcon('trash fa-2x')
             ->setClass('ajax btn btn-xs btn-danger')
-            ->setConfirm(function ($item) {
-                return "Opravdu chcete smazat záznam [id: {$item->id}; {$item->email}]?";
-            });
+            ->setConfirmation(new StringConfirmation('Opravdu chcete smazat záznam [e-mail: %s]?', 'email'));
 
 
         $grid->addInlineAdd()

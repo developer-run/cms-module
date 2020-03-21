@@ -20,6 +20,13 @@ use Nette;
 use Nette\Application;
 use Nette\Application\Routers\Route;
 
+
+/**
+ * @deprecated use PageRouteFactory instead [nette 3]
+ *
+ * Class PageRoute
+ * @package Devrun\CmsModule\Routes
+ */
 class PageRoute extends Route implements Subscriber
 {
     const DEFAULT_MODULE = 'Cms';

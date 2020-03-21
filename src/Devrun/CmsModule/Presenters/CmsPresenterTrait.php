@@ -84,9 +84,7 @@ trait CmsPresenterTrait
     {
         if ($this->_packageEntity === null) {
             if ($package = $this->getPackage()) {
-                if ($packageEntity = $this->packageRepository->find($package)) {
-                    $this->_packageEntity = $packageEntity;
-                }
+                $this->_packageEntity = $this->packageRepository->find($package);
             }
         }
 
@@ -100,9 +98,7 @@ trait CmsPresenterTrait
     {
         if ($this->_routeEntity === null) {
             if ($route = $this->route) {
-                if ($routeEntity = $this->packageRepository->find($route)) {
-                    $this->_routeEntity = $routeEntity;
-                }
+                $this->_routeEntity = $this->routeRepository->find($route);
             }
         }
 
@@ -116,9 +112,7 @@ trait CmsPresenterTrait
     {
         if ($this->_pageEntity === null) {
             if ($page = $this->page) {
-                if ($pageEntity = $this->packageRepository->find($page)) {
-                    $this->_pageEntity = $pageEntity;
-                }
+                $this->_pageEntity = $this->packageRepository->find($page);
             }
         }
 

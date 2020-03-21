@@ -83,16 +83,17 @@ class AdminPresenter extends BasePresenter
     public $signaled = false;
 
 
+    /**
+     * @throws Nette\Application\AbortException
+     */
     protected function startup()
     {
         parent::startup();
 
-
-//        dump($this->administrationManager->login);
-//        die();
+//        dump($this->administrationManager);
 
         // check admin account
-        if (!$this->administrationManager->login['name']) {
+        if (!$this->administrationManager->login->name) {
             if ($this->getName() != 'Cms:Admin:Installation') {
                 $this->redirect(':Cms:Admin:Installation:');
             }
@@ -163,6 +164,7 @@ class AdminPresenter extends BasePresenter
             $systemAdminItems = Arrays::addByArrayKeys($systemAdminItems, $categories, $systemPage);
         }
 
+        $this->template->theme            = $this->administrationManager->getTheme();
         $this->template->cmsVersion       = $this->moduleFacade->getModules()['cms']->getVersion();
         $this->template->moduleAdminItems = $moduleItems;
         $this->template->systemAdminItems = $systemAdminItems;
@@ -185,22 +187,32 @@ class AdminPresenter extends BasePresenter
     {
         parent::afterRender();
 
-        if ($this->isAjax() && ($layoutAjax = $this->getParameter('layoutAjax')) == true) {
+        if ($this->isAjax()) {
+            if (($layoutAjax = $this->getParameter('layoutAjax')) == true) {
 
-            if (!file_exists($layoutFile = __DIR__ . "/templates/@$layoutAjax.latte")) {
-                Debugger::log(__METHOD__ . " - ajaxLayout `$layoutFile`` not found", ILogger::WARNING);
-                $layoutFile = false;
+                if (!file_exists($layoutFile = __DIR__ . "/templates/@$layoutAjax.latte")) {
+                    Debugger::log(__METHOD__ . " - ajaxLayout `$layoutFile`` not found", ILogger::WARNING);
+                    $layoutFile = false;
+                }
+                $this->setLayout($layoutFile);
+
+            } elseif (!$this->signaled && !$this->isControlInvalid()) {
+                $this->redrawControl('content');
+                $this->redrawControl('menuArea');
+                $this->redrawControl('menu');
+                $this->redrawControl('menu-item-dashboard');
+                $this->redrawControl('breadcrumb');
+                $this->redrawControl('styles');
+                $this->redrawControl('title');
             }
-            $this->setLayout($layoutFile);
-
-        } elseif ($this->isAjax() && !$this->signaled && !$this->isControlInvalid()) {
-            $this->redrawControl('content');
-            $this->redrawControl('styles');
         }
     }
 
 
-    public function formatLayoutTemplateFiles()
+    /**
+     * Formats layout template file names.
+     */
+    public function formatLayoutTemplateFiles(): array
     {
         $cmsLayout = $this->modules['cms']['path'] . "src/Devrun/CmsModule/Presenters/templates/@layout.latte";
 
@@ -430,7 +442,7 @@ class AdminPresenter extends BasePresenter
     }
 
 
-    public function flashMessage($message, $type = 'info', $title = '', array $options = array())
+    public function flashMessage($message, $type = 'info', $title = '', array $options = array()): \stdClass
     {
         if ($type == FlashMessageControl::TOAST_TYPE) {
             $id         = $this->getParameterId('flash');

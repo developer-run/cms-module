@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of souteze.pixman.cz.
+ * This file is part of Developer Run <Devrun>.
  * Copyright (c) 2019
  *
  * @file    DomainPresenter.php
@@ -22,6 +22,7 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\Utils\Html;
 use Nette\Utils\Validators;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 
 class DomainPresenter extends AdminPresenter
 {
@@ -100,8 +101,11 @@ class DomainPresenter extends AdminPresenter
     }
 
 
-
-
+    /**
+     * @param $name
+     * @return DataGrid
+     * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     */
     protected function createComponentGridControl($name)
     {
         $grid =  new DataGrid();
@@ -156,9 +160,10 @@ class DomainPresenter extends AdminPresenter
         $grid->addAction('delete', 'Smazat', 'delete!')
             ->setIcon('trash fa-2x')
             ->setClass('ajax btn btn-xs btn-danger')
-            ->setConfirm(function ($item) {
-                return "Opravdu chcete smazat záznam [id: {$item->id}; {$item->name}]?";
-            });
+            ->setConfirmation(new StringConfirmation('Do you really want to delete row %s?', 'name'));
+//            ->setConfirm(function ($item) {
+//                return "Opravdu chcete smazat záznam [id: {$item->id}; {$item->name}]?";
+//            });
 
 
 

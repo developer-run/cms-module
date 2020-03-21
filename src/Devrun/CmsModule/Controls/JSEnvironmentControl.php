@@ -9,7 +9,7 @@
 
 namespace Devrun\CmsModule\Controls;
 
-use Flame\Application\UI\Control;
+use Devrun\Application\UI\Control\Control;
 use Nette\Bridges\ApplicationLatte\Template;
 
 interface IJSEnvironmentControl
@@ -26,6 +26,9 @@ interface IJSEnvironmentControl
 class JSEnvironmentControl extends Control
 {
 
+    /**
+     * @throws \Nette\Application\UI\InvalidLinkException
+     */
     public function render()
     {
         /** @var Template $template */

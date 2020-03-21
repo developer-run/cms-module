@@ -27,6 +27,27 @@ userPage:
 loginPage:
 	title: Přihlásit se
 
+logPage:
+	title: Přehled logů
+
+translatePage:
+	title: Překladové soubory
+
+modulePage:
+	title: Správa modulů
+
+routePage:
+	title: Správa stránek
+
+domainPage:
+	title: Uživatelský profil
+
+dashboardPage:
+	title: Dashboard
+
+editPage:
+	title: Editace `%name%`
+
 profilePage:
 	title: Profil uživatele
 	userUpdated: uživatel `%user%` upraven

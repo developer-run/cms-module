@@ -30,6 +30,9 @@ class TranslateFacade
     /** @var Logger */
     private $logger;
 
+    /** @var array */
+    private $domains;
+
 
     /**
      * TranslateFacade constructor.
@@ -58,11 +61,22 @@ class TranslateFacade
      */
     public function getDefaultDomainsWithMessages()
     {
-        $catalogue      = $this->translator->getCatalogue();
-        $firstCatalog   = $catalogue->getFallbackCatalogue();
-        $defaultCatalog = $firstCatalog->getFallbackCatalogue();
+        if (null === $this->domains) {
+            $catalogue      = $this->translator->getCatalogue();
+            $firstCatalog   = $catalogue->getFallbackCatalogue();
+            $defaultCatalog = $firstCatalog->getFallbackCatalogue();
 
-        return $defaultCatalog ? $defaultCatalog->all() : $firstCatalog->all();
+//            dump($catalogue);
+//            dump($firstCatalog);
+//            dump($defaultCatalog);
+//            dump($catalogue->all());
+
+
+            $this->domains = $catalogue->all();
+//            $this->domains = $defaultCatalog ? $defaultCatalog->all() : $firstCatalog->all();
+        }
+
+        return $this->domains;
     }
 
 

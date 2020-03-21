@@ -9,10 +9,10 @@
 
 namespace Devrun\CmsModule\Forms;
 
+use Devrun\CmsModule\Forms\Rendering\Bs4FormRenderer;
 use Devrun\DoctrineModule\DoctrineForms\EntityFormTrait;
 use Devrun\InvalidArgumentException;
-use Flame\Application\UI\Form;
-use Nette\ArrayHash;
+use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Button;
 use Nette\Forms\Controls\Checkbox;
@@ -23,7 +23,7 @@ use Nette\Forms\Controls\SelectBox;
 use Nette\Forms\Controls\TextBase;
 use Nette\Forms\IControl;
 use Nette\Forms\Rendering\DefaultFormRenderer;
-use Tracy\Debugger;
+use Nette\Utils\ArrayHash;
 
 interface IDevrunForm
 {
@@ -44,16 +44,88 @@ class DevrunForm extends Form implements IDevrunForm
 
     protected $autoButtonClass = true;
 
-    protected $labelControlClass = 'div class="col-sm-3 control-label"';
+    protected $labelControlClass = 'div class="col-sm-2 col-form-label"';
 
-    protected $controlClass = 'div class=col-sm-9';
+    protected $controlClass = 'div class=col-sm-10';
 
     use EntityFormTrait;
+
+    /** @var int */
+    private $id;
 
 
     public function create()
     {
         if (null === $this->entityMapper) throw new InvalidArgumentException("set 'inject(true)' for this form (DI settings...), we need auto entity mapper.");
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = (int)$id;
+        return $this;
+    }
+
+
+    /**
+     * Nette fix getValues asArray not work correctly
+     *
+     * @param bool $asArray
+     * @return array|ArrayHash
+     */
+    public function getValues($asArray = false)
+    {
+        $values = (array)parent::getValues($asArray);
+        if (!isset($values['id']))
+            $values['id'] = $this->getId();
+
+        return ArrayHash::from($values);
+    }
+
+    /**
+     * @param array|\Traversable $values
+     * @param bool                           $erase
+     * @return \Nette\Forms\Container
+     */
+    public function setDefaults($values, $erase = false)
+    {
+
+        // Set form ID
+        if (isset($values['id'])) {
+            $this->setId($values['id']);
+        } elseif (isset($values->id)) {
+            $this->setId($values->id);
+        }
+
+        // Get object to string for values compatibility
+        if (is_array($values) and count($values)) {
+            $values = array_map(function ($value) {
+                if (is_object($value) and (method_exists($value, '__toString'))) {
+                    if (isset($value->id)) {
+                        return (string)$value->id;
+                    } else {
+                        return (string)$value;
+                    }
+
+                }
+
+                return $value;
+            }, $values);
+        }
+
+        return parent::setDefaults($values, $erase);
     }
 
 
@@ -101,6 +173,15 @@ class DevrunForm extends Form implements IDevrunForm
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function bootstrap4Render()
+    {
+        $this->setRenderer(new Bs4FormRenderer());
         return $this;
     }
 
@@ -176,24 +257,6 @@ class DevrunForm extends Form implements IDevrunForm
     {
         $return = in_array($val, $control->getValue());
         return $return;
-    }
-
-
-    /**
-     * Nette fix getValues asArray not work correctly
-     *
-     * @param bool $asArray
-     *
-     * @return array|ArrayHash
-     * @todo unresolved
-     */
-    public function _getValues($asArray = false)
-    {
-        $values = (array)parent::getValues($asArray);
-        if (!isset($values['id']))
-            $values['id'] = $this->getId();
-
-        return $asArray ? $values : ArrayHash::from($values);
     }
 
 

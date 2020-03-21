@@ -9,11 +9,10 @@
 
 namespace Devrun\CmsModule\Controls;
 
+use Devrun\Application\UI\Control\Control;
 use Devrun\CmsModule\Repositories\PageRepository;
 use Doctrine\ORM\Query;
-use Flame\Application\UI\Control;
 use Nette\FileNotFoundException;
-use Tracy\Debugger;
 
 interface INavigationPageControlFactory
 {

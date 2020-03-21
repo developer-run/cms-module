@@ -9,10 +9,10 @@
 
 namespace Devrun\CmsModule\Administration\Controls;
 
+use Devrun\Application\UI\Control\Control;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Repositories\PageRepository;
 use Doctrine\ORM\Query;
-use Flame\Application\UI\Control;
 use Nette\Security\User;
 
 interface ITreePagesControlFactory

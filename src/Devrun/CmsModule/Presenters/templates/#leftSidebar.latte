@@ -1,0 +1,59 @@
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar elevation-4 sidebar-{$theme->type}-{$theme->color}">
+	<!-- Brand Logo -->
+	<a n:href=":Cms:{$presenter->administrationManager->defaultPresenter}:" class="brand-link navbar-{$theme->color}{if $theme->text} {$theme->text}{/if}">
+		<img src="{$basePath}/resources/cmsModule/adminlte3/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+		<span class="brand-text font-weight-light"><b>Admin</b> DevRun</span>
+	</a>
+
+	<!-- Sidebar -->
+	<div class="sidebar">
+		<!-- Sidebar user panel (optional) -->
+		<div class="user-panel mt-3 pb-3 mb-3 d-flex">
+			<div class="image">
+				<img n:if="$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-man-ico.png" class="img-circle elevation-2" alt="User Image">
+				<img n:if="!$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-woman-ico.png" class="img-circle elevation-2" alt="User Image">
+			</div>
+			<div class="info">
+				<a href="#" class="d-block">{$user->identity->firstName} {$user->identity->lastName}</a>
+			</div>
+		</div>
+
+		<!-- Sidebar Menu -->
+		<nav class="mt-2">
+			<ul n:snippet="menu" class="nav nav-pills nav-sidebar flex-column text-sm" data-widget="treeview" role="menu" data-accordion="false">
+				<!-- Add icons to the links using the .nav-icon class
+                     with font-awesome or any other icon font library -->
+				<li class="nav-header">Statistics</li>
+
+				{* fix nette dynamic snippet must be some variable, we set $user->identity *}
+				<li n:snippet="menu-item-$user->identity" class="nav-item">
+					<a n:href=":Cms:Default:" n:class="$presenter->isLinkCurrent(':Cms:Default:') ? 'active', 'ajax nav-link'">
+						<i class="nav-icon fas fa-tachometer-alt"></i>
+						<p>Dashboard</p>
+{*						<span class="right badge badge-danger">New</span>*}
+					</a>
+				</li>
+
+				{foreach $contentAdminItems as $service => $contentAdminItem}
+					{*{dump $contentAdminItem}*}
+
+					{if $contentAdminItem['type'] == 'page'}
+						<li n:if="$presenter->isAllowedLink($contentAdminItem['link'])" n:snippet="menu-item-$service" class="nav-item">
+							<a n:href="$contentAdminItem['link']" n:class="$presenter->isLinkCurrent($contentAdminItem['link']) ? 'active', 'nav-link ajax'">
+								<i class="nav-icon fa {$contentAdminItem['icon']}" aria-hidden="true"></i>
+								<p>{$contentAdminItem['name']}<small n:ifset="$contentAdminItem['description']"><br>{$contentAdminItem['description']}</small></p>
+							</a>
+						</li>
+					{elseif $contentAdminItem['type'] == 'control'}
+						{control administrationItemControls-$service $contentAdminItem}
+						<li class="nav-header">Nastavení</li>
+					{elseif $contentAdminItem['type'] == 'factory'}
+						{control $contentAdminItem['name']}
+						<li class="nav-header">EXAMPLES</li>
+					{/if}
+				{/foreach}
+			</ul>
+		</nav>
+	</div>
+</aside>
