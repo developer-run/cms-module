@@ -66,7 +66,7 @@ class TranslatePresenter extends AdminPresenter
 
         try {
             $translate = $this->translateFacade->updateTranslate($domain, $translateId, $content);
-            $this->payload->translate = $translate;
+            $this->payload->translate = $translate == true;
 
         } catch (TranslateException $e) {
             // @todo flash message not work correctly, because other process?
@@ -82,7 +82,12 @@ class TranslatePresenter extends AdminPresenter
     public function renderDefault()
     {
         $domains = $this->translateFacade->getDefaultDomains();
-        $this->translateData = $this->translateFacade->getTranslateData();
+//        $this->translateData = $this->translateFacade->getTranslateData();
+
+//        dump($domains);
+//        dump($this->translateData);
+//        die;
+
 
         $this->template->domains = $domains;
     }
@@ -111,7 +116,11 @@ class TranslatePresenter extends AdminPresenter
 //            $grid->model = new \Grido\DataSources\ArraySource($data);
             $data = $this->translateFacade->getTranslateData($translationId);
 
+
             $grid->setDataSource($data);
+
+//            dump($translationId);
+//            dump($translationData);
 //            dump($data);
 
             $grid->addColumnText('id', 'ID')
@@ -121,10 +130,44 @@ class TranslatePresenter extends AdminPresenter
                 ->setFilterText();
 
             $grid->addColumnText('localeValue', "Překlad ({$this->translator->getLocale()})")
+                ->addCellAttributes(['data-domain' => $translationId])
                 ->setRenderer(function (array $row) use ($translationId) {
-                    $result = Html::el('p')
+                    $result = Html::el('div')
+//                        ->setHtml($row['localeValue'])
+                        ->setAttribute('class', 'translate')
+//                        ->setAttribute('src', 'Pokusa')
+//                        ->setAttribute('contenteditable', 'true')
+                        ->setAttribute('data-domain', $translationId)
+                        ->setAttribute('data-translate', $row['id']);
+                    ;
+
+                    $section = Html::el('div')->setAttribute('class', 'translate-box');
+                    $section->addHtml($row['localeValue']);
+
+                    $h1 = Html::el('div')->setAttribute('class', 'translate-box-title');
+//                    $h1->addHtml($row['localeValue']);
+//                    $h1->addHtml("Ahoj");
+
+                    $div = Html::el('div')->setAttribute('class', 'translate-box-description');
+                    $p = Html::el('p');
+//                    $p->addText($row['localeValue']);
+
+
+                    $div->addHtml($p);
+//                    $section->addHtml($h1);
+//                    $section->addHtml($div);
+
+                    $result->addHtml($section);
+
+                    return $result;
+
+
+
+                    $result = Html::el('div')
                         ->setHtml($row['localeValue'])
-                        ->setAttribute('contenteditable', 'true')
+                        ->setAttribute('class', 'some')
+                        ->setAttribute('src', 'Pokusa')
+//                        ->setAttribute('contenteditable', 'true')
                         ->setAttribute('data-domain', $translationId)
                         ->setAttribute('data-translate', $row['id']);
                     return $result;

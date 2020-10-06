@@ -29,14 +29,14 @@ class PackageSelectForm extends DevrunForm
         $this->addGroup('Výběr');
 
         $this->addSelect('package', 'Balíček', $this->packages)
-            ->setAttribute('placeholder', "Vyberte balíček")
+            ->setHtmlAttribute('placeholder', "Vyberte balíček")
             ->setOption(IComponentMapper::ITEMS_TITLE, 'name')
             ->addRule(Form::FILLED)
             ->getControlPrototype()->addAttributes(['class' => 'auto-change']);
 
 
 //        $this->addSubmit('send', 'Odeslat')
-//            ->setAttribute('data-dismiss', 'modal');
+//            ->setHtmlAttribute('data-dismiss', 'modal');
 
 //        $this->addFormClass(['ajax']);
 

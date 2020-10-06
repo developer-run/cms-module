@@ -9,6 +9,7 @@
 
 namespace Devrun\CmsModule\Facades;
 
+use Devrun\CmsModule\Facades\PageJobs\PageJob;
 use Devrun\CmsModule\Facades\PageJobs\SynchronizePagesJob;
 use Devrun\CmsModule\InvalidArgumentException;
 use Devrun\CmsModule\ModuleNotFoundException;
@@ -25,7 +26,6 @@ use Nette\Caching\IStorage;
 use Nette\Caching\Storages\FileStorage;
 use Nette\SmartObject;
 use Nette\Utils\Validators;
-use Tracy\Debugger;
 
 class PageFacade
 {
@@ -39,6 +39,9 @@ class PageFacade
 
     /** @var SynchronizePagesJob */
     private $synchronizePagesJob;
+
+    /** @var PageJob */
+    private $pageJob;
 
     /** @var PageRepository */
     private $pageRepository;
@@ -56,10 +59,11 @@ class PageFacade
      * @param PageRepository       $pageRepository
      * @param IStorage|FileStorage $storage
      */
-    public function __construct(ModuleFacade $moduleFacade, SynchronizePagesJob $synchronizePagesJob, PageRepository $pageRepository, IStorage $storage)
+    public function __construct(ModuleFacade $moduleFacade, SynchronizePagesJob $synchronizePagesJob, PageJob $pageJob, PageRepository $pageRepository, IStorage $storage)
     {
-        $this->moduleFacade   = $moduleFacade;
-        $this->pageRepository = $pageRepository;
+        $this->moduleFacade        = $moduleFacade;
+        $this->pageRepository      = $pageRepository;
+        $this->pageJob             = $pageJob;
         $this->synchronizePagesJob = $synchronizePagesJob;
 
         $this->pageCache = new Cache($storage);
@@ -72,6 +76,15 @@ class PageFacade
     {
         return $this->synchronizePagesJob;
     }
+
+    /**
+     * @return PageJob
+     */
+    public function getPageJob(): PageJob
+    {
+        return $this->pageJob;
+    }
+
 
     /**
      * @return PageRepository
@@ -274,7 +287,7 @@ class PageFacade
      * @param        $pageName
      * @param string $method [Action|Render]
      */
-    public function addPage($moduleName, $presenterName, $pageName, $method = "Render")
+    public function createPage($moduleName, $presenterName, $pageName, $method = "Render")
     {
         if (!Validators::isInRange($method, ['Action', 'Render'])) {
             throw new InvalidArgumentException('Page must be type "Action|Render"');
@@ -311,7 +324,7 @@ class PageFacade
     }
 
 
-    public function addLayout($moduleName, $presenterName)
+    public function createLayout($moduleName, $presenterName)
     {
         $presenterTemplatePath = $this->getPresenterTemplatePath($moduleName, $presenterName);
 

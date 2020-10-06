@@ -35,7 +35,6 @@ use Kdyby\Translation\Translator;
  * )})
  *
  * @package Devrun\CmsModule\Entities
- * @method getModule()
  * @method getPresenter()
  * @method getAction()
  * @method getClass()
@@ -128,7 +127,8 @@ class PageEntity
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=32)
+     * @ORM\ManyToOne(targetEntity="ModuleEntity", inversedBy="pages")
+     * @ORM\JoinColumn(name="module", onDelete="CASCADE", nullable=false)
      */
     protected $module;
 
@@ -255,6 +255,14 @@ class PageEntity
     {
         $this->module = $module;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModule(): string
+    {
+        return $this->module;
     }
 
     /**

@@ -115,11 +115,28 @@ $(function(){
 
             var introduction = $('[contenteditable]:not(.cke_editable)');
 
-            // return;
+            console.log($(introduction).length);
+            return;
 
             $.each(introduction, function(index, value) {
 
+                console.log(this);
 
+                CKEditor.InlineEditor
+                    .create(document.querySelector('#editor'), {
+                        toolbar: [  'bold', 'italic', 'link' ]
+
+                    })
+                    .then(newEditor => {
+                        editor = newEditor;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+
+
+                /*
                 CKEDITOR.inline( this, {
                     // Allow some non-standard markup that we used in the introduction.
                     // extraAllowedContent: 'a(documentation);abbr[title];code',
@@ -130,6 +147,7 @@ $(function(){
                     // startupFocus: true
 
                 } );
+                */
 
             });
         }
@@ -138,19 +156,227 @@ $(function(){
 
     let editor;
 
+
+    /**
+     * @param editor InlineEditor
+     * @constructor
+     */
+    function ConvertDivAttributes( editor ) {
+        // Allow <div> elements in the model.
+        editor.model.schema.register( 'div', {
+            allowWhere: '$block',
+            allowContentOf: '$root'
+        } );
+
+        // Allow <div> elements in the model to have all attributes.
+        editor.model.schema.addAttributeCheck( context => {
+            if ( context.endsWith( 'div' ) ) {
+                return true;
+            }
+        } );
+
+        // View-to-model converter converting a view <div> with all its attributes to the model.
+        editor.conversion.for( 'upcast' ).elementToElement( {
+            view: 'div',
+            model: ( viewElement, modelWriter ) => {
+                return modelWriter.createElement( 'div', viewElement.getAttributes() );
+            }
+        } );
+
+        // Model-to-view converter for the <div> element (attributes are converted separately).
+        editor.conversion.for( 'downcast' ).elementToElement( {
+            model: 'div',
+            view: 'div'
+        } );
+
+        // Model-to-view converter for <div> attributes.
+        // Note that a lower-level, event-based API is used here.
+        editor.conversion.for( 'downcast' ).add( dispatcher => {
+            dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+                // Convert <div> attributes only.
+                if ( data.item.name != 'div' ) {
+                    return;
+                }
+
+                const viewWriter = conversionApi.writer;
+                const viewDiv = conversionApi.mapper.toViewElement( data.item );
+
+                // In the model-to-view conversion we convert changes.
+                // An attribute can be added or removed or changed.
+                // The below code handles all 3 cases.
+                if ( data.attributeNewValue ) {
+                    viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, viewDiv );
+                } else {
+                    viewWriter.removeAttribute( data.attributeKey, viewDiv );
+                }
+            } );
+        } );
+    }
+
+    class AllowClassesPlugin2 {
+        constructor( editor ) {
+            this.editor = editor;
+        }
+
+        init() {
+            const editor = this.editor;
+
+            editor.model.schema.extend( 'table', {
+                allowAttributes: 'class'
+            } );
+
+            editor.conversion.attributeToAttribute( {
+                model: {
+                    name: 'table',
+                    key: 'class',
+                    values: [ 'big', 'small' ]
+                },
+                view: {
+                    big: {
+                        name: 'figure',
+                        key: 'class',
+                        value: [ 'table', 'some-big-table' ]
+                    },
+
+                    small: {
+                        name: 'figure',
+                        key: 'class',
+                        value: [ 'table', 'some-big-small' ]
+                    }
+                }
+            } );
+
+            console.log(editor);
+
+        }
+    }
+
+
+    function AllowClassesPlugin(editor) {
+        editor.model.schema.extend( 'table', {
+            allowAttributes: 'class'
+        } );
+
+        editor.conversion.attributeToAttribute( {
+            model: {
+                name: 'table',
+                key: 'class',
+                values: [ 'big', 'small' ]
+            },
+            view: {
+                big: {
+                    name: 'figure',
+                    key: 'class',
+                    value: [ 'table', 'some-big-table' ]
+                },
+
+                small: {
+                    name: 'figure',
+                    key: 'class',
+                    value: [ 'table', 'some-big-small' ]
+                }
+            }
+        } );
+    }
+
+
+    function AllowSourcePlugin(editor) {
+
+        // A simple conversion from the `source` model attribute to the `src` view attribute (and vice versa).
+        editor.conversion.attributeToAttribute({model: 'source', view: 'src'});
+
+        // Attribute values are strictly specified.
+        editor.conversion.attributeToAttribute({
+            model: {
+                name: 'image',
+                key: 'aside',
+                values: ['aside']
+            },
+            view: {
+                aside: {
+                    name: 'imga',
+                    key: 'class',
+                    value: ['aside', 'half-size']
+                }
+            }
+        });
+
+    }
+
+
     return;
 
-    InlineEditor
-        .create(document.querySelector('#editor'), {
-            toolbar: [  'bold', 'italic', 'link' ]
+    $('#editor').each(function(index, value) {
 
-        })
-        .then(newEditor => {
-            editor = newEditor;
-        })
-        .catch(error => {
-            console.error(error);
-        });
+        // console.log($(this));
+
+        ClassicEditor
+            .create(this, {
+                extraPlugins: [  AllowClassesPlugin2, AllowSourcePlugin ],
+                toolbar: [  'bold', 'italic', 'link' ]
+
+            })
+            .then(newEditor => {
+                editor = newEditor;
+
+                CKEditorInspector.attach( editor );
+
+                // console.log(editor);
+
+                // editor.model.schema.extend( 'table', {
+                //     allowAttributes: 'class'
+                // } );
+
+/*
+                editor.conversion.attributeToAttribute( {
+                    model: {
+                        name: 'table',
+                        key: 'class',
+                        values: [ 'big', 'small' ]
+                    },
+                    view: {
+                        big: {
+                            name: 'figure',
+                            key: 'class',
+                            value: [ 'table', 'some-big-table' ]
+                        },
+
+                        small: {
+                            name: 'figure',
+                            key: 'class',
+                            value: [ 'table', 'some-big-small' ]
+                        }
+                    }
+                } );
+*/
+
+                // console.log(editor);
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+
+        // console.log(editor);
+
+
+        // console.log(editor);
+    });
+
+
+    // InlineEditor
+    //     .create($('.ck-content').get(0), {
+    //         toolbar: [  'bold', 'italic', 'link' ]
+    //
+    //     })
+    //     .then(newEditor => {
+    //         editor = newEditor;
+    //     })
+    //     .catch(error => {
+    //         console.error(error);
+    //     });
+
 
 
     $('#submit').click(function (e) {
@@ -164,8 +390,9 @@ $(function(){
     return;
 
 
+
     BalloonEditor
-        .create(document.querySelector('[contenteditable=true]'), {
+        .create( $('.ck-content').get(0), {
             toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
         })
         .then(editor => {

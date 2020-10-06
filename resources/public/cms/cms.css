@@ -262,6 +262,9 @@ li.treeview.menu-open ul.treeview-menu:before {
     min-width: 7em;
 }
 
+.modal-full {
+    width: 80%;
+}
 
 .loading {
     transition: all 500ms;

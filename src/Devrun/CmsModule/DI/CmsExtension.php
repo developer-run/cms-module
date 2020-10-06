@@ -19,6 +19,7 @@ use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Entities\RouteTranslationEntity;
 use Devrun\CmsModule\Entities\SettingsEntity;
 use Devrun\CmsModule\Entities\UserEntity;
+use Devrun\CmsModule\Facades\PageJobs\PageJob;
 use Devrun\CmsModule\Forms\LoginTestFormFactory;
 use Devrun\CmsModule\InvalidStateException;
 use Devrun\CmsModule\Presenters\AdminPresenter;
@@ -27,6 +28,7 @@ use Devrun\CmsModule\Repositories\UserRepository;
 use Devrun\CmsModule\Routes\PageRouteFactory;
 use Devrun\CmsModule\Security\Authenticator;
 use Devrun\Config\CompilerExtension;
+use Devrun\Module\Providers\IPresenterMappingProvider;
 use Devrun\Module\Providers\IRouterMappingProvider;
 use Devrun\Security\IAuthorizator;
 use Devrun\Utils\Debugger;
@@ -40,7 +42,7 @@ use Nette\DI\Extensions\InjectExtension;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 
-class CmsExtension extends CompilerExtension implements /*IPresenterMappingProvider,*/ IRouterMappingProvider, IEntityProvider
+class CmsExtension extends CompilerExtension implements IPresenterMappingProvider, IRouterMappingProvider, IEntityProvider
 {
 
     public function getConfigSchema(): Schema
@@ -187,8 +189,7 @@ class CmsExtension extends CompilerExtension implements /*IPresenterMappingProvi
          * form factory
          */
         $builder->addDefinition($this->prefix('forms.loginTestFormFactory'))
-                ->setType(LoginTestFormFactory::class)
-                ->setInject(true);
+                ->setType(LoginTestFormFactory::class);
 
 
         $builder->addDefinition($this->prefix('forms.devrunFormFactory'))
@@ -386,6 +387,9 @@ class CmsExtension extends CompilerExtension implements /*IPresenterMappingProvi
         $builder->addDefinition($this->prefix('job.synchronizePage'))
             ->setFactory('Devrun\CmsModule\Facades\PageJobs\SynchronizePagesJob');
 
+        $builder->addDefinition($this->prefix('job.page'))
+                ->setFactory(PageJob::class, ['wwwDir' => $builder->parameters['wwwDir']]);
+
 
 
         /*
@@ -469,7 +473,6 @@ class CmsExtension extends CompilerExtension implements /*IPresenterMappingProvi
         $registerToLatte = function (Nette\DI\Definitions\FactoryDefinition $def) {
             $def->addSetup('?->onCompile[] = function($engine) { Devrun\CmsModule\Macros\UICmsMacros::install($engine->getCompiler()); }', ['@self']);
         };
-
 
         $latteFactoryService = $builder->getByType('Nette\Bridges\ApplicationLatte\ILatteFactory') ?: 'nette.latteFactory';
 

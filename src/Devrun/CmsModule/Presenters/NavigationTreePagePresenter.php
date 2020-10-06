@@ -16,6 +16,7 @@ use Nette\Forms\Container;
 use Nette\Utils\Html;
 use Nette\Utils\Validators;
 use Tracy\Debugger;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 
 class NavigationTreePagePresenter extends AdminPresenter
 {
@@ -284,6 +285,11 @@ class NavigationTreePagePresenter extends AdminPresenter
     }
 
 
+    /**
+     * @param $name
+     * @return \Devrun\CmsModule\Controls\DataGrid
+     * @throws \Ublaboo\DataGrid\Exception\DataGridException
+     */
     protected function createComponentPageGridControl($name)
     {
         $grid = $this->createGrid($name);
@@ -378,10 +384,7 @@ class NavigationTreePagePresenter extends AdminPresenter
         $grid->addAction('removeCategory', 'remove Category', 'removeCategory!')
             ->setIcon('eye fa-2x')
             ->setClass('ajax btn btn-xs btn-danger')
-            ->setConfirm(function ($item) {
-                return "Opravdu chcete smazat kategorii [named: {$item->categoryName}]?";
-            });
-
+            ->setConfirmation(new StringConfirmation('Opravdu chcete smazat kategorii [id: %s]?', 'categoryName'));
 
         return $grid;
     }

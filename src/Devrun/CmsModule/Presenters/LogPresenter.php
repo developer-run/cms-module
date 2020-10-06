@@ -14,6 +14,7 @@ use Nette\Utils\DateTime;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Html;
+use Nette\Utils\Image;
 
 class LogPresenter extends AdminPresenter
 {

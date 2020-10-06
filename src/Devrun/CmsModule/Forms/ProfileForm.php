@@ -35,7 +35,7 @@ class ProfileForm extends DevrunForm
         $this->addGroup('profile');
 
         $this->addText('nickname', 'nickname')
-            ->setAttribute('placeholder', "placeholder.nickname")
+            ->setHtmlAttribute('placeholder', "placeholder.nickname")
             ->addCondition(Form::FILLED)
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 2), 2)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
@@ -43,41 +43,41 @@ class ProfileForm extends DevrunForm
         $this->addRadioList('gender', 'gender', ['woman', 'man']);
 
         $this->addText('firstName', 'first_name')
-            ->setAttribute('placeholder', "placeholder.first_name")
+            ->setHtmlAttribute('placeholder', "placeholder.first_name")
             ->addRule(Form::FILLED, 'ruleFirstName')
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addText('lastName', 'last_name')
-            ->setAttribute('placeholder', "placeholder.last_name")
+            ->setHtmlAttribute('placeholder', "placeholder.last_name")
             ->addRule(Form::FILLED, 'ruleLastName')
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addText('email', 'email')
-            ->setAttribute('placeholder', "placeholder.email")
+            ->setHtmlAttribute('placeholder', "placeholder.email")
             ->addRule(Form::FILLED, 'ruleEMail')
             ->addRule(Form::EMAIL, 'valid_email');
 
         $this->addText('phone', 'phone')
-            ->setAttribute('placeholder', "placeholder.phone");
+            ->setHtmlAttribute('placeholder', "placeholder.phone");
 
         $this->addGroup('address');
 
         $this->addText('street', 'street')
-            ->setAttribute('placeholder', "placeholder.street")
+            ->setHtmlAttribute('placeholder', "placeholder.street")
             ->addCondition(Form::FILLED)
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addText('city', 'city')
-            ->setAttribute('placeholder', "placeholder.city")
+            ->setHtmlAttribute('placeholder', "placeholder.city")
             ->addCondition(Form::FILLED)
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addText('psc', 'psc')
-            ->setAttribute('placeholder', "placeholder.psc")
+            ->setHtmlAttribute('placeholder', "placeholder.psc")
             ->addCondition(Form::FILLED)
             ->addRule(Form::NUMERIC, 'valid_numeric');
 
@@ -90,7 +90,7 @@ class ProfileForm extends DevrunForm
 
 
 
-        $this->addSubmit('send', 'save')->setAttribute('class', 'btn btn-primary btn-md');
+        $this->addSubmit('send', 'save')->setHtmlAttribute('class', 'btn btn-primary btn-md');
 //        $this->onSuccess[] = array($this, 'formSuccess');
 
         return $this;

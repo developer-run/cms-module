@@ -3,7 +3,7 @@
   "description": "DevRun Cms module",
   "keywords": ["cms", "nette", "devrun", "module"],
   "minimum-stability": "dev",
-  "version": "v0.9.0",
+  "version": "v0.9.1",
   "homepage": "http://devrun.cz",
   "license": "proprietary",
   "authors": [
@@ -21,7 +21,13 @@
 
     "ublaboo/datagrid": "^6.3@dev",
     "phpzip/phpzip": "2.1.0.x-dev",
-    "wa72/htmlpagedom": "^2.0@dev"
+    "wa72/htmlpagedom": "^2.0@dev",
+
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-zend-opcache": "*",
+    "ext-iconv": "*",
+    "ext-fileinfo": "*"
 
   },
   "require-dev": {

@@ -7,6 +7,9 @@ page:
 
 home: Domů
 
+edit_translate: Editace překladů
+
+
 sign_out: Odhlásit se
 instances: + jedna instance|+ %count% instance|+ %count% instancí
 users_edit: Správa uživatelů

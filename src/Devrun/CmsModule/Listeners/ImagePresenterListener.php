@@ -53,19 +53,30 @@ class ImagePresenterListener implements Subscriber
     public function onBeforeRender(Nette\Application\UI\Presenter $presenter)
     {
         $sortIdentifierImages = [];
+        $pageId       = $presenter->getParameter('page');
+        $packageId    = $presenter->getParameter('package');
 
         if (!$route = $this->routeRepository->getRouteFromApplicationRequest($presenter->getRequest())) {
             $route = $this->routeRepository->findRouteFromApplicationPresenter($presenter);
         }
 
         if ($route) {
-            /** @var ImagesEntity[] $images */
-            $images = $this->imageRepository->createQueryBuilder('e')
+            $query = $this->imageRepository->createQueryBuilder('e')
                 ->addSelect('t')
                 ->addSelect('id')
                 ->join('e.translations', 't')
                 ->join('e.identify', 'id')
-                ->where('e.route = :route')->setParameter('route', $route)
+                ->where('e.route = :route')->setParameter('route', $route);
+
+            if ($pageId) {
+                $query->orWhere('e.page = :page')->setParameter('page', $pageId);
+            }
+            if ($packageId) {
+                $query->orWhere('e.package = :package')->setParameter('package', $packageId);
+            }
+
+            /** @var ImagesEntity[] $images */
+            $images = $query
                 ->getQuery()
                 ->getResult();
 

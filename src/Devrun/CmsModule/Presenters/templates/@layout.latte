@@ -4,9 +4,9 @@
  *}
 <!DOCTYPE html>
 <!--[if IE 8]>
-<html lang="en" class="ie8"> <![endif]-->
+<html lang="{$locale}" class="ie8"> <![endif]-->
 <!--[if !IE]><!-->
-<html lang="en" xmlns:n="http://www.w3.org/1999/xhtml">
+<html lang="{$locale}" xmlns:n="http://www.w3.org/1999/xhtml">
 <!--<![endif]-->
 <head>
 	<title n:snippet="title">{ifset title}{include title|striptags} | {/ifset}DevRun</title>
@@ -18,7 +18,19 @@
 	<meta content="{$webLocale}" http-equiv="Content-language" n:ifset="$webLocale">
 	<meta content="{$keywords}" name="keywords" n:ifset="$keywords">
 	<meta content="Devrun" name="author">
-	<link rel="shortcut icon" href="{$basePath}/favicon2.png">
+	<link rel="shortcut icon" href="{$basePath}/resources/cmsModule/cms/images/favicon2.png">
+
+
+	<style>
+		.my-green-link {
+			color: #209a25;
+			border: 1px solid #209a25;
+			border-radius: 2px;
+			padding: 0 3px;
+			box-shadow: 1px 1px 0 0 #209a25;
+		}
+
+	</style>
 
 	{*================ BEGIN ENVIRONMENT SETTINGS ==============*}
 	{control environmentControl}
@@ -53,6 +65,7 @@
 {*		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/nestable2/jquery.nestable.css">*}
 		{*<!-- endbuild -->*}
 
+
 		<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/happy/dist/happy.css">
 		{*<link rel="stylesheet" type="text/css" href="{$basePath}/resources/cmsModule/bootstrap-datepicker/css/bootstrap-datepicker3.css">*}
 
@@ -78,9 +91,6 @@
 {*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/ckeditor/ckeditor.js"></script>*}
 
 
-	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/inline/ckeditor.js"></script>
-{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/classic/ckeditor.js"></script>*}
-{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/baloon/ckeditor.js"></script>*}
 
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -163,8 +173,8 @@
 
 			{foreach $navbarRightAdminItems as $service => $params}
 				{if $params['type'] == page}
-					<li class="dropdown">
-						<a n:href="$params['link']" n:class="$presenter->isLinkCurrent($params['link']) ? 'active'" title="{$params['description']}">
+					<li class="nav-item">
+						<a n:href="$params['link']" n:class="$presenter->isLinkCurrent($params['link']) ? 'active', 'nav-link'" title="{$params['description']}">
 							<i class="fa {$params['icon']}"></i>
 							<span class="hidden-xs">{$params['name']}</span>
 						</a>
@@ -281,7 +291,7 @@
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nette-live-form-validation/live-form-validation.js"></script>
 
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid.js"></script>
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid-instant-url-refresh.js"></script>
+{*	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid-instant-url-refresh.js"></script>*}
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/ublaboo-datagrid/assets/datagrid-spinners.js"></script>
 
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/moment/moment.min.js"></script>
@@ -289,7 +299,7 @@
 
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
 
-	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/pace-progress/pace.min.js"></script>
+{*	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/pace-progress/pace.min.js"></script>*}
 
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/moment/moment.min.js"></script>
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
@@ -297,6 +307,7 @@
 
 
 
+{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/baloon/ckeditor.js"></script>*}
 
 
 
@@ -314,6 +325,21 @@
 {*	<script type="application/javascript" src="{$basePath}/resources/cmsModule/nprogress/nprogress.js"></script>*}
 
 	{*<script type="application/javascript" src="{$basePath}/js/extensions/popupDialogExtension.js"></script>*}
+
+
+
+{*	<script type="application/javascript" src="{$basePath}/node_modules/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>*}
+	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/inspector/build/inspector.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/ckeditor.js"></script>
+	{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/inline/ckeditor.js"></script>*}
+	{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/baloon/ckeditor.js"></script>*}
+{*		<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/classic/ckeditor.js"></script>*}
+	{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/classic/build/ckeditor.js"></script>*}
+
+
+	<script src="{$basePath}/resources/articleModule/article.js"></script>
+	<script type="module" src="{$basePath}/resources/cmsModule/cms/translate.js"></script>
+	<script type="module" src="{$basePath}/resources/cmsModule/cms/ckeditor.js"></script>
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/cms/cms.js?v=1"></script>
 	{*<!-- endbuild -->*}
 

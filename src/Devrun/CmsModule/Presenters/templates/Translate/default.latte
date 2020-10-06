@@ -2,6 +2,13 @@
 {block headerSmallTitle}({_admin.template_content}){/block}
 {block title}{_admin.translatePage.title}{/block}
 
+{*
+{block extraScripts}
+	{include parent}
+	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/baloon/ckeditor.js"></script>
+{/block}
+*}
+
 {block content}
 
 
@@ -17,9 +24,9 @@
 		</div>
 	</div>
 
-	<ul n:if="$domains" class="nav nav-tabs">
-		<li n:foreach="$domains as $domain" n:class="$iterator->first ? active">
-			<a href="#{$domain}" data-toggle="tab">{$domain|firstUpper}</a>
+	<ul n:if="$domains" class="nav nav-tabs" role="tablist">
+		<li n:foreach="$domains as $domain" class="nav-item">
+			<a href="#{$domain}" n:class="$iterator->first ? active, 'nav-link'" data-toggle="tab" role="tab">{$domain|firstUpper}</a>
 		</li>
 	</ul>
 
@@ -32,7 +39,7 @@
 
 		{*{control translateControl-$t}*}
 
-		<div n:foreach="$domains as $domain" id="{$domain}" n:class="$iterator->first ? 'active tab-pane' : 'tab-pane'">
+		<div n:foreach="$domains as $domain" id="{$domain}" n:class="$iterator->first ? 'active show', 'tab-pane fade'" role="tabpanel">
 			{control translateControl-$domain}
 
 

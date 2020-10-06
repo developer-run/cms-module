@@ -112,7 +112,7 @@ class AdminPresenter extends BasePresenter
         }
 
         try {
-            if (!$user->isAllowed($this->name, $this->action)) {
+            if (!$user->isAllowed($this->name, $this->action) || ($user->isLoggedIn() && !$user->getIdentity() instanceof UserEntity)) {
                 //$this->flashMessage($message, 'warning');
                 $this->getUser()->logout();
                 $this->redirect(':Cms:Login:', array('backlink' => $this->storeRequest()));
@@ -204,6 +204,7 @@ class AdminPresenter extends BasePresenter
                 $this->redrawControl('breadcrumb');
                 $this->redrawControl('styles');
                 $this->redrawControl('title');
+                $this->redrawControl('flash');
             }
         }
     }

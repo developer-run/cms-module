@@ -25,13 +25,13 @@ use Nette\Utils\Strings;
  * @ORM\Table(name="package", indexes={
  *     @ORM\Index(name="package_name_idx", columns={"name"}),
  *     @ORM\Index(name="package_module_idx", columns={"module"}),
- * }, uniqueConstraints={@ORM\UniqueConstraint(
- *    name="name_package_idx", columns={"name", "module"}
- * )})
+ * }, uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="name_package_idx", columns={"name", "module"}),
+ *     @ORM\UniqueConstraint(name="base_package_idx", columns={"base", "module"}),
+ * })
  *
  * @package ContestModule\Entities
  * @method getName()
- * @method getModule()
  * @method getAnalyticCode()
  * @method PackageTranslationEntity translate($lang = '', $fallbackToDefault = true)
  */
@@ -50,10 +50,23 @@ class PackageEntity
 
 
     /**
-     * @var string
-     * @ORM\Column(type="string")
+     * @var ModuleEntity|null
+     * @ORM\ManyToOne(targetEntity="ModuleEntity", inversedBy="packages")
+     * @ORM\JoinColumn(name="module", onDelete="CASCADE")
      */
     protected $module;
+
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $base;
+
+//    /**
+//     * @var string
+//     * @ORM\Column(type="string")
+//     */
+//    protected $module;
 
     /**
      * @var string
@@ -149,6 +162,15 @@ class PackageEntity
         $this->module = $module;
         return $this;
     }
+
+    /**
+     * @return ModuleEntity|null
+     */
+    public function getModule(): string
+    {
+        return $this->module;
+    }
+
 
     /**
      * @param array $theme

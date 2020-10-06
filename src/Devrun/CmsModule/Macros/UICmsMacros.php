@@ -13,6 +13,7 @@ use Devrun\CmsModule\Utils\Common;
 use Latte\Compiler;
 use Latte\MacroNode;
 use Latte\Macros\MacroSet;
+use Latte\PhpHelpers;
 use Latte\PhpWriter;
 use Nette\DI\Container;
 use Nette\Security\User;
@@ -58,7 +59,7 @@ class UICmsMacros extends MacroSet
 
         $set->addMacro('id', NULL, NULL, array($set, 'macroId'));
         $set->addMacro('widgetArticle', array($set, 'macroWidgetArticle'));
-//        $set->addMacro('editable', array($set, 'macroEditable'), array($set, 'macroEditableEnd'));
+        $set->addMacro('includeDump', array($set, 'includeDump'));
 
         $set->addMacro('editable', null, array($set, 'macroEditableEnd'), array($set, 'macroEditable'));
         $set->addMacro('edit', array($set, 'macroEditable'));
@@ -192,6 +193,42 @@ EON;
     public function attrImgAbs(MacroNode $node, PhpWriter $writer)
     {
         return $writer->write('$_img = $_imageStorage->fromIdentifier(%node.array); echo \' src="\' . $baseUrl . "/" . $_img->createLink() . \'"\'');
+    }
+
+
+    public function includeDump(MacroNode $node, PhpWriter $writer)
+    {
+//        $out = var_export( PhpHelpers::dump($node->tokenizer->fetchWord() ?: null));
+//        $out = PhpHelpers::dump($node->tokenizer->fetchWord() ?: null);
+//        return $writer->write('echo \'' . '%node.args' .  '\';');
+
+//        $word = $node->tokenizer->fetchWord();
+//        dump($node);
+//        dump($writer);
+//        dump($node->compiler);
+
+        dump($this);
+
+
+        $destination = $node->tokenizer->fetchWord();
+
+
+
+//        $code = $writer->write('$this->getLoader();  $this->createTemplate(%word, $this->params, "includeblocsk")->render();', $destination);
+//
+//        return $code;
+
+
+
+        return $writer->write(
+//            'echo \'%node.args\';'
+            PhpHelpers::dump(implode($node->context))
+//            'echo \'Hello \',%node.args;'
+//            'echo \'Hello \';'
+        );
+//        );
+
+//        return $writer->write('echo \'%node.args' . '\';');
     }
 
 

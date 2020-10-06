@@ -97,6 +97,15 @@ class NotFoundResourceException extends \LogicException implements Exception
 /**
  * @author Pavel Paulík <pavel.paulik@support.etnetera.cz>
  */
+class DeprecationException extends \LogicException implements Exception
+{
+
+}
+
+
+/**
+ * @author Pavel Paulík <pavel.paulik@support.etnetera.cz>
+ */
 class TranslateException extends \LogicException implements Exception
 {
 

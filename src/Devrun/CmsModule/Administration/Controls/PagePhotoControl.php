@@ -13,6 +13,7 @@ use Devrun\Application\UI\Presenter\TImgStoragePipe;
 use Devrun\CmsModule\Controls\AdminControl;
 use Devrun\CmsModule\Controls\FlashMessageControl;
 use Devrun\CmsModule\Entities\ImagesEntity;
+use Devrun\CmsModule\Entities\PackageEntity;
 use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Facades\ImageManageFacade;
@@ -22,6 +23,7 @@ use Devrun\CmsModule\Presenters\AdminPresenter;
 use Devrun\CmsModule\Presenters\PagePresenter;
 use Devrun\CmsModule\Repositories\ImageRepository;
 use Devrun\CmsModule\Repositories\RouteRepository;
+use Devrun\Utils\Debugger;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
 
@@ -61,6 +63,9 @@ class PagePhotoControl extends AdminControl
     /** @var PageEntity */
     private $page;
 
+    /** @var PackageEntity */
+    private $package;
+
     /** @var RouteEntity */
     private $route;
 
@@ -70,6 +75,10 @@ class PagePhotoControl extends AdminControl
         $this->monitor(PagePresenter::class, function (PagePresenter $presenter): void {
             $this->page  = $presenter->getPageEntity();
             $this->route = $presenter->getRouteEntity();
+
+
+//            $this->template->_imgStorage = $this->imgStorage;
+//            $this->template->proxyUrl = '';
 
             $presenter->onPageRedraw[] = function() {
                 if ($this->presenter->isAjax()) {
@@ -209,7 +218,6 @@ class PagePhotoControl extends AdminControl
 
     public function render()
     {
-
         $template = $this->getTemplate();
 
 //        $template->images      = $this->images;
@@ -219,7 +227,6 @@ class PagePhotoControl extends AdminControl
         if ($this->editImageId) {
             $template->editImage = $this->getImages()[$this->editImageId];
         }
-
 
         $template->render();
     }
@@ -294,6 +301,8 @@ class PagePhotoControl extends AdminControl
             else
                 $this->imageManageFacade->imageRepository->getEntityManager()->persist($entity);
 
+            $entity->setAlt($values->alt);
+
             $this->imageManageFacade->imageRepository->getEntityManager()->flush();
 
             $this->flashMessage('Obrázek upraven');
@@ -350,10 +359,21 @@ class PagePhotoControl extends AdminControl
      */
     private function setRoutePhotos()
     {
-        $images = $this->imageRepository->createQueryBuilder('e')
+        $query = $this->imageRepository->createQueryBuilder('e')
             ->addSelect('t')
+            ->addSelect('identify')
             ->join('e.translations', 't')
-            ->where('e.route = :route')->setParameter('route', $this->route)
+            ->join('e.identify', 'identify')
+            ->where('e.route = :route')->setParameter('route', $this->route);
+
+        if ($this->page) {
+            $query->orWhere('e.page = :page')->setParameter('page', $this->page);
+        }
+        if ($this->package) {
+            $query->orWhere('e.package = :package')->setParameter('package', $this->package);
+        }
+
+        $images = $query
             ->getQuery()
             ->getResult();
 

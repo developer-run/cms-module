@@ -23,7 +23,7 @@
 						{ifset $restoreImage}
 						{/ifset}
 
-						<a href="{$basePath}/media/{$this->_imgStorage->fromIdentifier($image->identifier)->identifier}" data-lightbox="{$image->namespace}" data-title="{$image->description}">
+						<a href="{$basePath}/media/{$control->imgStorage->fromIdentifier($image->identifier)->identifier}" data-lightbox="{$image->namespace}" data-title="{$image->description}">
 							<img n:img="$image->identifier, '100x100', fill" class="attachment-img">
 						</a>
 						<div class="attachment-pushed">

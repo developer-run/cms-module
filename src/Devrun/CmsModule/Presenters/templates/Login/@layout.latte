@@ -19,32 +19,28 @@
 	{else}
 		{*<!-- build:css {$basePath}/css/cms-login.min.css -->*}
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/bootstrap/dist/css/bootstrap.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/dist/css/AdminLTE.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/admin-lte/plugins/iCheck/square/blue.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/dist/css/adminlte.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/plugins/icheck-bootstrap/icheck-bootstrap.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/jquery-toast-plugin/dist/jquery.toast.min.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/cms/cms.css">
 		{*<!-- endbuild -->*}
 	{/if}
-	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/adminlte3/plugins/fontawesome-free/css/all.min.css">
 	{*================== END BASE CSS STYLE ==================*}
 
-	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700">
 </head>
 
-<body class="hold-transition login-page">
+<body class="login-page">
 	<div class="login-box">
 		<div class="login-logo">
 			<a n:href="this">Developer RUN <b>{$website->name}</b></a>
 		</div>
 
-		<div class="login-box-body">
-			{include content}
+		<div class="card">
+			<div class="card-body login-card-body">
+				{include content}
+			</div>
 		</div>
 	</div>
 
@@ -56,8 +52,8 @@
 		{else}
 			{*<!-- build:js {$basePath}/js/cms-login.min.js -->*}
 			<script type="application/javascript" src="{$basePath}/resources/cmsModule/jquery/dist/jquery.min.js"></script>
+			<script type="application/javascript" src="{$basePath}/resources/cmsModule/adminlte3/dist/js/adminlte.js"></script>
 			<script type="application/javascript" src="{$basePath}/resources/cmsModule/bootstrap/dist/js/bootstrap.min.js"></script>
-			<script type="application/javascript" src="{$basePath}/resources/cmsModule/admin-lte/plugins/iCheck/icheck.min.js"></script>
 			<script type="application/javascript" src="{$basePath}/resources/cmsModule/nette.ajax.js/nette.ajax.js"></script>
 			<script type="application/javascript" src="{$basePath}/resources/cmsModule/nette-live-form-validation/live-form-validation.js"></script>
 			<script type="application/javascript" src="{$basePath}/resources/cmsModule/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
@@ -68,12 +64,6 @@
 		<script>
 			$(document).ready(function () {
 				$.nette.init();
-
-				$('input').iCheck({
-					checkboxClass: 'icheckbox_square-blue',
-					radioClass: 'iradio_square-blue',
-					increaseArea: '20%' // optional
-				});
 			});
 		</script>
 	{/block}

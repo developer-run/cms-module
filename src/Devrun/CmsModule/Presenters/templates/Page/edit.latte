@@ -1,6 +1,11 @@
-{block headerTitle}Správa stánky{/block}
+{block headerTitle}Správa stránky{/block}
 {block headerSmallTitle}{snippet link}<a href="{$presenter->link($route->uri, $route->params)}" class="btn btn-xs btn-info">{$route->url}</a>{/snippet}{/block}
 {block title}{_admin.editPage.title, [name => $route->url . " ({$route->title})"]}{/block}
+
+{*{block extraScripts}*}
+{*	{include parent}*}
+{*	<script type="application/javascript" src="{$basePath}/resources/ckeditorModule/inline/ckeditor.js"></script>*}
+{*{/block}*}
 
 {block content}
 
@@ -51,7 +56,7 @@
 		<div class="col-md-12">
 			<div class="card card-{$theme->color} {$theme->pageMenu} card-tabs">
 				<div class="card-header p-0{if $theme->pageMenu != 'card-outline card-outline-tabs'} pt-1 {/if} border-bottom-0">
-					<ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+					<ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist" style="padding-left: 0.3rem; padding-right: 0.3rem;">
 						<li n:ifset="$adminPageTabControls" n:foreach="$adminPageTabControls as $service => $adminPageTabControl" class="nav-item">{control administrationItemControls-$service}</li>
 						<li class="nav-item"><a href="#page" role="tab" data-toggle="pill" aria-selected="false" class="nav-link active">Stránka</a></li>
 						<li n:if="$adminSettingControls" class="nav-item"><a href="#pageSettings" role="tab" data-toggle="pill" aria-selected="false" class="nav-link">Nastavení stránky</a></li>
@@ -63,13 +68,13 @@
 {*						<li class="align-self-end nav-item"><a n:href="addSubPage!" class="_ajax nav-link btn btn-xs btn-info">Add sub page</a></li>*}
 						<li n:if="count($pagePackageRoutes)>1" class="float-right nav-item">{control package}</li>
 						<li class="ml-auto nav-item">
-							<a n:href="reload!" class="ajax btn-xs elevation-2 btn btn-info nav-link" role="tab" data-ajax-off="history" data-ajax-signal-loading="true" data-target=".overlay"><i class="fa fa-refresh" aria-hidden="true"></i> Reload</a>
+							<a n:href="reload!" class="ajax btn-xs elevation-2 btn btn-info nav-link" style="padding: .25rem .8rem;" role="tab" data-ajax-off="history" data-ajax-signal-loading="true" data-target=".overlay"><i class="fa fa-refresh" aria-hidden="true"></i> Reload</a>
 						</li>
 					</ul>
 				</div>
-				<div class="card-body">
+				<div class="card-body p-0">
 					<div class="tab-content" id="custom-tabs-three-tabContent">
-						<div class="tab-pane fade active show" id="page" data-route="{$route->id}" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
+						<div class="tab-pane fade active show" id="page" data-page="{$page->id}" data-package="{$package->id}" data-route="{$route->id}" role="tabpanel" aria-labelledby="custom-tabs-three-home-tab">
 							{if $page->type==static}
 								<div class="_well-lg">
 								</div>

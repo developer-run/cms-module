@@ -18,7 +18,7 @@ use Nette\DI\Config\Adapters\NeonAdapter;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
 use Symfony\Component\Config\Resource\FileResource;
-use Tracy\Debugger;
+use Wa72\HtmlPageDom\HtmlPageCrawler;
 
 class TranslateFacade
 {
@@ -62,17 +62,47 @@ class TranslateFacade
     public function getDefaultDomainsWithMessages()
     {
         if (null === $this->domains) {
+            $defaultLocale = $this->translator->getDefaultLocale();
+
+            $locale = $this->translator->getLocale();
+
+            $this->translator->setLocale($defaultLocale);
+
+
+
+
             $catalogue      = $this->translator->getCatalogue();
-            $firstCatalog   = $catalogue->getFallbackCatalogue();
-            $defaultCatalog = $firstCatalog->getFallbackCatalogue();
+//            $firstCatalog   = $catalogue->getFallbackCatalogue();
+//            $defaultCatalog = $firstCatalog->getFallbackCatalogue();
+
+
+//            dump($catalogue->getFallbackCatalogue()->getDomains());
+//            dump($catalogue->getFallbackCatalogue()->all());
+//            die;
+
+
+//            $this->domains = array_merge($catalogue->all(), $catalogue->getFallbackCatalogue()->all());
+            $this->domains = $catalogue->all() + $catalogue->getFallbackCatalogue()->all();
+
+            $this->translator->setLocale($locale);
+
+
+//            dump($this->domains);
+//            die;
 
 //            dump($catalogue);
+//            dump($catalogue->getDomains());
+//
 //            dump($firstCatalog);
+//            dump($firstCatalog->getDomains());
+//
 //            dump($defaultCatalog);
 //            dump($catalogue->all());
 
 
-            $this->domains = $catalogue->all();
+
+//            die;
+//            $this->domains = $catalogue->all();
 //            $this->domains = $defaultCatalog ? $defaultCatalog->all() : $firstCatalog->all();
         }
 
@@ -88,22 +118,36 @@ class TranslateFacade
     public function getTranslateData($domain = 'site')
     {
         $result = [];
+//        dump($domain);
 
         if ($defaultDomains = $this->getDefaultDomainsWithMessages()) {
+
+//            dump($defaultDomains);
+//            die;
+
             if (isset($defaultDomains[$domain])) {
-                $catalogue = $this->translator->getCatalogue();
-                $thisCatalog = $catalogue->getFallbackCatalogue();
-                $thisMessages = $thisCatalog->all();
-                
-                foreach ($defaultDomains[$domain] as $id => $defaultDomain) {
+                $catalogue = $this->translator->getCatalogue()->all($domain);  // actual language
+//                $thisCatalog = $catalogue->getFallbackCatalogue();
+//                $thisMessages = $thisCatalog->all();
+
+//                dump($catalogue);
+//                dump($thisCatalog);
+//                dump($thisMessages);
+//                die;
+
+                foreach ($defaultDomains[$domain] as $id => $defaultMessage) {
                     $result[] = [
                         'id' => $id,
-                        'defaultValue' => $defaultDomain,
-                        'localeValue' => isset($thisMessages[$domain][$id]) ? $thisMessages[$domain][$id] : null,
+                        'defaultValue' => $defaultMessage,
+                        'localeValue' => $catalogue[$id] ?? "?",
                     ];
                 }
             }
         }
+
+//        dump($result);
+//        die;
+
 
         return $result;
     }
@@ -112,22 +156,57 @@ class TranslateFacade
     /**
      * find locale neon file for domain   (actual select location)
      *
-     * @param $domain
-     *
-     * @return bool
+     * @param string $domain
+     * @param bool $autoCreateNewLocale
+     * @return string|null
      */
-    private function findNeonFile($domain)
+    private function findNeonFile(string $domain, bool $autoCreateNewLocale = true): ?string
     {
-        $result        = false;
-        $catalogue     = $this->translator->getCatalogue();
-        $localeCatalog = $catalogue->getResources();
+        $result    = null;
+        $locale    = $this->translator->getLocale();
+        $default   = $this->translator->getDefaultLocale();
+        $catalogue = $this->translator->getCatalogue();
+        $resources = $catalogue->getResources();
 
         /** @var $fileResource FileResource */
-        foreach ($localeCatalog as $fileResource) {
-            $resource = Strings::before(basename($fileResource), '.');
-            if ($resource == $domain) {
+        foreach ($resources as $fileResource) {
+            if (preg_match("%^$domain\.$locale\w*\.neon$%i", basename($fileResource))) {
                 $result = $fileResource->getResource();
                 break;
+            }
+        }
+
+
+        /*
+         * if resource not found, create empty file resource
+         */
+        if ($autoCreateNewLocale && null === $result) {
+            foreach ($resources as $fileResource) {
+                if (preg_match("%^$domain\.($default\w*)\.neon$%i", basename($fileResource), $matches)) {
+                    $baseNewResource = "$domain.$locale.neon";
+                    $file = pathinfo($fileResource, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR . $baseNewResource;
+
+                    if (!file_exists($file)) {
+                        file_put_contents($file, '');
+                    }
+
+                    $result = $file;
+                    break;
+                    //                    $findDefaultLocale = $matches[1]; // cs | cs_CZ
+                    //                    $newLocale = preg_replace("%^$default%", $locale, $findDefaultLocale);
+                    //
+                    //                    /*
+                    //                     * search new locale from available locale list
+                    //                     * nejdříve nalezneme přesnou verzi [sk_SK]
+                    //                     */
+                    //                    if (($index = array_search($newLocale, $this->translator->getAvailableLocales())) !== false) {
+                    //                        $newLocale = $this->translator->getAvailableLocales()[$index];
+                    //                    }
+                    //
+                    //                    $baseNewResource = "$domain.$matches[1].neon";
+                    //                    $baseNewResource = "$domain.$locale.neon";
+                    //                    break;
+                }
             }
         }
 
@@ -151,6 +230,18 @@ class TranslateFacade
         return "$domain.{$localeCatalog->getLocale()}.neon";
     }
 
+    /**
+     * @param $content
+     */
+    private function filterEditHtml(&$content)
+    {
+        $crawler = HtmlPageCrawler::create($content);
+        $filter  = $crawler->filter('div.translate-box');
+        if ($filter->count() > 0) {
+            $content = $filter->getInnerHtml();
+        }
+    }
+
 
     /**
      * update domain translate by id
@@ -170,6 +261,8 @@ class TranslateFacade
 
         if ($localeFile = $this->findNeonFile($domain)) {
 
+            $this->filterEditHtml($content);
+
             $neon   = new NeonAdapter();
             $data   = $neon->load($localeFile);
             $ids    = explode('.', $id);
@@ -186,6 +279,9 @@ class TranslateFacade
             }
 
         } else {
+//            dump("nenalezen $localeFile");
+//            die("ASS");
+
             $fileName = $this->getNeonFileName($domain);
             $this->logger->addWarning(__FUNCTION__ . " [$fileName] not found!");
             throw new TranslateException(__FUNCTION__ . " [$fileName] not found!");

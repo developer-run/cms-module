@@ -55,28 +55,28 @@ class ImagesForm extends DevrunForm implements IImagesFormFactory
     {
         if ($this->displayName) {
             $this->addText('name', 'Název')
-                ->setAttribute('placeholder', "Název")
+                ->setHtmlAttribute('placeholder', "Název")
                 ->addCondition(Form::FILLED)
                 ->addRule(Form::MAX_LENGTH, NULL, 128);
         }
 
         if ($this->displaySystemName) {
             $this->addText('systemName', 'Systémový název')
-                ->setAttribute('placeholder', "Název pro systém")
+                ->setHtmlAttribute('placeholder', "Název pro systém")
                 ->addRule(Form::FILLED)
                 ->addRule(Form::MAX_LENGTH, NULL, 64);
         }
 
         if ($this->displayNamespace) {
             $this->addText('namespace', 'Kategorie')
-                ->setAttribute('placeholder', "Název kategorie")
+                ->setHtmlAttribute('placeholder', "Název kategorie")
                 ->addCondition(Form::FILLED)
                 ->addRule(Form::MAX_LENGTH, NULL, 128);
         }
 
         if ($this->displayAlt) {
             $this->addText('alt', 'Alt název')
-                ->setAttribute('placeholder', "Alternative název")
+                ->setHtmlAttribute('placeholder', "Alternative název")
                 ->addCondition(Form::FILLED)
                 ->addRule(Form::MAX_LENGTH, NULL, 255);
         }

@@ -29,7 +29,7 @@ use Zenify\DoctrineBehaviors\Entities\Attributes\Translatable as ZenifyTranslata
  *     @ORM\Index(name="expired_idx", columns={"expired"}),
  *     @ORM\Index(name="released_idx", columns={"released"}),
  * }, uniqueConstraints={
- *     @ORM\UniqueConstraint(name="uri_params_idx", columns={"uri", "params"})
+ *     @ORM\UniqueConstraint(name="package_uri_params_idx", columns={"package_id", "uri", "params"})
  * })
  *
  * @package Devrun\CmsModule\Entities
@@ -106,7 +106,7 @@ class RouteEntity
 
 
     /**
-     * @var array
+     * @var string
      * @ORM\Column(type="string", nullable=true)
      */
     protected $params;
@@ -207,10 +207,16 @@ class RouteEntity
         return $this;
     }
 
+
+    public function hasPackage(): bool
+    {
+        return $this->package == true;
+    }
+
     /**
      * @return PackageEntity
      */
-    public function getPackage()
+    public function getPackage(): PackageEntity
     {
         return $this->package;
     }

@@ -11,12 +11,17 @@ namespace Devrun\CmsModule\Storage;
 
 use Devrun\CmsModule\Entities\ImageIdentifyEntity;
 use Devrun\CmsModule\Entities\ImagesEntity;
+use Devrun\CmsModule\Entities\PackageEntity;
+use Devrun\CmsModule\Entities\PageEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
-use Devrun\CmsModule\InvalidStateException;
+use Devrun\CmsModule\NotFoundResourceException;
+use Devrun\CmsModule\Presenters\TCmsPresenter;
 use Devrun\CmsModule\Repositories\ImageRepository;
 use Devrun\CmsModule\Repositories\RouteRepository;
 use Devrun\Storage\ImageStorage;
+use Devrun\Utils\Image;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Kdyby\Doctrine\EntityManager;
 use Kdyby\Events\Subscriber;
 use Kdyby\Translation\Translator;
 use Nette\Application\Request;
@@ -42,6 +47,9 @@ class ImageManageStorage implements Subscriber
     /** @var ImageRepository */
     private $imageRepository;
 
+    /** @var EntityManager */
+    private $entityManager;
+
     /** @var RouteRepository */
     private $routeRepository;
 
@@ -49,7 +57,15 @@ class ImageManageStorage implements Subscriber
     private $request;
 
     /** @var RouteEntity */
-    private $applicationRoute;
+    private $routeEntity;
+
+    /** @var PageEntity */
+    private $pageEntity;
+
+    /** @var PackageEntity */
+    private $packageEntity;
+
+
 
     /** @var Translator */
     private $translator;
@@ -75,15 +91,15 @@ class ImageManageStorage implements Subscriber
      * @param bool            $autoFlush
      * @param ImageStorage    $imageStorage
      * @param ImageRepository $imageRepository
-     * @param RouteRepository $routeRepository
+     * @param EntityManager $entityManager
      * @param Translator      $translator
      */
-    public function __construct(bool $autoFlush, ImageStorage $imageStorage, ImageRepository $imageRepository, RouteRepository $routeRepository, Translator $translator)
+    public function __construct(bool $autoFlush, ImageStorage $imageStorage, ImageRepository $imageRepository, EntityManager $entityManager, Translator $translator)
     {
         $this->autoFlush       = $autoFlush;
         $this->imageStorage    = $imageStorage;
         $this->imageRepository = $imageRepository;
-        $this->routeRepository = $routeRepository;
+        $this->entityManager   = $entityManager;
         $this->translator      = $translator;
     }
 
@@ -110,8 +126,14 @@ class ImageManageStorage implements Subscriber
     }
 
 
-
-
+    /**
+     * @param $args
+     * @return array|\Contributte\ImageStorage\Image
+     * @throws \Contributte\ImageStorage\Exception\ImageResizeException
+     * @throws \Contributte\ImageStorage\Exception\ImageStorageException
+     * @throws \Nette\Utils\ImageException
+     * @throws \Nette\Utils\UnknownImageFileException
+     */
     public function fromIdentifier($args)
     {
         if (!is_array($args)) {
@@ -127,46 +149,82 @@ class ImageManageStorage implements Subscriber
             $entity = $this->imageEntities[$identifier];
 
         } else {
-            if (!$route  = $this->getApplicationRoute()) {
-                throw new InvalidStateException(__METHOD__);
-            }
 
-            if (!$entity = $this->imageRepository->findOneBy(['identify.referenceIdentifier' => $identifier, 'route' => $route])) {
-                if (!$identifyEntity = $this->imageRepository->getEntityManager()->getRepository(ImageIdentifyEntity::class)->findOneBy(['referenceIdentifier' => $identifier])) {
-                    $identifyEntity = new ImageIdentifyEntity($identifier);
+            try {
+                /*
+                 * set where find the image
+                 */
+                $findBy = ['identify.referenceIdentifier' => $identifier];
+
+                if ($args['page'] ?? false) {
+                    $findBy['page'] = $this->getPageEntity();
+
+                } elseif ($args['package'] ?? false) {
+                    $findBy['package'] = $this->getPackageEntity();
+
+                } elseif ($args['route'] ?? true) {
+                    $findBy['route'] = $this->getRouteEntity();
                 }
 
-                $entity = new ImagesEntity($this->translator, $identifyEntity);
+                /** @var ImagesEntity $entity */
+                if (!$entity = $this->imageRepository->findOneBy($findBy)) {
+                    if (!$identifyEntity = $this->imageRepository->getEntityManager()->getRepository(ImageIdentifyEntity::class)->findOneBy(['referenceIdentifier' => $identifier])) {
+                        $identifyEntity = new ImageIdentifyEntity($identifier);
+                    }
 
-                $entity->setRoute($route);
-                if (is_callable($this->callCreateImage)) {
+                    $entity = new ImagesEntity($this->translator, $identifyEntity);
 
-                    $entity = call_user_func_array($this->callCreateImage, [$entity, $identifier]);
-                    $this->onCreateImage($entity , $identifier);
+                    if ($findBy['page'] ?? false) $entity->setPage($this->getPageEntity());
+                    if ($findBy['route'] ?? false) $entity->setRoute($this->getRouteEntity());
+                    if ($findBy['package'] ?? false) $entity->setPackage($this->getPackageEntity());
+                }
 
-                    /*
-                     * experimental off flush
-                     * @see FlushListener
-                     */
-                    if (!$this->autoFlush) {
-                        try {
-                            $this->imageRepository->getEntityManager()->flush();
+            } catch (\Devrun\CmsModule\NotFoundResourceException $exception) {
+                $font = "resources/cmsModule/fonts/OpenSansEasy/OpenSans-Regular.ttf";
+                $image = Image::createImageText($font, 24, 320, 240, wordwrap($exception->getMessage(), 16));
 
-                        } catch (UniqueConstraintViolationException $e) {
-                            Debugger::log($e, "duplicateIdentifier");
+                $dir = "images/temp";
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0755, true);
+                }
 
-                        } catch (\Exception $e) {
-                            Debugger::log($e, ILogger::EXCEPTION);
-                        }
+                // change identifier to
+                $identifier = "$dir/empty.png";
+                $image->save($identifier);
+                $data_dir = "";
+                $data_path = "";
+
+                return new \Contributte\ImageStorage\Image(false, $data_dir, $data_path, $identifier);
+            }
+
+
+            if (is_callable($this->callCreateImage)) {
+                $entity = call_user_func_array($this->callCreateImage, [$entity, $identifier]);
+                $this->onCreateImage($entity , $identifier);
+
+                /*
+                 * experimental off flush
+                 * @see FlushListener
+                 */
+                if (!$this->autoFlush) {
+                    try {
+                        $this->imageRepository->getEntityManager()->flush();
+
+                    } catch (UniqueConstraintViolationException $e) {
+                        Debugger::log($e, "duplicateIdentifier");
+
+                    } catch (\Exception $e) {
+                        Debugger::log($e, ILogger::EXCEPTION);
                     }
                 }
             }
             $this->imageEntities[$identifier] = $entity;
         }
 
-        $this->useInPageImages[$identifier] = $entity;
         $args[0] = $entity->getIdentifier();
+        unset($args['page'], $args['package'], $args['route']);
 
+        $this->useInPageImages[$identifier] = $entity;
         return $this->imageStorage->fromIdentifier($args);
     }
 
@@ -175,22 +233,69 @@ class ImageManageStorage implements Subscriber
 
 
     /**
-     * @return \Devrun\CmsModule\Entities\RouteEntity|null
+     * @return \Devrun\CmsModule\Entities\RouteEntity
      */
-    private function getApplicationRoute()
+    private function getRouteEntity(): RouteEntity
     {
-        if (null === $this->applicationRoute) {
-            if (!$this->request) {
-                return null;
-            }
-
-            if (!$this->applicationRoute = $this->routeRepository->getRouteFromApplicationRequest($this->request)) {
-                throw new InvalidStateException("old method without `PageRoute` route");
+        if (!$this->routeEntity) {
+            if ($route = $this->request->getParameter('route')) {
+                $this->routeEntity = $this->entityManager->getRepository(RouteEntity::class)->find($route);
             }
         }
 
-        return $this->applicationRoute;
+        if (!$this->routeEntity) {
+            throw new NotFoundResourceException("Unknown require route for image");
+        }
+        return $this->routeEntity;
     }
+
+    /**
+     * @return PageEntity
+     */
+    protected function getPageEntity(): PageEntity
+    {
+        if (!$this->pageEntity) {
+            if ($page = $this->request->getParameter('page')) {
+                $this->pageEntity = $this->entityManager->getRepository(PageEntity::class)->find($page);
+            }
+        }
+
+        if (!$this->pageEntity) {
+            throw new NotFoundResourceException("Unknown require page for image");
+        }
+        return $this->pageEntity;
+    }
+
+    /**
+     * @return PackageEntity
+     */
+    protected function getPackageEntity(): PackageEntity
+    {
+        if (!$this->packageEntity) {
+            if ($package = $this->request->getParameter('package')) {
+                $this->packageEntity = $this->entityManager->getRepository(PackageEntity::class)->find($package);
+            }
+        }
+
+        if (!$this->packageEntity) {
+            throw new NotFoundResourceException("Unknown require package for image");
+        }
+        return $this->packageEntity;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**
@@ -218,13 +323,24 @@ class ImageManageStorage implements Subscriber
     }
 
 
-
-
+    /**
+     * @param Presenter|TCmsPresenter $presenter
+     */
     public function onStartup(Presenter $presenter)
     {
-        $request=$presenter->getRequest();
-        if (!$request->getParameter('package')) {
-//            throw new InvalidStateException("request {$request->presenterName} has not a package set!");
+        if (isset(class_uses_recursive($presenter)[TCmsPresenter::class])) {
+
+            try {
+                $this->pageEntity    = $presenter->getPageEntity();
+                $this->routeEntity   = $presenter->getRouteEntity();
+                $this->packageEntity = $presenter->getPackageEntity();
+
+            } catch (\Devrun\CmsModule\NotFoundResourceException $exception) {
+
+            }
+
+        } else {
+//            throw new InvalidStateException("add TCmsPresenter trait to presenter please");
         }
 
         $this->request = $presenter->getRequest();

@@ -102,7 +102,7 @@ class PageRouteFactory implements Subscriber
      */
     public function create()
     {
-        $router     = new RouteList();
+        $router = new RouteList();
 
         /*
          * add cms route
@@ -120,6 +120,8 @@ class PageRouteFactory implements Subscriber
         $router[]   = new Route("{$domainMask}[<locale={$this->defaultLocale} {$this->locales}>/]<slug .+>[/<id \\d+>]", [
             null => [
                 Route::FILTER_IN  => function (array $parameters) {
+
+//                    if (!isset($parameters['slug'])) $parameters['slug'] = '';
 
                     $key = $this->defaultDomain
                         ? [$this->defaultDomain, $parameters['slug'], $parameters['locale']]
@@ -167,19 +169,22 @@ class PageRouteFactory implements Subscriber
                     /** @var RouteEntity $route */
                     $route = $routeTranslation->getTranslatable();
 
+                    $package   = $route->hasPackage() ? $route->getPackage() : null;
+                    $packageId = $route->hasPackage() ? $route->getPackage()->getId() : null;
+
                     if ($this->useCache) {
                         $this->cache->save($key, array(
                             $route->id,
                             $route->getPage()->id,
                             $route->getUri(),
-                            $route->getPackage() ? $route->getPackage()->getId() : null,
+                            $packageId,
                             $route->getParams()),
                             array(
                                 Cache::TAGS => array(RouteEntity::CACHE),
                             ));
                     }
 
-                    return $this->modifyMatchRequest($route, $route->getPage(), $route->getUri(), $route->getPackage(), $route->getParams(), $parameters);
+                    return $this->modifyMatchRequest($route, $route->getPage(), $route->getUri(), $package, $route->getParams(), $parameters);
                 },
 
                 Route::FILTER_OUT => function (array $parameters) {
@@ -367,8 +372,8 @@ class PageRouteFactory implements Subscriber
             }
         }
 
-        if ($route->getParams($raw = true) != '{"id":"?"}' ) {
-//            unset($parameters['id']);
+        if ($route->getParams() != '{"id":"?"}' ) {
+            unset($parameters['id']);
         }
 
         $request = ['slug' => $slug] + $parameters;

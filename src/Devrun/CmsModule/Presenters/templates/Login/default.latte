@@ -4,34 +4,46 @@
 <div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type">{$flash->message}</div>
 <p class="login-box-msg">{_admin.forms.loginForm.windowTitle}</p>
 {form loginForm class=>""}
-	<div class="alert alert-danger fade in" n:if="$form->hasErrors()">
-		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		<p n:foreach="$form->errors as $error"> {dump $form->errors}  {$error}</p>
-	</div>
+    <div n:if="$form->hasErrors()" class="alert alert-default-danger" role="alert">
+      <p n:foreach="$form->errors as $error">{$error}</p>
+    </div>
 
-	<div class="form-group has-feedback">
+    <div class="input-group mb-3">
 		{input username}
-		<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-	</div>
-	<div class="form-group has-feedback">
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+            </div>
+        </div>
+    </div>
+    <div class="input-group mb-3">
 		{input password}
-		<span class="glyphicon glyphicon-lock form-control-feedback"></span>
-	</div>
-
-	<div class="row">
-		<div class="col-xs-8">
-			<div class="checkbox icheck">
+        <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="icheck-primary">
 				<input n:name="remember">
 				<label n:name="remember">{_admin.forms.loginForm.remember}</label>
-			</div>
-		</div>
-		<div class="col-xs-4">
+            </div>
+        </div>
+        <div class="col-4">
 			{input send}
-		</div>
-	</div>
-
-	<div class="social-auth-links text-center">
-		<a n:href="registration" id="to-recover" class="btn btn-block btn-social btn-primary btn-flat"><i class="fa fa-user-plus m-r-5"></i> {_"admin.forms.loginForm.newUser"}</a>
-		<a n:href="forgottenPassword" id="to-recover" class="btn btn-block btn-social btn-info btn-flat"><i class="fa fa-lock m-r-5"></i> {_"admin.forms.loginForm.forgotPassword"}</a>
-	</div>
+{*            <button type="submit" class="btn btn-primary btn-block">Sign In</button>*}
+        </div>
+    </div>
 {/form}
+
+<div class="social-auth-links text-center mb-3">
+    <p>- - -</p>
+    <a n:href="registration" class="btn btn-block btn-primary">
+        <i class="fas fa-user-lock mr-2"></i> {_"admin.forms.loginForm.newUser"}
+    </a>
+    <a n:href="forgottenPassword" class="btn btn-block btn-warning">
+        <i class="fas fa-lock-open mr-2"></i> {_"admin.forms.loginForm.forgotPassword"}
+    </a>
+</div>

@@ -19,6 +19,7 @@ use Devrun\CmsModule\Forms\IDevrunForm;
 use Devrun\CmsModule\InvalidArgumentException;
 use Devrun\CmsModule\Presenters\PagePresenter;
 use Devrun\CmsModule\Repositories\RouteRepository;
+use Devrun\Utils\Debugger;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Kdyby\Translation\Phrase;
 use Nette\Application\UI\Form;
@@ -71,6 +72,7 @@ class PageSettingsControl extends Control
             if (isset($moduleConfiguration['pagesMask'])) {
                 $this->urlMask = $moduleConfiguration['pagesMask'];
             }
+
         });
 
         $this->cache = new \Nette\Caching\Cache($storage, 'routes');

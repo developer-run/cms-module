@@ -17,10 +17,12 @@ use Devrun\CmsModule\Repositories\ImageIdentifyRepository;
 use Devrun\CmsModule\Repositories\ImageRepository;
 use Devrun\Storage\ImageNameScript;
 use Devrun\Storage\ImageStorage;
+use Devrun\Utils\Debugger;
 use Kdyby\Translation\Translator;
 use Nette\Http\FileUpload;
 use Nette\SmartObject;
 use Nette\Utils\Image;
+use Nette\Utils\UnknownImageFileException;
 
 class PageImageJob extends AbstractImageJob
 {
@@ -253,7 +255,12 @@ class PageImageJob extends AbstractImageJob
             $fileName  = implode('.', [$script->name, $script->extension]);
             $namespace = implode('/', [$script->namespace, $script->prefix]);
 
-            $img       = \Nette\Utils\Image::fromFile($identifier);
+            try {
+                $img = \Nette\Utils\Image::fromFile($identifier);
+            } catch (UnknownImageFileException $e) {
+                return $imageEntity;
+            }
+
             $image     = $imageStorage->saveContent($content, $fileName, $namespace);
             $scriptNew = ImageNameScript::fromIdentifier($image->identifier);
 

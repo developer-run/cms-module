@@ -31,24 +31,24 @@ class ImageForm extends DevrunForm
 
 
         $this->addText('name', 'Název')
-            ->setAttribute('placeholder', "Název")
+            ->setHtmlAttribute('placeholder', "Název")
             ->addCondition(Form::FILLED)
             ->addRule(Form::MAX_LENGTH, NULL, 128);
 
         $this->addText('alt', 'Alt název')
-            ->setAttribute('placeholder', "Alternative název")
+            ->setHtmlAttribute('placeholder', "Alternative název")
             ->addCondition(Form::FILLED)
             ->addRule(Form::MAX_LENGTH, NULL, 255);
 
         $identify->addText('name', 'Systémový název')
-            ->setAttribute('placeholder', "Název pro systém")
-            ->setAttribute('readonly', true)
+            ->setHtmlAttribute('placeholder', "Název pro systém")
+            ->setHtmlAttribute('readonly', true)
             ->addRule(Form::FILLED)
             ->addRule(Form::MAX_LENGTH, NULL, 64);
 
         $identify->addText('namespace', 'Kategorie')
-            ->setAttribute('placeholder', "Název kategorie")
-            ->setAttribute('readonly', true)
+            ->setHtmlAttribute('placeholder', "Název kategorie")
+            ->setHtmlAttribute('readonly', true)
             ->addCondition(Form::FILLED)
             ->addRule(Form::MAX_LENGTH, NULL, 128);
 
@@ -63,7 +63,7 @@ class ImageForm extends DevrunForm
 
 
         $this->addSubmit('send', 'Odeslat')
-            ->setAttribute('data-dismiss', 'modal');
+            ->setHtmlAttribute('data-dismiss', 'modal');
 
 
         $this->addFormClass(['ajax']);

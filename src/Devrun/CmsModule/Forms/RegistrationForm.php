@@ -44,30 +44,30 @@ class RegistrationForm extends DevrunForm
     {
 
         $this->addText('firstName', 'first_name')
-            ->setAttribute('placeholder', "placeholder.first_name")
+            ->setHtmlAttribute('placeholder', "placeholder.first_name")
             ->addRule(Form::FILLED, 'ruleFirstName')
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addText('lastName', 'last_name')
-            ->setAttribute('placeholder', "placeholder.last_name")
+            ->setHtmlAttribute('placeholder', "placeholder.last_name")
             ->addRule(Form::FILLED, 'ruleLastName')
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addText('email', 'email')
-            ->setAttribute('placeholder', "placeholder.email")
+            ->setHtmlAttribute('placeholder', "placeholder.email")
             ->addRule(Form::FILLED, 'ruleEMail')
             ->addRule(Form::EMAIL, 'valid_email');
 
         $password = $this->addPassword('password', 'password');
-        $password->setAttribute('placeholder', "placeholder.password")
+        $password->setHtmlAttribute('placeholder', "placeholder.password")
             ->addRule(Form::FILLED, 'rulePassword')
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addPassword('password2', 'confirm_password')
-            ->setAttribute('placeholder', "placeholder.confirm_password")
+            ->setHtmlAttribute('placeholder', "placeholder.confirm_password")
             ->addRule(Form::FILLED, 'ruleConfirmPassword')
             ->addConditionOn($password, Form::FILLED)
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
@@ -75,7 +75,7 @@ class RegistrationForm extends DevrunForm
             ->addRule(Form::EQUAL, 'password_dont_match', $password);
 
         $this->addCheckbox('privacy', 'privacy')->getControl()->class[] = 'icheck';
-        $this->addSubmit('send', 'registration')->setAttribute('class', 'btn btn-primary btn-md pull-right');
+        $this->addSubmit('send', 'registration')->setHtmlAttribute('class', 'btn btn-primary btn-md pull-right');
         $this->onSuccess[] = array($this, 'formSuccess');
 
         $this->onValidate[] = [$this, 'validateEmail'];

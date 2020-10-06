@@ -166,7 +166,7 @@ class PagePresenter extends AdminPresenter
     public function actionEdit($id)
     {
         /** @var PageEntity $page */
-        if (!$page = $this->pageEntity = $this->pageFacade->getPageRepository()->find($id)) {
+        if (!$id || (!$page = $this->pageEntity = $this->pageFacade->getPageRepository()->find($id))) {
             $this->flashMessage('Page not found', 'danger');
             $this->redirect('default');
         }
@@ -406,6 +406,7 @@ class PagePresenter extends AdminPresenter
         }
 
         $this->template->route             = $routeEntity;
+        $this->template->package           = $routeEntity->getPackage();
         $this->template->pageHtml          = $html;
         $this->template->pageStyles        = $pageStyles;
         $this->template->pageJavaScripts   = $pageJavaScripts;

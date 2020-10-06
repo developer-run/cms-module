@@ -14,6 +14,7 @@ use Devrun\CmsModule\Entities\PageSectionsEntity;
 use Devrun\CmsModule\Entities\RouteEntity;
 use Devrun\CmsModule\Entities\RouteTranslationEntity;
 use Devrun\Module\ModuleFacade;
+use Devrun\Utils\Debugger;
 use Kdyby\Doctrine\EntityManager;
 use Kdyby\Translation\Translator;
 use Nette\Application\UI\Presenter;
@@ -81,7 +82,7 @@ class SynchronizePagesJob
 
     public function synchronizationSections(array $modules)
     {
-        $inSections = $this->entityManager->getRepository(PageSectionsEntity::getClassName())->findAll();
+        $inSections = $this->entityManager->getRepository(PageSectionsEntity::class)->findAll();
 
         $dbSections = [];
         foreach ($inSections as $section) {
@@ -114,7 +115,7 @@ class SynchronizePagesJob
             }
         }
 
-        $pages = $this->entityManager->getRepository(PageEntity::getClassName())->findAssoc([], 'name');
+        $pages = $this->entityManager->getRepository(PageEntity::class)->findAssoc([], 'name');
 
         /*
          * new sections
@@ -160,7 +161,7 @@ class SynchronizePagesJob
     public function synchronizationPages(array $modules)
     {
         /** @var PageEntity[] $inPages */
-        $inPages  = $this->entityManager->getRepository(PageEntity::getClassName())->findAll();
+        $inPages  = $this->entityManager->getRepository(PageEntity::class)->findAll();
 
         /** @var PageEntity[] $dbPages */
         $dbPages  = [];
@@ -170,6 +171,7 @@ class SynchronizePagesJob
             $dbPages[(string)$page] = $page;
         }
 
+//        Debugger::$maxDepth = 5;
 //        dump($dbPages);
 //        dump($modules);
 //        die();
@@ -189,15 +191,25 @@ class SynchronizePagesJob
 
                 foreach ($templates as $template => $templateInfo) {
 
+//                    dump($templateInfo);
                     $pageType = null;
                     $parentPageName = null;
+                    $presenterServiceName = $templateInfo['service'];
                     $presenterClassName = $templateInfo['class'];
 
                     // create reflection of presenter
                     if (!isset($presenterReflections[$presenterClassName])) {
 
+//                        dump($this->context->getServiceType('front.presenters.homepage'));
+//                        dump($this->context->getService('front.presenters.homepage'));
+//                        dump($this->context->findByType($presenterClassName));
+//                        dump($this->context->hasService($presenterServiceName));
+//                        die("AS");
+
                         /** @var Presenter $presenterClass */
-                        if ($presenterClass = $this->context->getByType($presenterClassName, false)) {
+                        if ($this->context->hasService($presenterServiceName) && ($presenterClass = $this->context->getService($presenterServiceName))) {
+//                        if ($presenterClass = $this->context->getByType($presenterClassName, false)) {
+//                            dump($presenterClass);
                             $presenterReflections[$presenterClassName] = [
                                 'class'      => $presenterClass,
                                 'reflection' => new ClassType($presenterClass)
@@ -208,9 +220,14 @@ class SynchronizePagesJob
                         }
                     }
 
+
+//                    dump($presenterReflections);
+//                    dump($presenterClassName);
+
                     if ($presenterReflection = $presenterReflections[$presenterClassName]) {
 
                         $class = $presenterReflection['class'];
+//                        dump($class);
 
                         /** @var ClassType $reflection */
                         $reflection = $presenterReflection['reflection'];
@@ -307,8 +324,6 @@ class SynchronizePagesJob
 //        dump(array_keys($pageList));
 //        dump(array_keys($dbPages));
 //        die('END');
-
-
 
         /*
          * new pages

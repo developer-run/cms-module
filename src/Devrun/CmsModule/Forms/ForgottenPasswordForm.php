@@ -56,25 +56,25 @@ class ForgottenPasswordForm extends DevrunForm
     public function create()
     {
         $this->addText('email', 'email')
-            ->setAttribute('placeholder', "placeholder.email")
+            ->setHtmlAttribute('placeholder', "placeholder.email")
             ->addRule(Form::FILLED, 'ruleEMail')
             ->addRule(Form::EMAIL, 'valid_email');
 
         $password = $this->addPassword('password', 'password');
-        $password->setAttribute('placeholder', "placeholder.password")
+        $password->setHtmlAttribute('placeholder', "placeholder.password")
             ->addRule(Form::FILLED, 'rulePassword')
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255);
 
         $this->addPassword('password2', 'confirm_password')
-            ->setAttribute('placeholder', "placeholder.confirm_password")
+            ->setHtmlAttribute('placeholder', "placeholder.confirm_password")
             ->addRule(Form::FILLED, 'ruleConfirmPassword')
             ->addRule(Form::MIN_LENGTH, new Phrase('ruleMinLength', 3), 3)
             ->addRule(Form::MAX_LENGTH, new Phrase('ruleMaxLength', 255), 255)
             ->addConditionOn($password, Form::FILLED)
             ->addRule(Form::EQUAL, 'password_dont_match', $password);
 
-        $this->addSubmit('send', 'send')->setAttribute('class', 'btn btn-md btn-inverse btn-block');
+        $this->addSubmit('send', 'send')->setHtmlAttribute('class', 'btn btn-md btn-inverse btn-block');
         $this->onSuccess[] = array($this, 'formSuccess');
 
         $this->onValidate[] = [$this, 'validateEmail'];

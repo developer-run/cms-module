@@ -54,6 +54,20 @@ class ImagesEntity implements ITranslatableImage, IImage
     protected $identify;
 
     /**
+     * @var PageEntity
+     * @ORM\ManyToOne(targetEntity="Devrun\CmsModule\Entities\PageEntity")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    protected $page;
+
+    /**
+     * @var PackageEntity
+     * @ORM\ManyToOne(targetEntity="Devrun\CmsModule\Entities\PackageEntity")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    protected $package;
+
+    /**
      * var RouteEntity
      * @ORM\ManyToOne(targetEntity="RouteEntity")
      * @ORM\JoinColumn(onDelete="CASCADE")
@@ -101,11 +115,48 @@ class ImagesEntity implements ITranslatableImage, IImage
      *
      * @return $this
      */
-    public function setRoute(RouteEntity $route)
+    public function setRoute(RouteEntity $route): ImagesEntity
     {
         $this->route = $route;
         return $this;
     }
+
+    /**
+     * @return PageEntity
+     */
+    public function getPage(): PageEntity
+    {
+        return $this->page;
+    }
+
+    /**
+     * @param PageEntity $page
+     * @return ImagesEntity
+     */
+    public function setPage(PageEntity $page): ImagesEntity
+    {
+        $this->page = $page;
+        return $this;
+    }
+
+    /**
+     * @return PackageEntity
+     */
+    public function getPackage(): PackageEntity
+    {
+        return $this->package;
+    }
+
+    /**
+     * @param PackageEntity $package
+     * @return ImagesEntity
+     */
+    public function setPackage(PackageEntity $package): ImagesEntity
+    {
+        $this->package = $package;
+        return $this;
+    }
+
 
     /**
      * @return string
@@ -276,7 +327,7 @@ class ImagesEntity implements ITranslatableImage, IImage
 
     /*
      * ----------------------------------------------------------------------------------------
-     * internal properties
+     * internal magic
      * ----------------------------------------------------------------------------------------
      */
     public function __clone()
@@ -285,6 +336,8 @@ class ImagesEntity implements ITranslatableImage, IImage
         $this->createdBy = NULL;
         $this->updatedBy = NULL;
         $this->deletedBy = NULL;
+        $this->inserted = NULL;
+        $this->updated = NULL;
         $this->translations = [];
     }
 
