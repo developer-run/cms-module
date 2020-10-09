@@ -1,41 +1,28 @@
-<li class="dropdown user user-menu">
-	<a href="#" class="dropdown-toggle" n:if="$user->loggedIn" data-toggle="dropdown">
-		<img n:if="$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-man-ico.png" class="user-image" alt="User Image">
-		<img n:if="!$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-woman-ico.png" class="user-image" alt="User Image">
+<li class="nav-item dropdown">
+	<a href="#" class="nav-link" n:if="$user->loggedIn" data-toggle="dropdown">
+		<i class="fas fa-user-tie mr-1"></i>
 		<span class="hidden-xs">{$user->identity->firstName} {$user->identity->lastName}</span>
 	</a>
-	<ul n:if="$user->loggedIn" class="dropdown-menu">
+	<div n:if="$user->loggedIn" class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 		<!-- User image -->
-		<li class="user-header">
-			<img n:if="$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-man-ico.png" class="img-circle" alt="User Image">
-			<img n:if="!$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-woman-ico.png" class="img-circle" alt="User Image">
-			<p>
-				{$user->identity->firstName} {$user->identity->lastName} - Web {if $user->isInRole(admin)} Admin{elseif $user->isInRole(supervisor)} Developer{/if}
-				<small>Member since {$user->identity->inserted|date:"j. n. Y"}</small>
-			</p>
-		</li>
-		<!-- Menu Body -->
-		<li class="user-body hidden">
-			<div class="row">
-				<div class="col-xs-4 text-center">
-					<a href="#">Followers</a>
-				</div>
-				<div class="col-xs-4 text-center">
-					<a href="#">Sales</a>
-				</div>
-				<div class="col-xs-4 text-center">
-					<a href="#">Friends</a>
+		<a href="{plink :Cms:Profile:}" class="dropdown-item">
+			<div class="media">
+				<img n:if="$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-man-ico.png" class="img-size-50 mr-3 img-circle" alt="User Image">
+				<img n:if="!$user->identity->gender" src="{$basePath}/resources/cmsModule/cms/images/admin-woman-ico.png" class="img-size-50 mr-3 img-circle" alt="User Image">
+				<div class="media-body">
+					<h3 class="dropdown-item-title">
+						{$user->identity->firstName} {$user->identity->lastName}
+						<span n:ifset="$item['secondaryIcon']" class="float-right text-sm text-danger"><i class="{$item['secondaryIcon']}"></i></span>
+					</h3>
+					<p class="text-sm">Web {if $user->isInRole(admin)} Admin{elseif $user->isInRole(supervisor)} Developer{else} Member{/if}</p>
+					<p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>Member since {$user->identity->inserted|date:"j. n. Y"}</p>
 				</div>
 			</div>
-		</li>
-		<!-- Menu Footer-->
-		<li class="user-footer">
-			<div class="pull-left">
-				<a href="{plink :Cms:Profile:}" class="btn btn-default btn-flat">Profile</a>
-			</div>
-			<div class="pull-right">
-				<a href="{plink logout!}" class="btn btn-default btn-flat">{_admin.sign_out}</a>
-			</div>
-		</li>
-	</ul>
+		</a>
+		<div class="dropdown-divider"></div>
+		<a href="{plink logout!}" class="dropdown-item">
+			<i class="fas fa-user mr-2"></i> {_admin.sign_out}
+			<span class="float-right text-muted text-sm">lockdown</span>
+		</a>
+	</div>
 </li>

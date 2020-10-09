@@ -115,14 +115,8 @@
 			<li class="nav-item">
 				<a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
 			</li>
-			<li class="nav-item d-none d-sm-inline-block">
-				<a href="index3.html" class="nav-link">Home</a>
-			</li>
-			<li class="nav-item d-none d-sm-inline-block">
-				<a href="#" class="nav-link">Contact</a>
-			</li>
 
-			{*{control languagesControl}*}
+{*			{control languagesControl}*}
 
 			{if $systemAdminItems}
 				{include menu adminItems => $systemAdminItems}
@@ -155,6 +149,7 @@
 		</ul>
 
 		<!-- SEARCH FORM -->
+		{*
 		<form class="form-inline ml-3">
 			<div class="input-group input-group-sm">
 				<input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
@@ -165,11 +160,12 @@
 				</div>
 			</div>
 		</form>
+		*}
 
 		<!-- Right navbar links -->
-		<ul class="navbar-nav ml-auto">
-			{include "#messages.latte"}
-			{include "#notificationsMenuDemo.latte"}
+		<ul class="navbar-nav  ml-auto">
+{*			{include "#messages.latte"}*}
+{*			{include "#notificationsMenuDemo.latte"}*}
 
 			{foreach $navbarRightAdminItems as $service => $params}
 				{if $params['type'] == page}
@@ -416,31 +412,37 @@
 {define menu}
 	{foreach $adminItems as $menu => $moduleAdminItem}
 		{* name = pexeso;  moduleItem = [settings=>[0=>[] ], 0=> [] ] *}
-		<li n:foreach="$moduleAdminItem as $name => $moduleItem" class="dropdown notifications-menu">
+		<li n:foreach="$moduleAdminItem as $name => $moduleItem" class="nav-item dropdown">
 			{if !is_numeric($name)}
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-					<i n:ifset="$moduleItem['icon']" class="fa {$moduleItem['icon']}"></i>
-					<span class="hidden-xs">{_"messages.{$menu}.{$name}"}</span> <span class="caret"></span>
+				<a href="#" class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					<span class="hidden-xs">{_"messages.{$menu}.{$name}"}</span>
+					<i n:ifset="$moduleItem['icon']" class="far {$moduleItem['icon']}"></i>
+					<i n:if="!isset($moduleItem['icon'])" class="fas fa-level-down-alt"></i>
 				</a>
-				<ul class="dropdown-menu">
+				<div class="dropdown-menu dropdown-menu-lg">
 					{foreach $moduleItem as $submenuName => $item}
 						{if is_numeric($submenuName)}
-							<li n:ifset="$item['header']" class="dropdown-header">{_$item['header']}</li>
-							<li n:ifset="$item['divider']" role="separator" class="divider"></li>
-							<li>
-								<a n:href="$item['link']">
-									<i n:ifset="$item['icon']" class="fa {$item['icon']}"></i>
-									<strong class="text-primary">{_$item['name']}</strong><br>
-									<small>{_$item['description']}</small>
-								</a>
-							</li>
+						<a n:href="$item['link']" class="dropdown-item">
+							<div class="media">
+								<img n:ifset="$item['image']" src="{$basePath}/{$item['image']}" alt="Avatar" class="img-size-50 mr-3 img-circle">
+								<i n:ifset="$item['icon']" class="mr-3 img-circle fa fa-lg {$item['icon']}"></i>
+								<div class="media-body">
+									<h3 class="dropdown-item-title">
+										{_$item['name']}
+										<span n:ifset="$item['secondaryIcon']" class="float-right text-sm text-danger"><i class="{$item['secondaryIcon']}"></i></span>
+									</h3>
+									<p class="text-sm">{_$item['description']}</p>
+									<p n:ifset="$item['secondaryDescription']" class="text-sm text-muted"><i class="far fa-clock mr-1"></i> {$item['secondaryDescription']}</p>
+								</div>
+							</div>
+						</a>
 						{else}
 							{include submenu subName => $submenuName, items => $item}
 						{/if}
 					{/foreach}
-				</ul>
+				</div>
 			{else}
-				<a n:ifset="$moduleItem['link']" n:href="$moduleItem['link']" class="dropdown-toggle" role="button" aria-haspopup="false" aria-expanded="false">
+				<a n:ifset="$moduleItem['link']" n:href="$moduleItem['link']" class="nav-link" role="button" aria-haspopup="false" aria-expanded="false">
 					<i n:ifset="$moduleItem['icon']" class="fa {$moduleItem['icon']}"></i>
 					<span class="hidden-xs">{_$moduleItem['name']}</span>
 				</a>
