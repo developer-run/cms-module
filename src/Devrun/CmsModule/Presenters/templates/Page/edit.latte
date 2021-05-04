@@ -1,5 +1,5 @@
 {block headerTitle}Správa stránky{/block}
-{block headerSmallTitle}{snippet link}<a href="{$presenter->link($route->uri, $route->params)}" class="btn btn-xs btn-info">{$route->url}</a>{/snippet}{/block}
+{block headerSmallTitle}{snippet link}<a target="_blank" href="{$presenter->link($route->uri, $route->params)}" class="btn btn-xs btn-default">{$route->url}</a>{/snippet}{/block}
 {block title}{_admin.editPage.title, [name => $route->url . " ({$route->title})"]}{/block}
 
 {*{block extraScripts}*}

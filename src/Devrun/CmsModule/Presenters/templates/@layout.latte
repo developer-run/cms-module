@@ -63,6 +63,10 @@
 {*		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/nprogress/nprogress.css">*}
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/cms/cms.css?v=1">
 {*		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/cmsModule/nestable2/jquery.nestable.css">*}
+
+
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/resources/articleModule/FlexiJsonEditor/jsoneditor.css">
+
 		{*<!-- endbuild -->*}
 
 
@@ -201,7 +205,7 @@
 				<div n:snippet="breadcrumb" class="row mb-2">
 					<div class="col-sm-6">
 						<h1 class="m-0 text-dark">{block headerTitle}{/block}
-							<small n:inner-block="headerSmallTitle"></small>
+							<small n:inner-block="headerSmallTitle" class="inline-block"></small>
 						</h1>
 					</div>
 					<div class="col-sm-6">
@@ -334,12 +338,24 @@
 
 
 	<script src="{$basePath}/resources/articleModule/article.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/articleModule/FlexiJsonEditor/json2.js"></script>
+	<script type="application/javascript" src="{$basePath}/resources/articleModule/FlexiJsonEditor/jquery.jsoneditor.js"></script>
+
+
 	<script type="module" src="{$basePath}/resources/cmsModule/cms/translate.js"></script>
 	<script type="module" src="{$basePath}/resources/cmsModule/cms/ckeditor.js"></script>
 	<script type="application/javascript" src="{$basePath}/resources/cmsModule/cms/cms.js?v=1"></script>
 	{*<!-- endbuild -->*}
 
 	{*<script type="application/javascript" src="{$basePath}/resources/cmsModule/nittro-essentials/dist/nittro.min.js" async defer></script>*}
+
+
+
+
+
+
+
+
 
 
 

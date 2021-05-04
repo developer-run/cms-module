@@ -304,16 +304,29 @@ $(function(){
     }
 
 
-    return;
+    // return;
 
     $('#editor').each(function(index, value) {
 
         // console.log($(this));
 
-        ClassicEditor
+        var classicEditor = CKEditor.ClassicEditor;
+
+        classicEditor
             .create(this, {
+
+                // plugins: [ Title, ],
+                // title: {
+                //     placeholder: 'My custom placeholder for the title'
+                // },
+                // placeholder: 'My custom placeholder for the body',
+
                 extraPlugins: [  AllowClassesPlugin2, AllowSourcePlugin ],
-                toolbar: [  'bold', 'italic', 'link' ]
+                toolbar: [  'bold', 'italic', 'link' ],
+
+                link: {
+                    addTargetToExternalLinks: true
+                }
 
             })
             .then(newEditor => {

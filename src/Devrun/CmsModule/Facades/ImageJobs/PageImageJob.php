@@ -288,11 +288,13 @@ class PageImageJob extends AbstractImageJob
 
 
     /**
+     * remove all images which have some identify
+     *
      * @param IImage|ImagesEntity $imageEntity
      *
      * @return bool|IImage|ImagesEntity
      */
-    public function removeImage(IImage $imageEntity)
+    public function removeAllImagesFromIdentify(IImage $imageEntity)
     {
         if (!$imageEntity instanceof ImagesEntity) {
             throw new InvalidArgumentException("ImagesEntity is required");
@@ -308,7 +310,14 @@ class PageImageJob extends AbstractImageJob
     }
 
 
-    public function removeImageByID($id)
+    /**
+     * remove all images which have some identify
+     *
+     * @param $id
+     * @return bool|object|null
+     * @throws \Exception
+     */
+    public function removeAllImagesFromIdentifyByImageID($id)
     {
         if ($imageEntity = $this->imageRepository->find($id)) {
 

@@ -25,6 +25,7 @@ use Nette\Utils\Strings;
  * @ORM\Table(name="package", indexes={
  *     @ORM\Index(name="package_name_idx", columns={"name"}),
  *     @ORM\Index(name="package_module_idx", columns={"module"}),
+ *     @ORM\Index(name="package_published_idx", columns={"published"}),
  * }, uniqueConstraints={
  *     @ORM\UniqueConstraint(name="name_package_idx", columns={"name", "module"}),
  *     @ORM\UniqueConstraint(name="base_package_idx", columns={"base", "module"}),
@@ -55,6 +56,12 @@ class PackageEntity
      * @ORM\JoinColumn(name="module", onDelete="CASCADE")
      */
     protected $module;
+
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    protected $published = false;
 
     /**
      * @var boolean
@@ -111,7 +118,7 @@ class PackageEntity
 
 
     /**
-     * @var RouteEntity[]
+     * @var RouteEntity[]|ArrayCollection
      * @ORM\OneToMany(targetEntity="RouteEntity", mappedBy="package")
      */
     protected $routes;
@@ -129,7 +136,8 @@ class PackageEntity
         $this->module = $module;
         $this->setDefaultLocale($translator->getDefaultLocale());
         $this->setCurrentLocale($translator->getLocale());
-        $this->users = new ArrayCollection();
+        $this->users  = new ArrayCollection();
+        $this->routes = new ArrayCollection();
     }
 
     /**
@@ -149,6 +157,34 @@ class PackageEntity
     public function getUser()
     {
         return $this->user;
+    }
+
+
+    /**
+     * @param bool $published
+     * @return PackageEntity
+     */
+    public function setPublished(bool $published): PackageEntity
+    {
+        $this->published = $published;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublished(): bool
+    {
+        return $this->published;
+    }
+
+
+    /**
+     * @return RouteEntity[]|ArrayCollection
+     */
+    public function getRoutes()
+    {
+        return $this->routes;
     }
 
 

@@ -115,13 +115,12 @@ class PageRouteFactory implements Subscriber
 
         $router[] = $adminRouter;
 
-
         $domainMask = $this->defaultDomain ? '//<domain .*>/' : null;
-        $router[]   = new Route("{$domainMask}[<locale={$this->defaultLocale} {$this->locales}>/]<slug .+>[/<id \\d+>]", [
+        $router[]   = new Route("{$domainMask}[<locale={$this->defaultLocale} {$this->locales}>/][<slug .+>][/<id \\d+>]", [
+            'slug' => '',
+            'module' => null,
             null => [
                 Route::FILTER_IN  => function (array $parameters) {
-
-//                    if (!isset($parameters['slug'])) $parameters['slug'] = '';
 
                     $key = $this->defaultDomain
                         ? [$this->defaultDomain, $parameters['slug'], $parameters['locale']]
@@ -159,8 +158,6 @@ class PageRouteFactory implements Subscriber
                     } else {
                         $query->andWhere('t.url = :url');
                     }
-
-
 
                     if (!$routeTranslation = $query->getQuery()->getOneOrNullResult()) {
                         return null;
@@ -239,10 +236,8 @@ class PageRouteFactory implements Subscriber
                             ->createQueryBuilder('e')
                             ->addSelect('t')
                             ->addSelect('p')
-                            ->addSelect('u')
-                            ->join('e.translations', 't')
+                            ->leftJoin('e.translations', 't')
                             ->leftJoin('e.package', 'p')
-                            ->leftJoin('p.user', 'u')
                             ->where('e.uri = :uri')->setParameter('uri', $uri)
                             ->setMaxResults(1);
 
@@ -267,7 +262,14 @@ class PageRouteFactory implements Subscriber
                     }
 
                     if (!$routeEntity && $route) {
-                        $routeEntity = $this->routeRepository->find($route);
+                        $routeEntity = $this->routeRepository
+                            ->createQueryBuilder('e')
+                            ->addSelect('t')
+                            ->leftJoin('e.translations', 't')
+                            ->where('e.id = :id')->setParameter('id', $route)
+                            ->setMaxResults(1)
+                            ->getQuery()
+                            ->getOneOrNullResult();
                     }
                     if (!$routeEntity) {
                         return null;
@@ -295,13 +297,13 @@ class PageRouteFactory implements Subscriber
      *
      * @param $route
      * @param $page
-     * @param $routeType
+     * @param $routeUri
      * @param $package
      * @param $routeParameters
      * @param $parameters
      * @return array
      */
-    protected function modifyMatchRequest($route, $page, $routeType, $package, $routeParameters, $parameters): array
+    protected function modifyMatchRequest($route, $page, $routeUri, $package, $routeParameters, $parameters): array
     {
         if (is_object($route)) {
             $parameters['route'] = $route->id;
@@ -329,13 +331,17 @@ class PageRouteFactory implements Subscriber
         }
 
         $parameters = $routeParameters + $parameters;
-        $type = explode(':', $routeType);
+        $type = explode(':', ltrim($routeUri, ':'));
+
         $parameters['action'] = $type[count($type) - 1];
 
         unset($type[count($type) - 1]);
-        $presenter = join(':', $type);
-        $presenter = Strings::replace($presenter, "/^:/");
+        if (count($type) > 1) {
+            $parameters['module'] = $type[0];
+            unset($type[0]);
+        }
 
+        $presenter = join(':', $type);
         $parameters['presenter'] = $presenter;
         return $parameters;
     }
@@ -384,7 +390,10 @@ class PageRouteFactory implements Subscriber
         unset($request['route']);
         unset($request['page']);
         unset($request['package']);
-        unset($request['presenter'], $request['action']);
+
+        // slug je nepovinný parametr, i přesto že je prázdný, je třeba jej smazat
+        if (($parameters['slug'] ?? '') === '') unset($request['slug']);
+        unset($request['module'], $request['presenter'], $request['action']);
 
         return $request;
     }

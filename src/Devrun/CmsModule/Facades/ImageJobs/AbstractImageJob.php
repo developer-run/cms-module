@@ -119,18 +119,17 @@ abstract class AbstractImageJob
     abstract public function removeNamespace($namespace);
 
 
-
-
     /**
      * odstraní jeden obrázek z databáze i fyzicky
      *
      * @param $id
      *
      * @return bool|null|object
+     * @throws \Exception
      */
     public function removeImageId($id)
     {
-        if (($imageEntity = $this->imageRepository->find($id)) && $imageEntity instanceof IImage) {
+        if (($imageEntity = $this->getImageRepository()->find($id)) && $imageEntity instanceof IImage) {
             return $this->removeImage($imageEntity);
         }
 
@@ -143,13 +142,16 @@ abstract class AbstractImageJob
      *
      * @param IImage $imageEntity
      *
+     * @param bool $flush
      * @return bool|IImage
+     * @throws \Exception
      */
-    public function removeImage(IImage $imageEntity)
+    public function removeImage(IImage $imageEntity, $flush = true)
     {
         try {
             $this->getImageStorage()->delete($imageEntity->getIdentifier());
-            $this->getImageRepository()->getEntityManager()->remove($imageEntity)->flush();
+            $this->getImageRepository()->getEntityManager()->remove($imageEntity);
+            if ($flush) $this->getImageRepository()->getEntityManager()->flush($imageEntity);
 
         } catch (\Nette\InvalidStateException $e) {
             return false;

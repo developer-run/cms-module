@@ -31,15 +31,17 @@ function ConvertDivAttributes( editor ) {
     // View-to-model converter converting a view <div> with all its attributes to the model.
     editor.conversion.for( 'upcast' ).elementToElement( {
         view: 'div',
-        model: ( viewElement, modelWriter ) => {
+        model: ( viewElement, { writer: modelWriter } ) => {
             return modelWriter.createElement( 'div', viewElement.getAttributes() );
-        }
+        },
+        converterPriority: 'low'
     } );
 
     // Model-to-view converter for the <div> element (attributes are converted separately).
     editor.conversion.for( 'downcast' ).elementToElement( {
         model: 'div',
-        view: 'div'
+        view: 'div',
+        converterPriority: 'low'
     } );
 
     // Model-to-view converter for <div> attributes.
@@ -87,7 +89,7 @@ function ConvertSectionAttributes( editor ) {
     // View-to-model converter converting a view <section> with all its attributes to the model.
     editor.conversion.for( 'upcast' ).elementToElement( {
         view: 'section',
-        model: ( viewElement, modelWriter ) => {
+        model: ( viewElement, { writer: modelWriter } ) => {
             return modelWriter.createElement( 'section', viewElement.getAttributes() );
         }
     } );
@@ -248,7 +250,7 @@ function HandleFontSizeValue( editor ) {
         model: {
             key: 'fontSize'
         },
-        view: ( modelValue, viewWriter ) => {
+        view: ( modelValue, { writer: viewWriter } ) => {
             return viewWriter.createAttributeElement( 'span', {
                 style: `font-size:${ modelValue }px`
             } );
@@ -543,11 +545,12 @@ $("h2").click(function (e) {
 $("#editor1").click(function (e) {
 
     console.log(this);
+    return;
 
     CKEditor.ClassicEditor
         .create($("#editor1").get(0), {
             // plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
-            plugins: [ Placeholder ],
+            // plugins: [ Placeholder ],
 
 
             // extraPlugins: [ HandleFontSizeValue,  AllowSourcePlugin ],
@@ -651,6 +654,18 @@ $('.editor').each(function(index, value) {
         extraPlugins: [ConvertDivAttributes, ConvertSectionAttributes, HandleFontSizeValue, Moje],
         // extraPlugins: [ ConvertDivAttributes, HandleFontSizeValue ],
 
+        // plugins: ['Heading', 'Control', 'RowGrid'],
+        // toolbar: [ 'heading', 'bold', 'italic', 'alignment', 'numberedList', 'bulletedList', '|', 'placeholder', 'translateBox' , 'control', 'rowGrid' ],
+
+
+        heading: {
+            options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+            ]
+        },
+
         autosave: {
             save( editor ) {
                 // The saveData() function must return a promise
@@ -675,12 +690,18 @@ $('.editor').each(function(index, value) {
     // console.log($(this));
 
     var toolbarEl = $(this).data('toolbar');
-
-    if (toolbarEl && $.isArray(toolbarEl)) {
-        config['toolbar'] = toolbarEl;
+    var toolbarEl = $(this).data('options');
+    if (toolbarEl) {
+//        console.log(toolbarEl);
+        // toolbarEl = JSON.parse(toolbarEl);
     }
 
-    // console.log(config);
+    if (toolbarEl && (typeof toolbarEl === "object")) {
+        $.extend(config, toolbarEl);
+    }
+
+    console.log(toolbarEl);
+    console.log(config);
 
     function saveData( el, data ) {
         const HTTP_SERVER_LAG = 500;

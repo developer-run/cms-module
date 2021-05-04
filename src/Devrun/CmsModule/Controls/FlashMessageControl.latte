@@ -1,5 +1,5 @@
 {snippet flashes}
-	<div n:if="$flashes" class="alert alert-{$flashes[0]->type}" role="alert">
+	<div n:if="$flashes && $flashes[0]->type != toast" class="alert alert-{$flashes[0]->type}" role="alert">
 		{foreach $flashes as $flash}
 			<h4 class="alert-heading">{$flash->type|firstUpper}!</h4>
 			<hr>

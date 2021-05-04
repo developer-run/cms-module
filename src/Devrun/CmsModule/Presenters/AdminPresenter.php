@@ -273,6 +273,7 @@ class AdminPresenter extends BasePresenter
         $grid = new DataGrid($this, $name);
         $grid->setTranslator($this->translator);
         $grid->setItemsPerPageList([20, 30, 50, 100]);
+        $grid->setRefreshUrl(false);
         return $grid;
     }
 
